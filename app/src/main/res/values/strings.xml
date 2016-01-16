@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Budget Watch</string>
     <string name="action_settings">Settings</string>
+    <string name="icon">icon</string>
+    <string name="accountsTitle">Accounts</string>
+    <string name="accountsDescription">Create and manage accounts</string>
+    <string name="budgetsTitle">Budgets</string>
+    <string name="budgetDescription">Create and manage budgets</string>
+    <string name="transactionsTitle">Transactions</string>
+    <string name="transactionsDescription">Enter transactions and revenues</string>
 </resources>
