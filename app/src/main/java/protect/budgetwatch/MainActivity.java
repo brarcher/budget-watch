@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity
         menuItems.add(new MainMenuItem(R.drawable.transaction, R.string.transactionsTitle,
                 R.string.transactionsDescription));
 
-        final ListView buttonList = (ListView) findViewById(R.id.mainButtonList);
+        final ListView buttonList = (ListView) findViewById(R.id.list);
         final MenuAdapter buttonListAdapter = new MenuAdapter(this, menuItems);
         buttonList.setAdapter(buttonListAdapter);
         buttonList.setOnItemClickListener(new AdapterView.OnItemClickListener()
