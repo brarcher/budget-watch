@@ -2,6 +2,7 @@
     <string name="app_name">Budget Watch</string>
     <string name="icon">icon</string>
     <string name="budgetsTitle">Budgets</string>
+    <string name="addBudgetTitle">Add Budget</string>
     <string name="budgetDescription">Create and manage budgets</string>
     <string name="transactionsTitle">Transactions</string>
     <string name="transactionsDescription">Enter transactions and revenues</string>
@@ -15,4 +16,7 @@
     <string name="Grocery">Grocery</string>
     <string name="one_hundred">100</string>
     <string name="fraction">%1$d/%2$d</string>
+
+    <string name="budgetTypeMissing">Budget type is empty</string>
+    <string name="budgetValueMissing">Budget value is empty</string>
 </resources>
