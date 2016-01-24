@@ -27,6 +27,11 @@
             android:name=".BudgetViewActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".BudgetActivity"/>
+        <activity
+            android:name=".TransactionActivity"
+            android:label="@string/transactionsTitle"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

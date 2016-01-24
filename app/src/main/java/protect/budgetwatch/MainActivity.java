@@ -51,6 +51,9 @@ public class MainActivity extends AppCompatActivity
                     case R.string.budgetsTitle:
                         goalClass = BudgetActivity.class;
                         break;
+                    case R.string.transactionsTitle:
+                        goalClass = TransactionActivity.class;
+                        break;
                 }
 
                 if(goalClass != null)
