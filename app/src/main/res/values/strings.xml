@@ -34,6 +34,7 @@
     <string name="budgetValueMissing">Budget value is empty</string>
 
     <string name="expensesTitle">Expenses</string>
+    <string name="revenuesTitle">Revenues</string>
 
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
