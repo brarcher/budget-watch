@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -44,7 +43,6 @@ public class MainActivity extends AppCompatActivity
             {
                 MainMenuItem item = (MainMenuItem)parent.getItemAtPosition(position);
 
-                Toast.makeText(MainActivity.this, "Clicked: " + position, Toast.LENGTH_SHORT).show();
             }
         });
     }
