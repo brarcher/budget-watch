@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 android:fitsSystemWindows="true"
+                                                 tools:context="protect.budgetwatch.AccountsActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                  xmlns:android="http://schemas.android.com/apk/res/android">
+        <LinearLayout android:orientation="horizontal"
+                      android:padding="10.0dip"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content">
+            <TextView android:textSize="16.0sp"
+                      android:textStyle="bold"
+                      android:layout_gravity="center_vertical"
+                      android:paddingStart="20.0dip"
+                      android:paddingEnd="20.0dip"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/type" />
+            <LinearLayout android:orientation="vertical"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content">
+                <EditText android:id="@+id/budgetName"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content"
+                          android:inputType="text"
+                          android:hint="@string/Grocery"/>
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal"
+                      android:padding="10.0dip"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content">
+            <TextView android:textSize="16.0sp"
+                      android:textStyle="bold"
+                      android:layout_gravity="center_vertical"
+                      android:paddingStart="20.0dip"
+                      android:paddingEnd="20.0dip"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/value" />
+            <EditText android:id="@+id/value"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:inputType="number"
+                      android:hint="@string/one_hundred"/>
+        </LinearLayout>
+        <LinearLayout android:orientation="horizontal"
+                      android:padding="10.0dip"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content"
+                      android:baselineAligned="true">
+            <Button android:id="@+id/cancelButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cancel"
+                    android:layout_weight="1.0" />
+            <Button android:id="@+id/saveButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save"
+                    android:layout_weight="1.0" />
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

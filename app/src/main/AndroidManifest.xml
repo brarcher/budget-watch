@@ -23,6 +23,10 @@
             android:label="@string/budgetsTitle"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".BudgetViewActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".BudgetActivity"/>
     </application>
 
 </manifest>
