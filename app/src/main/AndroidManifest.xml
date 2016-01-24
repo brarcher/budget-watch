@@ -32,6 +32,10 @@
             android:label="@string/transactionsTitle"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainActivity"/>
+        <activity
+            android:name=".TransactionViewActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".TransactionActivity"/>
     </application>
 
 </manifest>
