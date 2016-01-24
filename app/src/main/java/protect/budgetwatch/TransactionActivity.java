@@ -1,5 +1,6 @@
 package protect.budgetwatch;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -80,7 +81,33 @@ public class TransactionActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        int id = item.getItemId();
+
+        if (id == R.id.action_add)
+        {
+            Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
+            final Bundle b = new Bundle();
+            b.putInt("type", getCurrentTabType());
+            i.putExtras(b);
+            startActivity(i);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private int getCurrentTabType()
+    {
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
+
+        if(tabLayout.getSelectedTabPosition() == 0)
+        {
+            return DBHelper.TransactionDbIds.EXPENSE;
+        }
+        else
+        {
+            return DBHelper.TransactionDbIds.REVENUE;
+        }
     }
 }
 
