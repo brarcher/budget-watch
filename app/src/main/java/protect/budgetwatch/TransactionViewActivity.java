@@ -1,11 +1,14 @@
 package protect.budgetwatch;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Date;
 
 public class TransactionViewActivity extends AppCompatActivity
 {
@@ -51,11 +55,27 @@ public class TransactionViewActivity extends AppCompatActivity
         switch(type)
         {
             case DBHelper.TransactionDbIds.EXPENSE:
-                setTitle(R.string.addExpenseTransactionTitle);
+                if(updateTransaction)
+                {
+                    setTitle(R.string.editExpenseTransactionTitle);
+                }
+                else
+                {
+                    setTitle(R.string.addExpenseTransactionTitle);
+                }
+
                 break;
 
             case DBHelper.TransactionDbIds.REVENUE:
-                setTitle(R.string.addRevenueTransactionTitle);
+                if(updateTransaction)
+                {
+                    setTitle(R.string.editRevenueTransactionTitle);
+                }
+                else
+                {
+                    setTitle(R.string.addRevenueTransactionTitle);
+                }
+
                 break;
         }
 
@@ -103,6 +123,23 @@ public class TransactionViewActivity extends AppCompatActivity
         final EditText noteField = (EditText) findViewById(R.id.note);
         final Button cancelButton = (Button)findViewById(R.id.cancelButton);
         final Button saveButton = (Button)findViewById(R.id.saveButton);
+
+        if(updateTransaction)
+        {
+            Transaction transaction = db.getTransaction(transactionId);
+            nameField.setText(transaction.description);
+            accountField.setText(transaction.account);
+
+            int budgetIndex = budgetNames.indexOf(transaction.budget);
+            if(budgetIndex >= 0)
+            {
+                budgetSpinner.setSelection(budgetIndex);
+            }
+
+            valueField.setText(String.format("%.2f", transaction.value));
+            noteField.setText(transaction.note);
+            dateField.setText(dateFormatter.format(new Date(transaction.dateMs)));
+        }
 
         saveButton.setOnClickListener(new View.OnClickListener()
         {
@@ -163,8 +200,18 @@ public class TransactionViewActivity extends AppCompatActivity
 
                 DBHelper db = new DBHelper(TransactionViewActivity.this);
 
-                db.insertTransaction(type, name, account, budget,
-                        value, note, dateMs);
+                if(updateTransaction)
+                {
+                    db.updateTransaction(transactionId, type, name, account,
+                            budget, value, note, dateMs);
+
+                }
+                else
+                {
+                    db.insertTransaction(type, name, account, budget,
+                            value, note, dateMs);
+                }
+
                 finish();
             }
         });
@@ -177,5 +224,50 @@ public class TransactionViewActivity extends AppCompatActivity
                 finish();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        final Bundle b = getIntent().getExtras();
+        final boolean viewBudget = b != null && b.getBoolean("view", false);
+
+        // Only display a menu if we are viewing the entry:
+        if(viewBudget)
+        {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.edit_delete_menu, menu);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        final Bundle b = getIntent().getExtras();
+        final int transactionId = b.getInt("id");
+        final int type = b.getInt("type");
+
+        switch(id)
+        {
+            case R.id.action_edit:
+                Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("id", transactionId);
+                bundle.putInt("type", type);
+                bundle.putBoolean("update", true);
+                i.putExtras(bundle);
+                startActivity(i);
+                onResume();
+                return true;
+
+            case R.id.action_delete:
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
