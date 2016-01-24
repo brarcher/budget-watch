@@ -32,7 +32,34 @@ public class BudgetViewActivity extends AppCompatActivity
     {
         super.onResume();
 
-        setTitle(R.string.addBudgetTitle);
+        final Bundle b = getIntent().getExtras();
+        final String budgetName = b != null ? b.getString("id") : null;
+        final boolean viewBudget = b != null && b.getBoolean("view", false);
+
+        if(viewBudget)
+        {
+            EditText budgetNameField = (EditText) findViewById(R.id.budgetName);
+            budgetNameField.setText(budgetName);
+
+            EditText valueField = (EditText) findViewById(R.id.value);
+            DBHelper db = new DBHelper(this);
+            Budget existingBudget = db.getBudget(budgetName);
+            valueField.setText(String.format("%d", existingBudget.max));
+
+            budgetNameField.setEnabled(false);
+            valueField.setEnabled(false);
+
+            Button saveButton = (Button) findViewById(R.id.saveButton);
+            Button cancelButton = (Button) findViewById(R.id.cancelButton);
+            saveButton.setVisibility(Button.GONE);
+            cancelButton.setVisibility(Button.GONE);
+
+            setTitle(R.string.viewBudgetTitle);
+        }
+        else
+        {
+            setTitle(R.string.addBudgetTitle);
+        }
 
         Button saveButton = (Button)findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener()

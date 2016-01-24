@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -57,6 +58,22 @@ public class BudgetActivity extends AppCompatActivity
         final List<Budget> budgets = db.getBudgets(dateMonthStartMs, dateNowMs);
         final BudgetAdapter budgetListAdapter = new BudgetAdapter(this, budgets);
         budgetList.setAdapter(budgetListAdapter);
+
+        budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Budget budget = (Budget)parent.getItemAtPosition(position);
+
+                Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", budget.name);
+                bundle.putBoolean("view", true);
+                i.putExtras(bundle);
+                startActivity(i);
+            }
+        });
     }
 
     @Override
