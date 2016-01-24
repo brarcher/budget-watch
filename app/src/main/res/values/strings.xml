@@ -5,4 +5,6 @@
     <string name="budgetDescription">Create and manage budgets</string>
     <string name="transactionsTitle">Transactions</string>
     <string name="transactionsDescription">Enter transactions and revenues</string>
+
+    <string name="fraction">%1$d/%2$d</string>
 </resources>
