@@ -5,6 +5,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -116,5 +118,41 @@ public class BudgetViewActivity extends AppCompatActivity
                 finish();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        final Bundle b = getIntent().getExtras();
+        final boolean viewBudget = b != null && b.getBoolean("view", false);
+
+        // Only display a menu if we are viewing the entry:
+        if(viewBudget)
+        {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.edit_delete_menu, menu);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        int id = item.getItemId();
+
+        final Bundle b = getIntent().getExtras();
+        final String budgetName = b != null ? b.getString("id") : null;
+
+        switch(id)
+        {
+            case R.id.action_edit:
+                return true;
+
+            case R.id.action_delete:
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

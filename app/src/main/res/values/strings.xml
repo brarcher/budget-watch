@@ -20,4 +20,7 @@
 
     <string name="budgetTypeMissing">Budget type is empty</string>
     <string name="budgetValueMissing">Budget value is empty</string>
+
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 </resources>
