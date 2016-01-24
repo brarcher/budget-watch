@@ -35,6 +35,7 @@ public class TransactionActivity extends AppCompatActivity
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.removeAllTabs();
+        tabLayout.addTab(tabLayout.newTab().setText(R.string.expensesTitle));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
@@ -81,6 +82,8 @@ class TransactionPagerAdapter extends FragmentStatePagerAdapter
     {
         switch (position)
         {
+            case 0:
+                return new TransactionExpenseFragment();
             default:
                 return null;
         }
