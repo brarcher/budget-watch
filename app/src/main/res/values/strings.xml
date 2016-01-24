@@ -4,6 +4,7 @@
     <string name="budgetsTitle">Budgets</string>
     <string name="addBudgetTitle">Add Budget</string>
     <string name="viewBudgetTitle">View Budget</string>
+    <string name="editBudgetTitle">Edit Budget</string>
     <string name="budgetDescription">Create and manage budgets</string>
     <string name="transactionsTitle">Transactions</string>
     <string name="transactionsDescription">Enter transactions and revenues</string>

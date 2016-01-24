@@ -1,5 +1,6 @@
 package protect.budgetwatch;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -36,9 +37,10 @@ public class BudgetViewActivity extends AppCompatActivity
 
         final Bundle b = getIntent().getExtras();
         final String budgetName = b != null ? b.getString("id") : null;
+        final boolean updateBudget = b != null && b.getBoolean("update", false);
         final boolean viewBudget = b != null && b.getBoolean("view", false);
 
-        if(viewBudget)
+        if(updateBudget || viewBudget)
         {
             EditText budgetNameField = (EditText) findViewById(R.id.budgetName);
             budgetNameField.setText(budgetName);
@@ -48,15 +50,23 @@ public class BudgetViewActivity extends AppCompatActivity
             Budget existingBudget = db.getBudget(budgetName);
             valueField.setText(String.format("%d", existingBudget.max));
 
-            budgetNameField.setEnabled(false);
-            valueField.setEnabled(false);
+            if(updateBudget)
+            {
+                budgetNameField.setEnabled(false);
+                setTitle(R.string.editBudgetTitle);
+            }
+            else
+            {
+                budgetNameField.setEnabled(false);
+                valueField.setEnabled(false);
 
-            Button saveButton = (Button) findViewById(R.id.saveButton);
-            Button cancelButton = (Button) findViewById(R.id.cancelButton);
-            saveButton.setVisibility(Button.GONE);
-            cancelButton.setVisibility(Button.GONE);
+                Button saveButton = (Button) findViewById(R.id.saveButton);
+                Button cancelButton = (Button) findViewById(R.id.cancelButton);
+                saveButton.setVisibility(Button.GONE);
+                cancelButton.setVisibility(Button.GONE);
 
-            setTitle(R.string.viewBudgetTitle);
+                setTitle(R.string.viewBudgetTitle);
+            }
         }
         else
         {
@@ -89,7 +99,14 @@ public class BudgetViewActivity extends AppCompatActivity
                 {
                     DBHelper db = new DBHelper(BudgetViewActivity.this);
 
-                    db.insertBudget(budgetName, value);
+                    if(updateBudget == false)
+                    {
+                        db.insertBudget(budgetName, value);
+                    }
+                    else
+                    {
+                        db.updateBudget(budgetName, value);
+                    }
 
                     Toast.makeText(BudgetViewActivity.this, "Budget account: " + budgetName,
                             Toast.LENGTH_SHORT).show();
@@ -147,6 +164,13 @@ public class BudgetViewActivity extends AppCompatActivity
         switch(id)
         {
             case R.id.action_edit:
+                Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", budgetName);
+                bundle.putBoolean("update", true);
+                i.putExtras(bundle);
+                startActivity(i);
+                onResume();
                 return true;
 
             case R.id.action_delete:
