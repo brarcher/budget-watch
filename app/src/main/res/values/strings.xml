@@ -10,8 +10,10 @@
     <string name="transactionsDescription">Enter transactions and revenues</string>
     <string name="addExpenseTransactionTitle">Add Expense</string>
     <string name="editExpenseTransactionTitle">Edit Expense</string>
+    <string name="viewExpenseTransactionTitle">View Expense</string>
     <string name="addRevenueTransactionTitle">Add Revenue</string>
     <string name="editRevenueTransactionTitle">Edit Revenue</string>
+    <string name="viewRevenueTransactionTitle">View Revenue</string>
 
     <string name="add">Add</string>
     <string name="type">Type</string>

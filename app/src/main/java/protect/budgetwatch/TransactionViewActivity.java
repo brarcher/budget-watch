@@ -59,6 +59,10 @@ public class TransactionViewActivity extends AppCompatActivity
                 {
                     setTitle(R.string.editExpenseTransactionTitle);
                 }
+                else if(viewTransaction)
+                {
+                    setTitle(R.string.viewExpenseTransactionTitle);
+                }
                 else
                 {
                     setTitle(R.string.addExpenseTransactionTitle);
@@ -70,6 +74,10 @@ public class TransactionViewActivity extends AppCompatActivity
                 if(updateTransaction)
                 {
                     setTitle(R.string.editRevenueTransactionTitle);
+                }
+                else if(viewTransaction)
+                {
+                    setTitle(R.string.viewRevenueTransactionTitle);
                 }
                 else
                 {
@@ -124,7 +132,7 @@ public class TransactionViewActivity extends AppCompatActivity
         final Button cancelButton = (Button)findViewById(R.id.cancelButton);
         final Button saveButton = (Button)findViewById(R.id.saveButton);
 
-        if(updateTransaction)
+        if(updateTransaction || viewTransaction)
         {
             Transaction transaction = db.getTransaction(transactionId);
             nameField.setText(transaction.description);
@@ -139,6 +147,18 @@ public class TransactionViewActivity extends AppCompatActivity
             valueField.setText(String.format("%.2f", transaction.value));
             noteField.setText(transaction.note);
             dateField.setText(dateFormatter.format(new Date(transaction.dateMs)));
+
+            if(viewTransaction)
+            {
+                budgetSpinner.setEnabled(false);
+                nameField.setEnabled(false);
+                accountField.setEnabled(false);
+                valueField.setEnabled(false);
+                noteField.setEnabled(false);
+                dateField.setEnabled(false);
+                cancelButton.setVisibility(Button.GONE);
+                saveButton.setVisibility(Button.GONE);
+            }
         }
 
         saveButton.setOnClickListener(new View.OnClickListener()
@@ -265,6 +285,9 @@ public class TransactionViewActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_delete:
+                DBHelper db = new DBHelper(this);
+                db.deleteTransaction(transactionId);
+                finish();
                 return true;
         }
 
