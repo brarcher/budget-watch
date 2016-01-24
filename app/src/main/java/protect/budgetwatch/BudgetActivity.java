@@ -2,6 +2,7 @@ package protect.budgetwatch;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -73,6 +74,9 @@ public class BudgetActivity extends AppCompatActivity
 
         if (id == R.id.action_add)
         {
+            Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
+            startActivity(i);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
