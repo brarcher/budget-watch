@@ -174,6 +174,9 @@ public class BudgetViewActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_delete:
+                DBHelper db = new DBHelper(this);
+                db.deleteBudget(budgetName);
+                finish();
                 return true;
         }
 
