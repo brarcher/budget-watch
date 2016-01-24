@@ -1,6 +1,7 @@
 package protect.budgetwatch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -43,6 +44,20 @@ public class MainActivity extends AppCompatActivity
             {
                 MainMenuItem item = (MainMenuItem)parent.getItemAtPosition(position);
 
+                Class goalClass = null;
+
+                switch(item.menuTextId)
+                {
+                    case R.string.budgetsTitle:
+                        goalClass = BudgetActivity.class;
+                        break;
+                }
+
+                if(goalClass != null)
+                {
+                    Intent i = new Intent(getApplicationContext(), goalClass);
+                    startActivity(i);
+                }
             }
         });
     }
