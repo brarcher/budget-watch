@@ -196,6 +196,24 @@ public class DBHelper extends SQLiteOpenHelper
         return budgetNames;
     }
 
+    public int getBudgetCount()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor data =  db.rawQuery("SELECT Count(*) FROM " + BudgetDbIds.TABLE, null);
+
+        int numItems = 0;
+
+        if(data.getCount() == 1)
+        {
+            data.moveToFirst();
+            numItems = data.getInt(0);
+        }
+
+        data.close();
+
+        return numItems;
+    }
+
     public boolean insertTransaction(final int type, final String description, final String account, final String budget,
                                  final double value, final String note, final long dateInMs)
     {
@@ -248,6 +266,25 @@ public class DBHelper extends SQLiteOpenHelper
         data.close();
 
         return transaction;
+    }
+
+    public int getTransactionCount(final int type)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor data =  db.rawQuery("SELECT Count(*) FROM " + TransactionDbIds.TABLE +
+                " where " + TransactionDbIds.TYPE + "=?", new String[]{Integer.valueOf(type).toString()});
+
+        int numItems = 0;
+
+        if(data.getCount() == 1)
+        {
+            data.moveToFirst();
+            numItems = data.getInt(0);
+        }
+
+        data.close();
+
+        return numItems;
     }
 
     public boolean deleteTransaction(final int id)
