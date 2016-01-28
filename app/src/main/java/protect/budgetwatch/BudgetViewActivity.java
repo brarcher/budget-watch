@@ -47,7 +47,7 @@ public class BudgetViewActivity extends AppCompatActivity
 
             EditText valueField = (EditText) findViewById(R.id.value);
             DBHelper db = new DBHelper(this);
-            Budget existingBudget = db.getBudget(budgetName);
+            Budget existingBudget = db.getBudgetStoredOnly(budgetName);
             valueField.setText(String.format("%d", existingBudget.max));
 
             if(updateBudget)

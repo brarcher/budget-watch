@@ -78,7 +78,7 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(BudgetDbIds.NAME, name);
         contentValues.put(BudgetDbIds.MAX, max);
         final long newId = db.insert(BudgetDbIds.TABLE, null, contentValues);
-        return (newId != 1);
+        return (newId != -1);
     }
 
     public boolean updateBudget(final String name, final int max)
@@ -100,7 +100,7 @@ public class DBHelper extends SQLiteOpenHelper
         return (rowsDeleted == 1);
     }
 
-    public Budget getBudget(final String name)
+    public Budget getBudgetStoredOnly(final String name)
     {
         SQLiteDatabase db = getReadableDatabase();
         Cursor data = db.rawQuery("select * from " + BudgetDbIds.TABLE +
@@ -125,7 +125,8 @@ public class DBHelper extends SQLiteOpenHelper
     public List<Budget> getBudgets(long startDateMs, long endDateMs)
     {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor data = db.rawQuery("select * from " + BudgetDbIds.TABLE, null);
+        Cursor data = db.rawQuery("select * from " + BudgetDbIds.TABLE +
+                " ORDER BY " + BudgetDbIds.NAME, null);
 
         LinkedList<Budget> budgets = new LinkedList<>();
 
@@ -175,7 +176,8 @@ public class DBHelper extends SQLiteOpenHelper
     public List<String> getBudgetNames()
     {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor data = db.rawQuery("select " + BudgetDbIds.NAME + " from " + BudgetDbIds.TABLE, null);
+        Cursor data = db.rawQuery("select " + BudgetDbIds.NAME + " from " + BudgetDbIds.TABLE +
+                " ORDER BY " + BudgetDbIds.NAME, null);
 
         LinkedList<String> budgetNames = new LinkedList<>();
 
@@ -194,6 +196,24 @@ public class DBHelper extends SQLiteOpenHelper
         return budgetNames;
     }
 
+    public int getBudgetCount()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor data =  db.rawQuery("SELECT Count(*) FROM " + BudgetDbIds.TABLE, null);
+
+        int numItems = 0;
+
+        if(data.getCount() == 1)
+        {
+            data.moveToFirst();
+            numItems = data.getInt(0);
+        }
+
+        data.close();
+
+        return numItems;
+    }
+
     public boolean insertTransaction(final int type, final String description, final String account, final String budget,
                                  final double value, final String note, final long dateInMs)
     {
@@ -208,7 +228,7 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(TransactionDbIds.DATE, dateInMs);
 
         long newId = db.insert(TransactionDbIds.TABLE, null, contentValues);
-        return (newId != 1);
+        return (newId != -1);
     }
 
     public boolean updateTransaction(final int id, final int type, final String description,
@@ -246,6 +266,25 @@ public class DBHelper extends SQLiteOpenHelper
         data.close();
 
         return transaction;
+    }
+
+    public int getTransactionCount(final int type)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor data =  db.rawQuery("SELECT Count(*) FROM " + TransactionDbIds.TABLE +
+                " where " + TransactionDbIds.TYPE + "=?", new String[]{Integer.valueOf(type).toString()});
+
+        int numItems = 0;
+
+        if(data.getCount() == 1)
+        {
+            data.moveToFirst();
+            numItems = data.getInt(0);
+        }
+
+        data.close();
+
+        return numItems;
     }
 
     public boolean deleteTransaction(final int id)
