@@ -125,7 +125,8 @@ public class DBHelper extends SQLiteOpenHelper
     public List<Budget> getBudgets(long startDateMs, long endDateMs)
     {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor data = db.rawQuery("select * from " + BudgetDbIds.TABLE, null);
+        Cursor data = db.rawQuery("select * from " + BudgetDbIds.TABLE +
+                " ORDER BY " + BudgetDbIds.NAME, null);
 
         LinkedList<Budget> budgets = new LinkedList<>();
 
@@ -175,7 +176,8 @@ public class DBHelper extends SQLiteOpenHelper
     public List<String> getBudgetNames()
     {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor data = db.rawQuery("select " + BudgetDbIds.NAME + " from " + BudgetDbIds.TABLE, null);
+        Cursor data = db.rawQuery("select " + BudgetDbIds.NAME + " from " + BudgetDbIds.TABLE +
+                " ORDER BY " + BudgetDbIds.NAME, null);
 
         LinkedList<String> budgetNames = new LinkedList<>();
 
