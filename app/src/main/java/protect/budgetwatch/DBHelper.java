@@ -78,7 +78,7 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(BudgetDbIds.NAME, name);
         contentValues.put(BudgetDbIds.MAX, max);
         final long newId = db.insert(BudgetDbIds.TABLE, null, contentValues);
-        return (newId != 1);
+        return (newId != -1);
     }
 
     public boolean updateBudget(final String name, final int max)
@@ -208,7 +208,7 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(TransactionDbIds.DATE, dateInMs);
 
         long newId = db.insert(TransactionDbIds.TABLE, null, contentValues);
-        return (newId != 1);
+        return (newId != -1);
     }
 
     public boolean updateTransaction(final int id, final int type, final String description,
