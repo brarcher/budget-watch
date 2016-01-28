@@ -100,7 +100,7 @@ public class DBHelper extends SQLiteOpenHelper
         return (rowsDeleted == 1);
     }
 
-    public Budget getBudget(final String name)
+    public Budget getBudgetStoredOnly(final String name)
     {
         SQLiteDatabase db = getReadableDatabase();
         Cursor data = db.rawQuery("select * from " + BudgetDbIds.TABLE +
