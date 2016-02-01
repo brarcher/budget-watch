@@ -73,21 +73,27 @@ public class DBHelper extends SQLiteOpenHelper
 
     public boolean insertBudget(final String name, final int max)
     {
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(BudgetDbIds.NAME, name);
         contentValues.put(BudgetDbIds.MAX, max);
+
+        SQLiteDatabase db = getWritableDatabase();
         final long newId = db.insert(BudgetDbIds.TABLE, null, contentValues);
+        db.close();
+
         return (newId != -1);
     }
 
     public boolean updateBudget(final String name, final int max)
     {
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(BudgetDbIds.MAX, max);
+
+        SQLiteDatabase db = getWritableDatabase();
         int rowsUpdated = db.update(BudgetDbIds.TABLE, contentValues, BudgetDbIds.NAME + "=?",
                 new String[]{name});
+        db.close();
+
         return (rowsUpdated == 1);
     }
 
@@ -97,6 +103,7 @@ public class DBHelper extends SQLiteOpenHelper
         int rowsDeleted =  db.delete(BudgetDbIds.TABLE,
                 BudgetDbIds.NAME + " = ? ",
                 new String[]{name});
+        db.close();
         return (rowsDeleted == 1);
     }
 
@@ -118,6 +125,7 @@ public class DBHelper extends SQLiteOpenHelper
         }
 
         data.close();
+        db.close();
 
         return budget;
     }
@@ -143,6 +151,7 @@ public class DBHelper extends SQLiteOpenHelper
         }
 
         data.close();
+        db.close();
 
         return budgets;
     }
@@ -169,6 +178,7 @@ public class DBHelper extends SQLiteOpenHelper
         data.moveToFirst();
         int value = data.getInt(0);
         data.close();
+        db.close();
 
         return value;
     }
@@ -192,6 +202,7 @@ public class DBHelper extends SQLiteOpenHelper
         }
 
         data.close();
+        db.close();
 
         return budgetNames;
     }
@@ -210,6 +221,7 @@ public class DBHelper extends SQLiteOpenHelper
         }
 
         data.close();
+        db.close();
 
         return numItems;
     }
@@ -217,7 +229,6 @@ public class DBHelper extends SQLiteOpenHelper
     public boolean insertTransaction(final int type, final String description, final String account, final String budget,
                                  final double value, final String note, final long dateInMs)
     {
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TransactionDbIds.TYPE, type);
         contentValues.put(TransactionDbIds.DESCRIPTION, description);
@@ -227,7 +238,10 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(TransactionDbIds.NOTE, note);
         contentValues.put(TransactionDbIds.DATE, dateInMs);
 
+        SQLiteDatabase db = getWritableDatabase();
         long newId = db.insert(TransactionDbIds.TABLE, null, contentValues);
+        db.close();
+
         return (newId != -1);
     }
 
@@ -235,7 +249,6 @@ public class DBHelper extends SQLiteOpenHelper
                                      final String account, final String budget, final double value,
                                      final String note, final long dateInMs)
     {
-        SQLiteDatabase db = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(TransactionDbIds.TYPE, type);
         contentValues.put(TransactionDbIds.DESCRIPTION, description);
@@ -244,8 +257,12 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(TransactionDbIds.VALUE, value);
         contentValues.put(TransactionDbIds.NOTE, note);
         contentValues.put(TransactionDbIds.DATE, dateInMs);
+
+        SQLiteDatabase db = getWritableDatabase();
         int rowsUpdated = db.update(TransactionDbIds.TABLE, contentValues, TransactionDbIds.NAME + "=?",
                 new String[]{Integer.toString(id)});
+        db.close();
+
         return (rowsUpdated == 1);
     }
 
@@ -264,6 +281,7 @@ public class DBHelper extends SQLiteOpenHelper
         }
 
         data.close();
+        db.close();
 
         return transaction;
     }
@@ -283,6 +301,7 @@ public class DBHelper extends SQLiteOpenHelper
         }
 
         data.close();
+        db.close();
 
         return numItems;
     }
@@ -293,6 +312,7 @@ public class DBHelper extends SQLiteOpenHelper
         int rowsDeleted =  db.delete(TransactionDbIds.TABLE,
                 TransactionDbIds.NAME + " = ? ",
                 new String[]{Integer.valueOf(id).toString()});
+        db.close();
         return (rowsDeleted == 1);
     }
 
