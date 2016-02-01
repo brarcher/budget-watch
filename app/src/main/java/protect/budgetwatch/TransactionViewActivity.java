@@ -251,15 +251,19 @@ public class TransactionViewActivity extends AppCompatActivity
     {
         final Bundle b = getIntent().getExtras();
         final boolean viewBudget = b != null && b.getBoolean("view", false);
+        final boolean editBudget = b != null && b.getBoolean("update", false);
 
-        // Only display a menu if we are viewing the entry:
         if(viewBudget)
         {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.edit_delete_menu, menu);
+            getMenuInflater().inflate(R.menu.edit_menu, menu);
         }
 
-        return true;
+        if(editBudget)
+        {
+            getMenuInflater().inflate(R.menu.delete_menu, menu);
+        }
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
