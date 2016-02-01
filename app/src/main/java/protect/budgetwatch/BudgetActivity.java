@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -38,7 +39,21 @@ public class BudgetActivity extends AppCompatActivity
         super.onResume();
 
         final ListView budgetList = (ListView) findViewById(R.id.list);
+        final TextView helpText = (TextView)findViewById(R.id.helpText);
+
         DBHelper db = new DBHelper(this);
+
+        if(db.getBudgetCount() > 0)
+        {
+            budgetList.setVisibility(View.VISIBLE);
+            helpText.setVisibility(View.GONE);
+        }
+        else
+        {
+            budgetList.setVisibility(View.GONE);
+            helpText.setVisibility(View.VISIBLE);
+            helpText.setText(R.string.noBudgets);
+        }
 
         final Calendar date = new GregorianCalendar();
         final long dateNowMs = date.getTimeInMillis();

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class TransactionRevenueFragment extends Fragment
 {
@@ -18,8 +19,21 @@ public class TransactionRevenueFragment extends Fragment
         View layout = inflater.inflate(R.layout.list_layout, container, false);
 
         ListView listView = (ListView) layout.findViewById(R.id.list);
-
+        final TextView helpText = (TextView) layout.findViewById(R.id.helpText);
         DBHelper dbhelper = new DBHelper(getContext());
+
+        if(dbhelper.getTransactionCount(DBHelper.TransactionDbIds.REVENUE) > 0)
+        {
+            listView.setVisibility(View.VISIBLE);
+            helpText.setVisibility(View.GONE);
+        }
+        else
+        {
+            listView.setVisibility(View.GONE);
+            helpText.setVisibility(View.VISIBLE);
+            helpText.setText(R.string.noRevenues);
+        }
+
         Cursor expenseCursor = dbhelper.getRevenues();
         final TransactionCursorAdapter adapter = new TransactionCursorAdapter(getContext(), expenseCursor);
         listView.setAdapter(adapter);
