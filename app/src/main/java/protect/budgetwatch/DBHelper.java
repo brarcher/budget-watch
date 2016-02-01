@@ -14,14 +14,14 @@ public class DBHelper extends SQLiteOpenHelper
     public static final String DATABASE_NAME = "BudgetWatch.db";
     public static final int DATABASE_VERSION = 1;
 
-    class BudgetDbIds
+    static class BudgetDbIds
     {
         public static final String TABLE = "budgets";
         public static final String NAME = "_id";
         public static final String MAX = "max";
     }
 
-    class TransactionDbIds
+    static class TransactionDbIds
     {
         public static final String TABLE = "transactions";
         public static final String NAME = "_id";
