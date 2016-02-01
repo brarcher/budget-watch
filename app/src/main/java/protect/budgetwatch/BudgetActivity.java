@@ -56,12 +56,23 @@ public class BudgetActivity extends AppCompatActivity
         }
 
         final Calendar date = new GregorianCalendar();
+
+        // Set to the last ms at the end of the month
+        date.set(Calendar.DAY_OF_MONTH, date.getActualMaximum(Calendar.DAY_OF_MONTH));
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMaximum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMaximum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMaximum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
+
         final long dateNowMs = date.getTimeInMillis();
-        int year = date.get(Calendar.YEAR);
-        int month = date.get(Calendar.MONTH);
 
         // Set to beginning of the month
-        date.set(year, month, 1);
+        date.set(Calendar.DAY_OF_MONTH, date.getActualMinimum(Calendar.DAY_OF_MONTH));
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMinimum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMinimum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMinimum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMinimum(Calendar.MILLISECOND));
+
         final long dateMonthStartMs = date.getTimeInMillis();
 
         final List<Budget> budgets = db.getBudgets(dateMonthStartMs, dateNowMs);
