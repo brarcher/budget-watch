@@ -16,6 +16,7 @@
     <string name="viewRevenueTransactionTitle">View Revenue</string>
 
     <string name="add">Add</string>
+    <string name="selectDates">Select Dates</string>
     <string name="type">Type</string>
     <string name="value">Value</string>
     <string name="name">Name</string>

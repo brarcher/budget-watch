@@ -114,7 +114,7 @@ public class BudgetActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.add_menu, menu);
+        getMenuInflater().inflate(R.menu.budget_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -128,6 +128,11 @@ public class BudgetActivity extends AppCompatActivity
             Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
             startActivity(i);
             return true;
+        }
+
+        if(id == R.id.action_calendar)
+        {
+
         }
 
         return super.onOptionsItemSelected(item);

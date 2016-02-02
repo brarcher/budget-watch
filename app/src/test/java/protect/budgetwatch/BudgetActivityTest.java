@@ -50,9 +50,10 @@ public class BudgetActivityTest
         assertTrue(menu != null);
 
         // The settings and add button should be present
-        assertEquals(menu.size(), 1);
+        assertEquals(menu.size(), 2);
 
         assertEquals("Add", menu.findItem(R.id.action_add).getTitle().toString());
+        assertEquals("Select Dates", menu.findItem(R.id.action_calendar).getTitle().toString());
     }
 
     @Test
