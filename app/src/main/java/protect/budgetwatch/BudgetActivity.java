@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -62,8 +63,7 @@ public class BudgetActivity extends AppCompatActivity
         date.set(Calendar.MINUTE, date.getActualMaximum(Calendar.MINUTE));
         date.set(Calendar.SECOND, date.getActualMaximum(Calendar.SECOND));
         date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
-
-        final long dateNowMs = date.getTimeInMillis();
+        final long dateMonthEndMs = date.getTimeInMillis();
 
         // Set to beginning of the month
         date.set(Calendar.DAY_OF_MONTH, date.getActualMinimum(Calendar.DAY_OF_MONTH));
@@ -71,10 +71,25 @@ public class BudgetActivity extends AppCompatActivity
         date.set(Calendar.MINUTE, date.getActualMinimum(Calendar.MINUTE));
         date.set(Calendar.SECOND, date.getActualMinimum(Calendar.SECOND));
         date.set(Calendar.MILLISECOND, date.getActualMinimum(Calendar.MILLISECOND));
-
         final long dateMonthStartMs = date.getTimeInMillis();
 
-        final List<Budget> budgets = db.getBudgets(dateMonthStartMs, dateNowMs);
+        final Bundle b = getIntent().getExtras();
+        final long budgetStartMs = b != null ? b.getLong("budgetStart", dateMonthStartMs) : dateMonthStartMs;
+        final long budgetEndMs = b != null ? b.getLong("budgetEnd", dateMonthEndMs) : dateMonthEndMs;
+
+        date.setTimeInMillis(budgetStartMs);
+        String budgetStartString = DateFormat.getDateInstance(DateFormat.SHORT).format(date.getTime());
+
+        date.setTimeInMillis(budgetEndMs);
+        String budgetEndString = DateFormat.getDateInstance(DateFormat.SHORT).format(date.getTime());
+
+        String dateRangeFormat = getResources().getString(R.string.dateRangeFormat);
+        String dateRangeString = String.format(dateRangeFormat, budgetStartString, budgetEndString);
+
+        final TextView dateRangeField = (TextView) findViewById(R.id.dateRange);
+        dateRangeField.setText(dateRangeString);
+
+        final List<Budget> budgets = db.getBudgets(budgetStartMs, budgetEndMs);
         final BudgetAdapter budgetListAdapter = new BudgetAdapter(this, budgets);
         budgetList.setAdapter(budgetListAdapter);
 

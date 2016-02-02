@@ -39,6 +39,9 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
 
+    <!-- A date range, where both arguments are date strings -->
+    <string name="dateRangeFormat">%1$s ~ %2$s</string>
+
     <string name="noBudgets">You don\'t have any budgets at the moment. Click the "+" (plus) button up top to get started.\n\nBudget Watch lets you create budgets, then track spending during the month.</string>
     <string name="noExpenses">You don\'t have any expense transactions at the moment. Click the "+" (plus) button up top to get started.</string>
     <string name="noRevenues">You don\'t have any revenue transactions at the moment. Click the "+" (plus) button up top to get started.</string>
