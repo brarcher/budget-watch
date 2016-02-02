@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class BudgetActivity extends AppCompatActivity
@@ -55,7 +54,7 @@ public class BudgetActivity extends AppCompatActivity
             helpText.setText(R.string.noBudgets);
         }
 
-        final Calendar date = new GregorianCalendar();
+        final Calendar date = Calendar.getInstance();
 
         // Set to the last ms at the end of the month
         date.set(Calendar.DAY_OF_MONTH, date.getActualMaximum(Calendar.DAY_OF_MONTH));
