@@ -1,6 +1,8 @@
 package protect.budgetwatch;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -10,8 +12,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -129,6 +133,35 @@ public class BudgetActivity extends AppCompatActivity
         date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
         return date.getTimeInMillis();
     }
+
+    private long getStartOfDayMs(int year, int month, int day)
+    {
+        final Calendar date = Calendar.getInstance();
+
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, day);
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMinimum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMinimum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMinimum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMinimum(Calendar.MILLISECOND));
+        return date.getTimeInMillis();
+    }
+
+    private long getEndOfDayMs(int year, int month, int day)
+    {
+        final Calendar date = Calendar.getInstance();
+
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, day);
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMaximum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMaximum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMaximum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
+        return date.getTimeInMillis();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -151,7 +184,54 @@ public class BudgetActivity extends AppCompatActivity
 
         if(id == R.id.action_calendar)
         {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.budgetDateRangeHelp);
 
+            final View view = getLayoutInflater().inflate(R.layout.budget_date_picker_layout, null, false);
+
+            builder.setView(view);
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    dialog.cancel();
+                }
+            });
+            builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    DatePicker startDatePicker = (DatePicker) view.findViewById(R.id.startDate);
+                    DatePicker endDatePicker = (DatePicker) view.findViewById(R.id.endDate);
+
+                    long startOfBudgetMs = getStartOfDayMs(startDatePicker.getYear(),
+                            startDatePicker.getMonth(), startDatePicker.getDayOfMonth());
+                    long endOfBudgetMs = getEndOfDayMs(endDatePicker.getYear(),
+                            endDatePicker.getMonth(), endDatePicker.getDayOfMonth());
+
+                    if (startOfBudgetMs > endOfBudgetMs)
+                    {
+                        Toast.makeText(BudgetActivity.this, R.string.startDateAfterEndDate, Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    Intent intent = new Intent(BudgetActivity.this, BudgetActivity.class);
+                    intent.setFlags(
+                            Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("budgetStart", startOfBudgetMs);
+                    bundle.putLong("budgetEnd", endOfBudgetMs);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+
+                    BudgetActivity.this.finish();
+                }
+            });
+
+            builder.show();
         }
 
         return super.onOptionsItemSelected(item);
