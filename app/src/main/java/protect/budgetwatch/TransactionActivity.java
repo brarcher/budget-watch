@@ -3,9 +3,6 @@ package protect.budgetwatch;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -108,36 +105,5 @@ public class TransactionActivity extends AppCompatActivity
         {
             return DBHelper.TransactionDbIds.REVENUE;
         }
-    }
-}
-
-class TransactionPagerAdapter extends FragmentStatePagerAdapter
-{
-    final int numTabs;
-
-    public TransactionPagerAdapter(FragmentManager fm, int numTabs)
-    {
-        super(fm);
-        this.numTabs = numTabs;
-    }
-
-    @Override
-    public Fragment getItem(int position)
-    {
-        switch (position)
-        {
-            case 0:
-                return new TransactionExpenseFragment();
-            case 1:
-                return new TransactionRevenueFragment();
-            default:
-                return null;
-        }
-    }
-
-    @Override
-    public int getCount()
-    {
-        return numTabs;
     }
 }

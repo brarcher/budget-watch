@@ -21,6 +21,20 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/list_layout" />
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="fill_parent"
+                  android:layout_height="fill_parent"
+                  app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="20sp"
+            android:id="@+id/dateRange"
+            android:layout_gravity="center"/>
+
+        <include layout="@layout/list_layout" />
+    </LinearLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>

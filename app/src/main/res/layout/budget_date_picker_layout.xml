@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+        <LinearLayout android:orientation="vertical"
+                      android:padding="5.0dip"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content">
+            <TextView android:textSize="20.0sp"
+                      android:textStyle="bold"
+                      android:layout_gravity="center_vertical"
+                      android:paddingStart="20.0dip"
+                      android:paddingEnd="20.0dip"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:labelFor="@+id/startDate"
+                      android:text="@string/startDate" />
+            <DatePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/startDate"
+                android:spinnersShown="true"
+                android:calendarViewShown="false">
+            </DatePicker>
+        </LinearLayout>
+        <LinearLayout android:orientation="vertical"
+                      android:padding="5.0dip"
+                      android:layout_width="fill_parent"
+                      android:layout_height="wrap_content">
+            <TextView android:textSize="20.0sp"
+                      android:textStyle="bold"
+                      android:layout_gravity="center_vertical"
+                      android:paddingStart="20.0dip"
+                      android:paddingEnd="20.0dip"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:labelFor="@+id/endDate"
+                      android:text="@string/endDate" />
+            <DatePicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/endDate"
+                android:spinnersShown="true"
+                android:calendarViewShown="false">
+            </DatePicker>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
+
+

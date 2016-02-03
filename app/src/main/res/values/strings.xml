@@ -16,6 +16,7 @@
     <string name="viewRevenueTransactionTitle">View Revenue</string>
 
     <string name="add">Add</string>
+    <string name="selectDates">Select Dates</string>
     <string name="type">Type</string>
     <string name="value">Value</string>
     <string name="name">Name</string>
@@ -25,6 +26,7 @@
     <string name="date">Date</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="set">Set</string>
 
     <string name="Grocery">Grocery</string>
     <string name="one_hundred">100</string>
@@ -38,4 +40,16 @@
 
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
+
+    <!-- A date range, where both arguments are date strings -->
+    <string name="dateRangeFormat">%1$s ~ %2$s</string>
+
+    <string name="noBudgets">You don\'t have any budgets at the moment. Click the "+" (plus) button up top to get started.\n\nBudget Watch lets you create budgets, then track spending during the month.</string>
+    <string name="noExpenses">You don\'t have any expense transactions at the moment. Click the "+" (plus) button up top to get started.</string>
+    <string name="noRevenues">You don\'t have any revenue transactions at the moment. Click the "+" (plus) button up top to get started.</string>
+
+    <string name="budgetDateRangeHelp">Select date range to display for budgets</string>
+    <string name="startDate">Start date</string>
+    <string name="endDate">End date</string>
+    <string name="startDateAfterEndDate">Start date must be on or before end date</string>
 </resources>

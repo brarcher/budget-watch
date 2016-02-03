@@ -1,25 +1,24 @@
 package protect.budgetwatch;
 
 
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 public class BudgetActivity extends AppCompatActivity
@@ -44,18 +43,49 @@ public class BudgetActivity extends AppCompatActivity
         super.onResume();
 
         final ListView budgetList = (ListView) findViewById(R.id.list);
+        final TextView helpText = (TextView)findViewById(R.id.helpText);
+
         DBHelper db = new DBHelper(this);
 
-        final Calendar date = new GregorianCalendar();
-        final long dateNowMs = date.getTimeInMillis();
-        int year = date.get(Calendar.YEAR);
-        int month = date.get(Calendar.MONTH);
+        if(db.getBudgetCount() > 0)
+        {
+            budgetList.setVisibility(View.VISIBLE);
+            helpText.setVisibility(View.GONE);
+        }
+        else
+        {
+            budgetList.setVisibility(View.GONE);
+            helpText.setVisibility(View.VISIBLE);
+            helpText.setText(R.string.noBudgets);
+        }
+
+        final Calendar date = Calendar.getInstance();
+
+        // Set to the last ms at the end of the month
+        final long dateMonthEndMs = getEndOfMonthMs(date.get(Calendar.YEAR),
+                date.get(Calendar.MONTH));
 
         // Set to beginning of the month
-        date.set(year, month, 1);
-        final long dateMonthStartMs = date.getTimeInMillis();
+        final long dateMonthStartMs = getStartOfMonthMs(date.get(Calendar.YEAR),
+                date.get(Calendar.MONTH));
 
-        final List<Budget> budgets = db.getBudgets(dateMonthStartMs, dateNowMs);
+        final Bundle b = getIntent().getExtras();
+        final long budgetStartMs = b != null ? b.getLong("budgetStart", dateMonthStartMs) : dateMonthStartMs;
+        final long budgetEndMs = b != null ? b.getLong("budgetEnd", dateMonthEndMs) : dateMonthEndMs;
+
+        date.setTimeInMillis(budgetStartMs);
+        String budgetStartString = DateFormat.getDateInstance(DateFormat.SHORT).format(date.getTime());
+
+        date.setTimeInMillis(budgetEndMs);
+        String budgetEndString = DateFormat.getDateInstance(DateFormat.SHORT).format(date.getTime());
+
+        String dateRangeFormat = getResources().getString(R.string.dateRangeFormat);
+        String dateRangeString = String.format(dateRangeFormat, budgetStartString, budgetEndString);
+
+        final TextView dateRangeField = (TextView) findViewById(R.id.dateRange);
+        dateRangeField.setText(dateRangeString);
+
+        final List<Budget> budgets = db.getBudgets(budgetStartMs, budgetEndMs);
         final BudgetAdapter budgetListAdapter = new BudgetAdapter(this, budgets);
         budgetList.setAdapter(budgetListAdapter);
 
@@ -76,12 +106,68 @@ public class BudgetActivity extends AppCompatActivity
         });
     }
 
+    private long getStartOfMonthMs(int year, int month)
+    {
+        final Calendar date = Calendar.getInstance();
+
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, date.getActualMinimum(Calendar.DAY_OF_MONTH));
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMinimum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMinimum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMinimum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMinimum(Calendar.MILLISECOND));
+        return date.getTimeInMillis();
+    }
+
+    private long getEndOfMonthMs(int year, int month)
+    {
+        final Calendar date = Calendar.getInstance();
+
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, date.getActualMaximum(Calendar.DAY_OF_MONTH));
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMaximum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMaximum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMaximum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
+        return date.getTimeInMillis();
+    }
+
+    private long getStartOfDayMs(int year, int month, int day)
+    {
+        final Calendar date = Calendar.getInstance();
+
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, day);
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMinimum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMinimum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMinimum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMinimum(Calendar.MILLISECOND));
+        return date.getTimeInMillis();
+    }
+
+    private long getEndOfDayMs(int year, int month, int day)
+    {
+        final Calendar date = Calendar.getInstance();
+
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, day);
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMaximum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMaximum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMaximum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
+        return date.getTimeInMillis();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.add_menu, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.budget_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -96,45 +182,58 @@ public class BudgetActivity extends AppCompatActivity
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
-    }
-}
-
-class BudgetAdapter extends ArrayAdapter<Budget>
-{
-    public BudgetAdapter(Context context, List<Budget> items)
-    {
-        super(context, 0, items);
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
-        // Get the data item for this position
-        Budget item = getItem(position);
-
-        // Check if an existing view is being reused, otherwise inflate the view
-
-        if (convertView == null)
+        if(id == R.id.action_calendar)
         {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.budget_layout,
-                    parent, false);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.budgetDateRangeHelp);
+
+            final View view = getLayoutInflater().inflate(R.layout.budget_date_picker_layout, null, false);
+
+            builder.setView(view);
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    dialog.cancel();
+                }
+            });
+            builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    DatePicker startDatePicker = (DatePicker) view.findViewById(R.id.startDate);
+                    DatePicker endDatePicker = (DatePicker) view.findViewById(R.id.endDate);
+
+                    long startOfBudgetMs = getStartOfDayMs(startDatePicker.getYear(),
+                            startDatePicker.getMonth(), startDatePicker.getDayOfMonth());
+                    long endOfBudgetMs = getEndOfDayMs(endDatePicker.getYear(),
+                            endDatePicker.getMonth(), endDatePicker.getDayOfMonth());
+
+                    if (startOfBudgetMs > endOfBudgetMs)
+                    {
+                        Toast.makeText(BudgetActivity.this, R.string.startDateAfterEndDate, Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    Intent intent = new Intent(BudgetActivity.this, BudgetActivity.class);
+                    intent.setFlags(
+                            Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("budgetStart", startOfBudgetMs);
+                    bundle.putLong("budgetEnd", endOfBudgetMs);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+
+                    BudgetActivity.this.finish();
+                }
+            });
+
+            builder.show();
         }
 
-        TextView budgetName = (TextView) convertView.findViewById(R.id.budgetName);
-        ProgressBar budgetBar = (ProgressBar) convertView.findViewById(R.id.budgetBar);
-        TextView budgetValue = (TextView) convertView.findViewById(R.id.budgetValue);
-
-        budgetName.setText(item.name);
-
-        budgetBar.setMax(item.max);
-        budgetBar.setProgress(item.current);
-
-        String fractionFormat = getContext().getResources().getString(R.string.fraction);
-        String fraction = String.format(fractionFormat, item.current, item.max);
-
-        budgetValue.setText(fraction);
-
-        return convertView;
+        return super.onOptionsItemSelected(item);
     }
 }

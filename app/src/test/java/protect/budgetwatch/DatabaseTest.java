@@ -10,6 +10,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -23,6 +24,8 @@ public class DatabaseTest
 {
     private DBHelper db;
     private long nowMs;
+    private long lastYearMs;
+    private int MONTHS_PER_YEAR = 12;
 
     @Before
     public void setUp()
@@ -30,6 +33,10 @@ public class DatabaseTest
         Activity activity = Robolectric.setupActivity(BudgetViewActivity.class);
         db = new DBHelper(activity);
         nowMs = System.currentTimeMillis();
+
+        Calendar lastYear = Calendar.getInstance();
+        lastYear.set(Calendar.YEAR, lastYear.get(Calendar.YEAR)-1);
+        lastYearMs = lastYear.getTimeInMillis();
     }
 
     @Test
@@ -46,10 +53,10 @@ public class DatabaseTest
         assertEquals(100, budget.max);
         assertEquals(0, budget.current);
 
-        List<Budget> budgets = db.getBudgets(0, nowMs);
+        List<Budget> budgets = db.getBudgets(lastYearMs, nowMs);
         assertEquals(1, budgets.size());
         assertEquals("budget", budgets.get(0).name);
-        assertEquals(100, budgets.get(0).max);
+        assertEquals(100*(MONTHS_PER_YEAR+1), budgets.get(0).max);
         assertEquals(0, budgets.get(0).current);
 
         result = db.deleteBudget("budget");
@@ -84,10 +91,10 @@ public class DatabaseTest
         // Budget current value should be positive, as there are only
         // expenses
 
-        List<Budget> budgets = db.getBudgets(0, nowMs);
+        List<Budget> budgets = db.getBudgets(lastYearMs, nowMs);
         assertEquals(1, budgets.size());
         assertEquals("budget", budgets.get(0).name);
-        assertEquals(100, budgets.get(0).max);
+        assertEquals(100*(MONTHS_PER_YEAR+1), budgets.get(0).max);
         assertEquals(expectedCurrent, budgets.get(0).current);
 
         final int NUM_REVENUES = 2000;
@@ -109,10 +116,10 @@ public class DatabaseTest
         // Budget current value should be negative, as there is more
         // revenue than expenses
 
-        budgets = db.getBudgets(0, nowMs);
+        budgets = db.getBudgets(lastYearMs, nowMs);
         assertEquals(1, budgets.size());
         assertEquals("budget", budgets.get(0).name);
-        assertEquals(100, budgets.get(0).max);
+        assertEquals(100*(MONTHS_PER_YEAR+1), budgets.get(0).max);
         assertEquals(expectedCurrent, budgets.get(0).current);
 
         result = db.deleteBudget("budget");
@@ -145,12 +152,12 @@ public class DatabaseTest
 
         assertEquals(NUM_BUDGETS, db.getBudgetCount());
 
-        List<Budget> budgets = db.getBudgets(0, nowMs);
+        List<Budget> budgets = db.getBudgets(lastYearMs, nowMs);
         int index = 1;
         for(Budget budget : budgets)
         {
             assertEquals(budget.current, 0);
-            assertEquals(budget.max, index);
+            assertEquals(budget.max, index*(MONTHS_PER_YEAR+1));
             index++;
         }
 

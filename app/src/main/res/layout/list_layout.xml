@@ -12,6 +12,13 @@
                 tools:context="protect.budgetwatch.AccountsActivity"
                 tools:showIn="@layout/main_activity">
 
+    <TextView
+        style="@style/AppTheme.TextView.NoData"
+        android:id="@+id/helpText"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
