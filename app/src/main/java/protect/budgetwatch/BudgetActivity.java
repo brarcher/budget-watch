@@ -58,20 +58,12 @@ public class BudgetActivity extends AppCompatActivity
         final Calendar date = Calendar.getInstance();
 
         // Set to the last ms at the end of the month
-        date.set(Calendar.DAY_OF_MONTH, date.getActualMaximum(Calendar.DAY_OF_MONTH));
-        date.set(Calendar.HOUR_OF_DAY, date.getActualMaximum(Calendar.HOUR_OF_DAY));
-        date.set(Calendar.MINUTE, date.getActualMaximum(Calendar.MINUTE));
-        date.set(Calendar.SECOND, date.getActualMaximum(Calendar.SECOND));
-        date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
-        final long dateMonthEndMs = date.getTimeInMillis();
+        final long dateMonthEndMs = getEndOfMonthMs(date.get(Calendar.YEAR),
+                date.get(Calendar.MONTH));
 
         // Set to beginning of the month
-        date.set(Calendar.DAY_OF_MONTH, date.getActualMinimum(Calendar.DAY_OF_MONTH));
-        date.set(Calendar.HOUR_OF_DAY, date.getActualMinimum(Calendar.HOUR_OF_DAY));
-        date.set(Calendar.MINUTE, date.getActualMinimum(Calendar.MINUTE));
-        date.set(Calendar.SECOND, date.getActualMinimum(Calendar.SECOND));
-        date.set(Calendar.MILLISECOND, date.getActualMinimum(Calendar.MILLISECOND));
-        final long dateMonthStartMs = date.getTimeInMillis();
+        final long dateMonthStartMs = getStartOfMonthMs(date.get(Calendar.YEAR),
+                date.get(Calendar.MONTH));
 
         final Bundle b = getIntent().getExtras();
         final long budgetStartMs = b != null ? b.getLong("budgetStart", dateMonthStartMs) : dateMonthStartMs;
@@ -110,6 +102,33 @@ public class BudgetActivity extends AppCompatActivity
         });
     }
 
+    private long getStartOfMonthMs(int year, int month)
+    {
+        final Calendar date = Calendar.getInstance();
+
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, date.getActualMinimum(Calendar.DAY_OF_MONTH));
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMinimum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMinimum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMinimum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMinimum(Calendar.MILLISECOND));
+        return date.getTimeInMillis();
+    }
+
+    private long getEndOfMonthMs(int year, int month)
+    {
+        final Calendar date = Calendar.getInstance();
+
+        date.set(Calendar.YEAR, year);
+        date.set(Calendar.MONTH, month);
+        date.set(Calendar.DAY_OF_MONTH, date.getActualMaximum(Calendar.DAY_OF_MONTH));
+        date.set(Calendar.HOUR_OF_DAY, date.getActualMaximum(Calendar.HOUR_OF_DAY));
+        date.set(Calendar.MINUTE, date.getActualMaximum(Calendar.MINUTE));
+        date.set(Calendar.SECOND, date.getActualMaximum(Calendar.SECOND));
+        date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
+        return date.getTimeInMillis();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
