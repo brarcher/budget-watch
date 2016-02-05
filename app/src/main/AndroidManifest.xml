@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="protect.budgetwatch">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -36,6 +38,11 @@
             android:name=".TransactionViewActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".TransactionActivity"/>
+        <activity
+            android:name=".ImportExportActivity"
+            android:label="@string/importExportTitle"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>
