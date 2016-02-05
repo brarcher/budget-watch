@@ -74,14 +74,20 @@ public class DBHelper extends SQLiteOpenHelper
 
     public boolean insertBudget(final String name, final int max)
     {
+        SQLiteDatabase db = getWritableDatabase();
+        boolean result = insertBudget(db, name, max);
+        db.close();
+
+        return result;
+    }
+
+    public boolean insertBudget(SQLiteDatabase writableDb, final String name, final int max)
+    {
         ContentValues contentValues = new ContentValues();
         contentValues.put(BudgetDbIds.NAME, name);
         contentValues.put(BudgetDbIds.MAX, max);
 
-        SQLiteDatabase db = getWritableDatabase();
-        final long newId = db.insert(BudgetDbIds.TABLE, null, contentValues);
-        db.close();
-
+        final long newId = writableDb.insert(BudgetDbIds.TABLE, null, contentValues);
         return (newId != -1);
     }
 
@@ -254,6 +260,23 @@ public class DBHelper extends SQLiteOpenHelper
         long newId = db.insert(TransactionDbIds.TABLE, null, contentValues);
         db.close();
 
+        return (newId != -1);
+    }
+
+    public boolean insertTransaction(SQLiteDatabase writableDb, final int id, final int type, final String description, final String account, final String budget,
+                                     final double value, final String note, final long dateInMs)
+    {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(TransactionDbIds.NAME, id);
+        contentValues.put(TransactionDbIds.TYPE, type);
+        contentValues.put(TransactionDbIds.DESCRIPTION, description);
+        contentValues.put(TransactionDbIds.ACCOUNT, account);
+        contentValues.put(TransactionDbIds.BUDGET, budget);
+        contentValues.put(TransactionDbIds.VALUE, value);
+        contentValues.put(TransactionDbIds.NOTE, note);
+        contentValues.put(TransactionDbIds.DATE, dateInMs);
+
+        long newId = writableDb.insert(TransactionDbIds.TABLE, null, contentValues);
         return (newId != -1);
     }
 
