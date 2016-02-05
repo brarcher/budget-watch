@@ -23,6 +23,7 @@ android {
       disable "ButtonStyle"
       disable "IconDipSize"
       disable "AlwaysShowAction"
+      disable "InflateParams"
    }
 
    // This is for Robolectric support for SDK 23
