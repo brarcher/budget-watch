@@ -18,6 +18,10 @@ android:
 
 script: gradle build lint test
 
+before_install:
+  - pip install codecov
+after_success:
+  - codecov
 after_failure:
 - cat app/build/outputs/lint-results.xml
 - cat app/build/reports/tests/debug/index.html
