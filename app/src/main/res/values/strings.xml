@@ -14,6 +14,7 @@
     <string name="addRevenueTransactionTitle">Add Revenue</string>
     <string name="editRevenueTransactionTitle">Edit Revenue</string>
     <string name="viewRevenueTransactionTitle">View Revenue</string>
+    <string name="importExportTitle">Import/Export</string>
 
     <string name="add">Add</string>
     <string name="selectDates">Select Dates</string>
@@ -52,4 +53,14 @@
     <string name="startDate">Start date</string>
     <string name="endDate">End date</string>
     <string name="startDateAfterEndDate">Start date must be on or before end date</string>
+
+    <string name="importExport">Import/Export</string>
+    <string name="importName">Import</string>
+    <string name="exportName">Export</string>
+    <string name="importExportHelp">Data is imported to/exported from BudgetWatch.csv on external storage</string>
+    <string name="importedFrom">Imported from: %1$s</string>
+    <string name="exportedTo">Exported to: %1$s</string>
+    <string name="fileMissing">File missing: %1$s</string>
+    <string name="importFailed">Failed to import: %1$s</string>
+    <string name="exportFailed">Failed to export: %1$s</string>
 </resources>
