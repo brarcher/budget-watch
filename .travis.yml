@@ -23,3 +23,4 @@ script: gradle build lint test
 
 after_failure:
 - cat app/build/outputs/lint-results.xml
+- cat app/build/reports/tests/debug/index.html
