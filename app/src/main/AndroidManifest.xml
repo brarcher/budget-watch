@@ -27,6 +27,7 @@
             android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".BudgetViewActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".BudgetActivity"/>
         <activity
@@ -36,11 +37,13 @@
             android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".TransactionViewActivity"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".TransactionActivity"/>
         <activity
             android:name=".ImportExportActivity"
             android:label="@string/importExportTitle"
+            android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainActivity"/>
     </application>
