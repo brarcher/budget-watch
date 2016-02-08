@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="horizontal"
+              android:id="@+id/widget"
+              android:padding="5.0dip"
+              android:background="@drawable/widget_shape"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.5">
+        <ImageView android:layout_gravity="start"
+                     android:layout_width="60.0dip"
+                     android:layout_height="60.0dip"
+                     android:src="@mipmap/ic_launcher" />
+    </LinearLayout>
+    <LinearLayout android:orientation="vertical"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.5">
+        <ImageButton android:layout_gravity="end"
+                     android:id="@+id/addTransaction"
+                     android:layout_width="60.0dip"
+                     android:layout_height="60.0dip"
+                     android:background="@color/grey"
+                     android:src="@android:drawable/ic_input_add" />
+    </LinearLayout>
+</LinearLayout>
