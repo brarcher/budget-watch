@@ -28,6 +28,10 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="set">Set</string>
+    <string name="receipt">Receipt</string>
+    <string name="capture">Capture</string>
+    <string name="view">View</string>
+    <string name="update">Update</string>
 
     <string name="Grocery">Grocery</string>
     <string name="one_hundred">100</string>
@@ -67,4 +71,6 @@
     <string name="exporting">Exporting&#8230;</string>
 
     <string name="loading">Loading&#8230;</string>
+
+    <string name="pictureCaptureError">Unable to capture image with camera</string>
 </resources>

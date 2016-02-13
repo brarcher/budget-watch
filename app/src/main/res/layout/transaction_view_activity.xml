@@ -141,6 +141,54 @@
             </LinearLayout>
             <LinearLayout android:orientation="horizontal"
                           android:padding="5.0dip"
+                          android:id="@+id/receiptLayout"
+                          android:layout_width="fill_parent"
+                          android:layout_height="wrap_content">
+                <TextView android:textSize="16.0sp"
+                          android:textStyle="bold"
+                          android:layout_gravity="center_vertical"
+                          android:paddingStart="20.0dip"
+                          android:paddingEnd="20.0dip"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/receipt" />
+                <TextView android:id="@+id/receiptLocation"
+                          android:layout_height="0dp"
+                          android:layout_width="0dp"
+                          android:visibility="gone" />
+                <LinearLayout android:orientation="horizontal"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:baselineAligned="true"
+                              android:visibility="gone"
+                              android:id="@+id/noReceiptButtonLayout">
+                    <Button android:id="@+id/captureButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:text="@string/capture"
+                            android:layout_weight="1.0"/>
+                </LinearLayout>
+                <LinearLayout android:orientation="horizontal"
+                              android:layout_width="fill_parent"
+                              android:layout_height="wrap_content"
+                              android:baselineAligned="true"
+                              android:visibility="gone"
+                              android:id="@+id/hasReceiptButtonLayout">
+                    <Button android:id="@+id/viewButton"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/view"
+                            android:layout_weight="1.0"/>
+                    <Button android:id="@+id/updateButton"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/update"
+                            android:visibility="gone"
+                            android:layout_weight="1.0"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout android:orientation="horizontal"
+                          android:padding="5.0dip"
                           android:layout_width="fill_parent"
                           android:layout_height="wrap_content"
                           android:baselineAligned="true">
