@@ -48,9 +48,9 @@ public class DBHelper extends SQLiteOpenHelper
     {
         // create table for budgets
         db.execSQL(
-            "create table  " + BudgetDbIds.TABLE + "(" +
-                BudgetDbIds.NAME + " text primary key," +
-                BudgetDbIds.MAX + " INTEGER not null)");
+                "create table  " + BudgetDbIds.TABLE + "(" +
+                        BudgetDbIds.NAME + " text primary key," +
+                        BudgetDbIds.MAX + " INTEGER not null)");
        // create table for transactions
         db.execSQL("create table " + TransactionDbIds.TABLE + "(" +
                 TransactionDbIds.NAME + " INTEGER primary key autoincrement," +
