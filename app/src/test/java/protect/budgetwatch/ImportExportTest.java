@@ -26,6 +26,7 @@ import static org.junit.Assert.assertTrue;
 @Config(constants = BuildConfig.class, sdk = 17)
 public class ImportExportTest
 {
+    private Activity activity;
     private DBHelper db;
     private long nowMs;
     private long lastYearMs;
@@ -34,7 +35,7 @@ public class ImportExportTest
     @Before
     public void setUp()
     {
-        Activity activity = Robolectric.setupActivity(BudgetViewActivity.class);
+        activity = Robolectric.setupActivity(BudgetViewActivity.class);
         db = new DBHelper(activity);
         nowMs = System.currentTimeMillis();
 
@@ -378,6 +379,46 @@ public class ImportExportTest
             assertEquals(0,
                     db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
             assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
+        }
+    }
+
+    @Test
+    public void useImportExportTask()
+    {
+        final int NUM_ITEMS = 10;
+
+        for(DataFormat format : DataFormat.values())
+        {
+            addBudgets(NUM_ITEMS);
+            addTransactions(NUM_ITEMS);
+
+            // Export to whatever the default location is
+            ImportExportTask task = new ImportExportTask(activity, false, format);
+            task.execute();
+
+            // Actually run the task to completion
+            Robolectric.flushBackgroundThreadScheduler();
+
+            clearDatabase();
+
+            // Import everything back from the default location
+
+            task = new ImportExportTask(activity, true, format);
+            task.execute();
+
+            // Actually run the task to completion
+            Robolectric.flushBackgroundThreadScheduler();
+
+            assertEquals(NUM_ITEMS, db.getBudgetCount());
+            assertEquals(NUM_ITEMS,
+                    db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+            assertEquals(NUM_ITEMS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
+
+            checkBudgets();
+            checkTransactions(true);
+
+            // Clear the database for the next format under test
+            clearDatabase();
         }
     }
 }

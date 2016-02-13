@@ -63,6 +63,8 @@
     <string name="fileMissing">File missing: %1$s</string>
     <string name="importFailed">Failed to import: %1$s</string>
     <string name="exportFailed">Failed to export: %1$s</string>
+    <string name="importing">Importing&#8230;</string>
+    <string name="exporting">Exporting&#8230;</string>
 
     <string name="loading">Loading&#8230;</string>
 </resources>
