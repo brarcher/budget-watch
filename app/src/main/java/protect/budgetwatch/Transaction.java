@@ -26,6 +26,18 @@ public class Transaction
         this.dateMs = dateMs;
     }
 
+    private static String toBlankIfNull(final String string)
+    {
+        if(string != null)
+        {
+            return string;
+        }
+        else
+        {
+            return "";
+        }
+    }
+
     public static Transaction toTransaction(Cursor cursor)
     {
         int id = cursor.getInt(cursor.getColumnIndexOrThrow(DBHelper.TransactionDbIds.NAME));
@@ -37,6 +49,7 @@ public class Transaction
         String note = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.TransactionDbIds.NOTE));
         long dateMs = cursor.getLong(cursor.getColumnIndexOrThrow(DBHelper.TransactionDbIds.DATE));
 
-        return new Transaction(id, type, description, account, budget, value, note, dateMs);
+        return new Transaction(id, type, toBlankIfNull(description), toBlankIfNull(account),
+                toBlankIfNull(budget), value, toBlankIfNull(note), dateMs);
     }
 }
