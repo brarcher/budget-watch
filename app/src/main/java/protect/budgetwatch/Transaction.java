@@ -12,9 +12,11 @@ public class Transaction
     public final double value;
     public final String note;
     public final long dateMs;
+    public final String receipt;
 
     public Transaction(final int id, final int type, final String description, final String account,
-                       final String budget, final double value, final String note, final long dateMs)
+                       final String budget, final double value, final String note, final long dateMs,
+                       final String receipt)
     {
         this.id = id;
         this.type = type;
@@ -24,6 +26,7 @@ public class Transaction
         this.value = value;
         this.note = note;
         this.dateMs = dateMs;
+        this.receipt = receipt;
     }
 
     private static String toBlankIfNull(final String string)
@@ -48,8 +51,10 @@ public class Transaction
         double value = cursor.getDouble(cursor.getColumnIndexOrThrow(DBHelper.TransactionDbIds.VALUE));
         String note = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.TransactionDbIds.NOTE));
         long dateMs = cursor.getLong(cursor.getColumnIndexOrThrow(DBHelper.TransactionDbIds.DATE));
+        String receipt = cursor.getString(cursor.getColumnIndexOrThrow(DBHelper.TransactionDbIds.RECEIPT));
 
         return new Transaction(id, type, toBlankIfNull(description), toBlankIfNull(account),
-                toBlankIfNull(budget), value, toBlankIfNull(note), dateMs);
+                toBlankIfNull(budget), value, toBlankIfNull(note), dateMs,
+                toBlankIfNull(receipt));
     }
 }

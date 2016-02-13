@@ -189,8 +189,10 @@ public class CsvDatabaseImporter implements DatabaseImporter
         double value = extractDouble(DBHelper.TransactionDbIds.VALUE, record);
         String note = extractString(DBHelper.TransactionDbIds.NOTE, record, "");
         long dateMs = extractLong(DBHelper.TransactionDbIds.DATE, record);
+        // Unable to export/import receipts
+        String receipt = "";
 
-        helper.insertTransaction(database, id, type, description, account, budget, value, note, dateMs);
+        helper.insertTransaction(database, id, type, description, account, budget, value, note, dateMs, receipt);
     }
 
     /**

@@ -127,7 +127,8 @@ public class ImportExportTest
                         String.format(DBHelper.TransactionDbIds.BUDGET + "%4d", index),
                         index,
                         String.format(DBHelper.TransactionDbIds.NOTE + "%4d", index),
-                        index);
+                        index,
+                        String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index));
                 assertTrue(result);
             }
         }
@@ -138,7 +139,7 @@ public class ImportExportTest
      * specified in addTransactions(), and are in sequential order
      * from the most recent to the oldest
      */
-    private void checkTransactions()
+    private void checkTransactions(boolean wasImported)
     {
         boolean isExpense = true;
 
@@ -153,9 +154,18 @@ public class ImportExportTest
                 assertEquals(String.format(DBHelper.TransactionDbIds.ACCOUNT + "%4d", index), transaction.account);
                 assertEquals(String.format(DBHelper.TransactionDbIds.BUDGET + "%4d", index), transaction.budget);
                 assertEquals(index, (int)transaction.value);
-                assertEquals(index, (int) transaction.value);
                 assertEquals(String.format(DBHelper.TransactionDbIds.NOTE + "%4d", index), transaction.note);
                 assertEquals(index, transaction.dateMs);
+
+                if(wasImported)
+                {
+                    // Receipts cannot be imported, and will always be empty
+                    assertEquals("", transaction.receipt);
+                }
+                else
+                {
+                    assertEquals(String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index), transaction.receipt);
+                }
 
                 index--;
             }
@@ -263,7 +273,7 @@ public class ImportExportTest
                     db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
             assertEquals(NUM_TRANSACTIONS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
-            checkTransactions();
+            checkTransactions(true);
 
             // Clear the database for the next format under test
             clearDatabase();
@@ -300,7 +310,7 @@ public class ImportExportTest
                     db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
             assertEquals(NUM_TRANSACTIONS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
-            checkTransactions();
+            checkTransactions(false);
 
             // Clear the database for the next format under test
             clearDatabase();
@@ -340,7 +350,7 @@ public class ImportExportTest
             assertEquals(NUM_ITEMS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
             checkBudgets();
-            checkTransactions();
+            checkTransactions(true);
 
             // Clear the database for the next format under test
             clearDatabase();

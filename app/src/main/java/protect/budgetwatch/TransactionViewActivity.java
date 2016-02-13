@@ -223,13 +223,13 @@ public class TransactionViewActivity extends AppCompatActivity
                 if(updateTransaction)
                 {
                     db.updateTransaction(transactionId, type, name, account,
-                            budget, value, note, dateMs);
+                            budget, value, note, dateMs, "");
 
                 }
                 else
                 {
                     db.insertTransaction(type, name, account, budget,
-                            value, note, dateMs);
+                            value, note, dateMs, "");
                 }
 
                 finish();

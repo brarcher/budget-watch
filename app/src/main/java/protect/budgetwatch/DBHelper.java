@@ -13,7 +13,8 @@ import java.util.List;
 public class DBHelper extends SQLiteOpenHelper
 {
     public static final String DATABASE_NAME = "BudgetWatch.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int ORIGINAL_DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     static class BudgetDbIds
     {
@@ -33,6 +34,7 @@ public class DBHelper extends SQLiteOpenHelper
         public static final String VALUE = "value";
         public static final String NOTE = "note";
         public static final String DATE = "date";
+        public static final String RECEIPT = "receipt";
 
         public static final int EXPENSE = 1;
         public static final int REVENUE = 2;
@@ -60,16 +62,19 @@ public class DBHelper extends SQLiteOpenHelper
                 TransactionDbIds.BUDGET + " TEXT," +
                 TransactionDbIds.VALUE + " REAL not null," +
                 TransactionDbIds.NOTE + " TEXT," +
-                TransactionDbIds.DATE + " INTEGER not null)");
+                TransactionDbIds.DATE + " INTEGER not null," +
+                TransactionDbIds.RECEIPT + " TEXT)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
-        // Do not support versioning yet
-        db.execSQL("DROP TABLE IF EXISTS " + BudgetDbIds.TABLE);
-        db.execSQL("DROP TABLE IF EXISTS " + TransactionDbIds.TABLE);
-        onCreate(db);
+        // Upgrade from version 1 to version 2
+        if(oldVersion < 2 && newVersion >= 2)
+        {
+            db.execSQL("ALTER TABLE " + TransactionDbIds.TABLE
+                + " ADD COLUMN " + TransactionDbIds.RECEIPT + " TEXT");
+        }
     }
 
     public boolean insertBudget(final String name, final int max)
@@ -245,7 +250,7 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     public boolean insertTransaction(final int type, final String description, final String account, final String budget,
-                                 final double value, final String note, final long dateInMs)
+                                 final double value, final String note, final long dateInMs, final String receipt)
     {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TransactionDbIds.TYPE, type);
@@ -255,6 +260,7 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(TransactionDbIds.VALUE, value);
         contentValues.put(TransactionDbIds.NOTE, note);
         contentValues.put(TransactionDbIds.DATE, dateInMs);
+        contentValues.put(TransactionDbIds.RECEIPT, receipt);
 
         SQLiteDatabase db = getWritableDatabase();
         long newId = db.insert(TransactionDbIds.TABLE, null, contentValues);
@@ -264,7 +270,7 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     public boolean insertTransaction(SQLiteDatabase writableDb, final int id, final int type, final String description, final String account, final String budget,
-                                     final double value, final String note, final long dateInMs)
+                                     final double value, final String note, final long dateInMs, final String receipt)
     {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TransactionDbIds.NAME, id);
@@ -275,6 +281,7 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(TransactionDbIds.VALUE, value);
         contentValues.put(TransactionDbIds.NOTE, note);
         contentValues.put(TransactionDbIds.DATE, dateInMs);
+        contentValues.put(TransactionDbIds.RECEIPT, receipt);
 
         long newId = writableDb.insert(TransactionDbIds.TABLE, null, contentValues);
         return (newId != -1);
@@ -282,7 +289,7 @@ public class DBHelper extends SQLiteOpenHelper
 
     public boolean updateTransaction(final int id, final int type, final String description,
                                      final String account, final String budget, final double value,
-                                     final String note, final long dateInMs)
+                                     final String note, final long dateInMs, final String receipt)
     {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TransactionDbIds.TYPE, type);
@@ -292,6 +299,7 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(TransactionDbIds.VALUE, value);
         contentValues.put(TransactionDbIds.NOTE, note);
         contentValues.put(TransactionDbIds.DATE, dateInMs);
+        contentValues.put(TransactionDbIds.RECEIPT, receipt);
 
         SQLiteDatabase db = getWritableDatabase();
         int rowsUpdated = db.update(TransactionDbIds.TABLE, contentValues, TransactionDbIds.NAME + "=?",

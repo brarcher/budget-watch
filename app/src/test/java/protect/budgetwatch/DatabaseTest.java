@@ -1,7 +1,9 @@
 package protect.budgetwatch;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +78,7 @@ public class DatabaseTest
 
         for(int index = 0; index < NUM_EXPENSES; index++)
         {
-            result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "", "", "budget", index, "", nowMs);
+            result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "", "", "budget", index, "", nowMs, "");
             assertTrue(result);
             expectedCurrent += index;
         }
@@ -101,7 +103,7 @@ public class DatabaseTest
 
         for(int index = 0; index < NUM_REVENUES; index++)
         {
-            result = db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "", "", "budget", index, "", nowMs);
+            result = db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "", "", "budget", index, "", nowMs, "");
             assertTrue(result);
             expectedCurrent -= index;
         }
@@ -208,15 +210,16 @@ public class DatabaseTest
 
     private void checkTransaction(final Cursor cursor, final int type, final String description,
                                   final String account, final String budget, final double value,
-                                  final String note, final long dateInMs)
+                                  final String note, final long dateInMs, final String receipt)
     {
         Transaction transaction = Transaction.toTransaction(cursor);
-        checkTransaction(transaction, type, description, account, budget, value, note, dateInMs);
+        checkTransaction(transaction, type, description, account, budget, value, note, dateInMs,
+                receipt);
     }
 
     private void checkTransaction(final Transaction transaction, final int type, final String description,
                                   final String account, final String budget, final double value,
-                                  final String note, final long dateInMs)
+                                  final String note, final long dateInMs, final String receipt)
     {
         assertEquals(transaction.type, type);
         assertEquals(transaction.description, description);
@@ -225,6 +228,7 @@ public class DatabaseTest
         assertEquals(0, Double.compare(transaction.value, value));
         assertEquals(transaction.note, note);
         assertEquals(transaction.dateMs, dateInMs);
+        assertEquals(transaction.receipt, receipt);
     }
 
     @Test
@@ -234,7 +238,7 @@ public class DatabaseTest
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
         db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description", "account", "budget",
-                100.50, "note", nowMs);
+                100.50, "note", nowMs, "receipt");
 
         assertEquals(1, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
@@ -245,13 +249,13 @@ public class DatabaseTest
         int expenseId = expenses.getInt(
                 expenses.getColumnIndexOrThrow(DBHelper.TransactionDbIds.NAME));
         checkTransaction(expenses, DBHelper.TransactionDbIds.EXPENSE, "description", "account",
-                "budget", 100.50, "note", nowMs);
+                "budget", 100.50, "note", nowMs, "receipt");
 
         expenses.close();
 
         Transaction expenseTransaction = db.getTransaction(expenseId);
         checkTransaction(expenseTransaction, DBHelper.TransactionDbIds.EXPENSE, "description", "account",
-                "budget", 100.50, "note", nowMs);
+                "budget", 100.50, "note", nowMs, "receipt");
 
         db.deleteTransaction(expenseId);
 
@@ -260,7 +264,7 @@ public class DatabaseTest
 
         db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "description2", "account2",
                 "budget2",
-                100.25, "note2", nowMs + 1);
+                100.25, "note2", nowMs + 1, "receipt2");
 
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(1, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
@@ -270,13 +274,13 @@ public class DatabaseTest
         int revenueId = revenues.getInt(
                 revenues.getColumnIndexOrThrow(DBHelper.TransactionDbIds.NAME));
         checkTransaction(revenues, DBHelper.TransactionDbIds.REVENUE, "description2", "account2",
-                "budget2", 100.25, "note2", nowMs+1);
+                "budget2", 100.25, "note2", nowMs+1, "receipt2");
 
         revenues.close();
 
         Transaction revenueTransaction = db.getTransaction(revenueId);
         checkTransaction(revenueTransaction, DBHelper.TransactionDbIds.REVENUE, "description2", "account2",
-                "budget2", 100.25, "note2", nowMs+1);
+                "budget2", 100.25, "note2", nowMs+1, "receipt2");
 
         db.deleteTransaction(revenueId);
 
@@ -295,7 +299,7 @@ public class DatabaseTest
             // Add in increasing order to test sorting later
             for(int index = 1; index <= NUM_TRANSACTIONS; index++)
             {
-                result = db.insertTransaction(type, "", "", "", 0, "", index);
+                result = db.insertTransaction(type, "", "", "", 0, "", index, "");
                 assertTrue(result);
             }
         }
@@ -320,24 +324,104 @@ public class DatabaseTest
     public void updateTransaction()
     {
         boolean result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
-                "account", "budget", 100.50, "note", nowMs);
+                "account", "budget", 100.50, "note", nowMs, "receipt");
         assertTrue(result);
         Transaction transaction = db.getTransaction(1);
         checkTransaction(transaction, DBHelper.TransactionDbIds.EXPENSE, "description",
-                "account", "budget", 100.50, "note", nowMs);
+                "account", "budget", 100.50, "note", nowMs, "receipt");
 
         result = db.updateTransaction(1, DBHelper.TransactionDbIds.EXPENSE, "description2",
-                "account2", "budget2", 25, "note2", nowMs + 1);
+                "account2", "budget2", 25, "note2", nowMs + 1, "receipt2");
         assertTrue(result);
         transaction = db.getTransaction(1);
         checkTransaction(transaction, DBHelper.TransactionDbIds.EXPENSE, "description2",
-                "account2", "budget2", 25, "note2", nowMs + 1);
+                "account2", "budget2", 25, "note2", nowMs + 1, "receipt2");
     }
 
     @Test
     public void updateMissingTransaction()
     {
-        boolean result = db.updateTransaction(1, DBHelper.TransactionDbIds.EXPENSE, "", "", "", 0, "", 0);
+        boolean result = db.updateTransaction(1, DBHelper.TransactionDbIds.EXPENSE, "", "", "", 0,
+                "", 0, "");
         assertEquals(false, result);
+    }
+
+    private void setupDatabaseVersion1(SQLiteDatabase database)
+    {
+        // Delete the tables as they exist now
+        database.execSQL("drop table " + DBHelper.BudgetDbIds.TABLE);
+        database.execSQL("drop table " + DBHelper.TransactionDbIds.TABLE);
+
+        // Create the table as it existed in revision 1
+        database.execSQL(
+                "create table  " + DBHelper.BudgetDbIds.TABLE + "(" +
+                        DBHelper.BudgetDbIds.NAME + " text primary key," +
+                        DBHelper.BudgetDbIds.MAX + " INTEGER not null)");
+        database.execSQL("create table " + DBHelper.TransactionDbIds.TABLE + "(" +
+                DBHelper.TransactionDbIds.NAME + " INTEGER primary key autoincrement," +
+                DBHelper.TransactionDbIds.TYPE + " INTEGER not null," +
+                DBHelper.TransactionDbIds.DESCRIPTION + " TEXT not null," +
+                DBHelper.TransactionDbIds.ACCOUNT + " TEXT," +
+                DBHelper.TransactionDbIds.BUDGET + " TEXT," +
+                DBHelper.TransactionDbIds.VALUE + " REAL not null," +
+                DBHelper.TransactionDbIds.NOTE + " TEXT," +
+                DBHelper.TransactionDbIds.DATE + " INTEGER not null)");
+    }
+
+    private void insertBudgetAndTransactionVersion1(SQLiteDatabase database,
+                                                    final String budgetName, final int budgetMax,
+                                                    final int type, final String description,
+                                                    final String account, final double value,
+                                                    final String note, final long dateInMs)
+    {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.BudgetDbIds.NAME, budgetName);
+        contentValues.put(DBHelper.BudgetDbIds.MAX, budgetMax);
+        long newId = database.insert(DBHelper.BudgetDbIds.TABLE, null, contentValues);
+        assertTrue(newId != -1);
+
+        contentValues = new ContentValues();
+        contentValues.put(DBHelper.TransactionDbIds.TYPE, type);
+        contentValues.put(DBHelper.TransactionDbIds.DESCRIPTION, description);
+        contentValues.put(DBHelper.TransactionDbIds.ACCOUNT, account);
+        contentValues.put(DBHelper.TransactionDbIds.BUDGET, budgetName);
+        contentValues.put(DBHelper.TransactionDbIds.VALUE, value);
+        contentValues.put(DBHelper.TransactionDbIds.NOTE, note);
+        contentValues.put(DBHelper.TransactionDbIds.DATE, dateInMs);
+        newId = database.insert(DBHelper.TransactionDbIds.TABLE, null, contentValues);
+        assertTrue(newId != -1);
+    }
+
+    @Test
+    public void databaseUpgradeFromVersion1()
+    {
+        SQLiteDatabase database = db.getWritableDatabase();
+
+        // Setup the database as it appeared in revision 1
+        setupDatabaseVersion1(database);
+
+        // Insert a budget and transaction
+        insertBudgetAndTransactionVersion1(database, "budget", 100,DBHelper.TransactionDbIds.REVENUE,
+                "description", "account", 1, "note", 200);
+
+        // Upgrade database
+        db.onUpgrade(database, DBHelper.ORIGINAL_DATABASE_VERSION, DBHelper.DATABASE_VERSION);
+
+        // Determine that the entries are queryable and the fields are correct
+        Budget budget = db.getBudgetStoredOnly("budget");
+        assertEquals("budget", budget.name);
+        assertEquals(100, budget.max);
+
+        Transaction transaction = db.getTransaction(1);
+        assertEquals(DBHelper.TransactionDbIds.REVENUE, transaction.type);
+        assertEquals("description", transaction.description);
+        assertEquals("account", transaction.account);
+        assertEquals("budget", transaction.budget);
+        assertEquals(0, Double.compare(1, transaction.value));
+        assertEquals("note", transaction.note);
+        assertEquals(200, transaction.dateMs);
+        assertEquals("", transaction.receipt);
+
+        database.close();
     }
 }
