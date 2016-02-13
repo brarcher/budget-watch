@@ -11,12 +11,18 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Helper class for managing data in the database
+ */
 public class DBHelper extends SQLiteOpenHelper
 {
     public static final String DATABASE_NAME = "BudgetWatch.db";
     public static final int ORIGINAL_DATABASE_VERSION = 1;
     public static final int DATABASE_VERSION = 2;
 
+    /**
+     * All strings used with the budget table
+     */
     static class BudgetDbIds
     {
         public static final String TABLE = "budgets";
@@ -24,6 +30,9 @@ public class DBHelper extends SQLiteOpenHelper
         public static final String MAX = "max";
     }
 
+    /**
+     * All strings used in the transaction table
+     */
     static class TransactionDbIds
     {
         public static final String TABLE = "transactions";
@@ -78,6 +87,16 @@ public class DBHelper extends SQLiteOpenHelper
         }
     }
 
+    /**
+     * Insert a budget into the database.
+     *
+     * @param name
+     *      name of the budget
+     * @param max
+     *      the value of the budget, per month
+     * @return true if the insertion was successful,
+     * false otherwise
+     */
     public boolean insertBudget(final String name, final int max)
     {
         SQLiteDatabase db = getWritableDatabase();
@@ -87,6 +106,20 @@ public class DBHelper extends SQLiteOpenHelper
         return result;
     }
 
+    /**
+     * Insert a budget into the database, using a provided
+     * writable database instance. This is useful if
+     * multiple insertions will occur in the same transaction.
+     *
+     * @param writableDb
+     *      writable database instance to use
+     * @param name
+     *      name of the budget
+     * @param max
+     *      the value of the budget, per month
+     * @return true if the insertion was successful,
+     * false otherwise
+     */
     public boolean insertBudget(SQLiteDatabase writableDb, final String name, final int max)
     {
         ContentValues contentValues = new ContentValues();
@@ -97,6 +130,16 @@ public class DBHelper extends SQLiteOpenHelper
         return (newId != -1);
     }
 
+    /**
+     * Update the budget value of a given budget in the database
+     *
+     * @param name
+     *      name of the budget to update
+     * @param max
+     *      updated budget value to commit
+     * @return true if the provided budget exists and the value
+     * was successfully updated, false otherwise.
+     */
     public boolean updateBudget(final String name, final int max)
     {
         ContentValues contentValues = new ContentValues();
@@ -110,6 +153,14 @@ public class DBHelper extends SQLiteOpenHelper
         return (rowsUpdated == 1);
     }
 
+    /**
+     * Delete a given budget from the database
+     *
+     * @param name
+     *      name of the budget to delete
+     * @return if the budget was successfully deleted,
+     * false otherwise
+     */
     public boolean deleteBudget (final String name)
     {
         SQLiteDatabase db = getWritableDatabase();
@@ -120,6 +171,16 @@ public class DBHelper extends SQLiteOpenHelper
         return (rowsDeleted == 1);
     }
 
+    /**
+     * Get Budget object for the named budget in the database,
+     * but only fill in the 'name' and 'max' fields;
+     * the value of other fields is undefined.
+     *
+     * @param name
+     *      name of the budget to query
+     * @return Budget object representing the named budget,
+     * or null if it could not be queried
+     */
     public Budget getBudgetStoredOnly(final String name)
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -143,6 +204,20 @@ public class DBHelper extends SQLiteOpenHelper
         return budget;
     }
 
+    /**
+     * Get Budget objects for each budget in the database,
+     * with the 'current' field filled out from all transactions
+     * between the provided dates.
+     *
+     * @param startDateMs
+     *      first date in milliseconds for transactions to compute
+     *      into the 'current' field.
+     * @param endDateMs
+     *      last date in milliseconds for transactions to compute
+     *      into the 'current' field.
+     * @return list of Budget objects, or an empty field if none
+     * could be found.
+     */
     public List<Budget> getBudgets(long startDateMs, long endDateMs)
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -180,6 +255,22 @@ public class DBHelper extends SQLiteOpenHelper
         return budgets;
     }
 
+    /**
+     * Determine the total value, expenses - revenues, for all transactions
+     * of the given budget over the provided time interval.
+     *
+     * @param budget
+     *      budget to compute value for
+     * @param startDateMs
+     *      first date in milliseconds for transactions to use in
+     *      the computation
+     * @param endDateMs
+     *      last date in milliseconds for transactions to use in
+     *      the computation
+     * @return value of all expenses less all revenues for all transactions
+     * in the given time window, where the expense and revenue values
+     * are truncated into integers.
+     */
     public int getTotalForBudget(String budget, long startDateMs, long endDateMs)
     {
         int expense = getTotalForTransactionType(TransactionDbIds.EXPENSE, budget, startDateMs, endDateMs);
@@ -188,6 +279,23 @@ public class DBHelper extends SQLiteOpenHelper
         return expense - revenue;
     }
 
+    /**
+     * Get the total value of all transactions of the provided type for the provided
+     * budget over the given interval, truncated to an integer.
+     *
+     * @param type
+     *      transaction type, either EXPENSE or REVENUE
+     * @param budget
+     *      budget to compute value for
+     * @param startDateMs
+     *      first date in milliseconds for transactions to use in
+     *      the computation
+     * @param endDateMs
+     *      last date in milliseconds for transactions to use in
+     *      the computation
+     * @return value of either all expenses or revenues for all transactions
+     * in the given time window, where the values is truncated into an integer.
+     */
     public int getTotalForTransactionType(int type, String budget, long startDateMs, long endDateMs)
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -207,6 +315,9 @@ public class DBHelper extends SQLiteOpenHelper
         return value;
     }
 
+    /**
+     * @return list of all budget names in the database
+     */
     public List<String> getBudgetNames()
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -231,6 +342,9 @@ public class DBHelper extends SQLiteOpenHelper
         return budgetNames;
     }
 
+    /**
+     * @return the number of budgets in the database
+     */
     public int getBudgetCount()
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -250,6 +364,12 @@ public class DBHelper extends SQLiteOpenHelper
         return numItems;
     }
 
+    /**
+     * Insert a transaction into the database.
+     *
+     * @return true if the insertion was successful,
+     * false otherwise
+     */
     public boolean insertTransaction(final int type, final String description, final String account, final String budget,
                                  final double value, final String note, final long dateInMs, final String receipt)
     {
@@ -270,6 +390,16 @@ public class DBHelper extends SQLiteOpenHelper
         return (newId != -1);
     }
 
+    /**
+     * Insert a transaction into the database, using a provided
+     * writable database instance. This is useful if
+     * multiple insertions will occur in the same transaction.
+     *
+     * @param writableDb
+     *      writable database instance to use
+     * @return true if the insertion was successful,
+     * false otherwise
+     */
     public boolean insertTransaction(SQLiteDatabase writableDb, final int id, final int type, final String description, final String account, final String budget,
                                      final double value, final String note, final long dateInMs, final String receipt)
     {
@@ -288,6 +418,16 @@ public class DBHelper extends SQLiteOpenHelper
         return (newId != -1);
     }
 
+    /**
+     * Update the transaction in the database. The unique ID for
+     * the transaction must be provided, all other fields represent
+     * the values as will be updated in the database.
+     *
+     * @param id
+     *      unique id for the transaction
+     * @return true if the provided transaction exists and the value
+     * was successfully updated, false otherwise.
+     */
     public boolean updateTransaction(final int id, final int type, final String description,
                                      final String account, final String budget, final double value,
                                      final String note, final long dateInMs, final String receipt)
@@ -311,6 +451,14 @@ public class DBHelper extends SQLiteOpenHelper
         return (rowsUpdated == 1);
     }
 
+    /**
+     * Get Transaction object for the named transaction in the database,
+     *
+     * @param id
+     *      id of the transaction to query
+     * @return Transaction object representing the named transaction,
+     * or null if it could not be queried
+     */
     public Transaction getTransaction(final int id)
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -331,6 +479,16 @@ public class DBHelper extends SQLiteOpenHelper
         return transaction;
     }
 
+    /**
+     * Returns the number of transactions in the database
+     * of the provided type.
+     *
+     * @param type
+     *      transaction type to query, either EXPENSE or
+     *      REVENUE
+     * @return the number of transactions in the database
+     * of the given type
+     */
     public int getTransactionCount(final int type)
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -351,6 +509,14 @@ public class DBHelper extends SQLiteOpenHelper
         return numItems;
     }
 
+    /**
+     * Delete a given transaction from the database
+     *
+     * @param id
+     *      id of the transaction to delete
+     * @return if the transaction was successfully deleted,
+     * false otherwise
+     */
     public boolean deleteTransaction(final int id)
     {
         SQLiteDatabase db = getWritableDatabase();
@@ -361,6 +527,10 @@ public class DBHelper extends SQLiteOpenHelper
         return (rowsDeleted == 1);
     }
 
+    /**
+     * @return Cursor pointing to all expense transactions
+     * in the database
+     */
     public Cursor getExpenses()
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -370,6 +540,10 @@ public class DBHelper extends SQLiteOpenHelper
         return res;
     }
 
+    /**
+     * @return Cursor pointing to all revenue transactions
+     * in the database
+     */
     public Cursor getRevenues()
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -379,6 +553,17 @@ public class DBHelper extends SQLiteOpenHelper
         return res;
     }
 
+    /**
+     * Returns a Cursor pointing to all transactions in the database
+     * with a receipt. If the provided endDate is not null, further
+     * restricts returned transactions to have occurred on or before
+     * the given date.
+     *
+     * @param endDate
+     *      date to limit transactions by; if not null will only
+     *      returns transactions on or before the given date.
+     * @return Cursor pointing to transactions with receipts.
+     */
     public Cursor getTransactionsWithReceipts(Long endDate)
     {
         List<String> argList = new ArrayList<>();
