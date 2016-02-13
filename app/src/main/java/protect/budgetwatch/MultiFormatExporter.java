@@ -41,6 +41,10 @@ public class MultiFormatExporter
             {
                 Log.e(TAG, "Failed to export data", e);
             }
+            catch(InterruptedException e)
+            {
+                Log.e(TAG, "Failed to export data", e);
+            }
 
             return false;
         }

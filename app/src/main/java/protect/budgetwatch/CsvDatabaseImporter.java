@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
  */
 public class CsvDatabaseImporter implements DatabaseImporter
 {
-    public void importData(DBHelper db, InputStreamReader input) throws IOException, FormatException
+    public void importData(DBHelper db, InputStreamReader input) throws IOException, FormatException, InterruptedException
     {
         final CSVParser parser = new CSVParser(input, CSVFormat.RFC4180.withHeader());
 
@@ -39,6 +39,11 @@ public class CsvDatabaseImporter implements DatabaseImporter
                 else
                 {
                     importTransaction(database, db, record);
+                }
+
+                if(Thread.currentThread().isInterrupted())
+                {
+                    throw new InterruptedException();
                 }
             }
 
