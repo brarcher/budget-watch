@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
@@ -302,7 +303,8 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(TransactionDbIds.RECEIPT, receipt);
 
         SQLiteDatabase db = getWritableDatabase();
-        int rowsUpdated = db.update(TransactionDbIds.TABLE, contentValues, TransactionDbIds.NAME + "=?",
+        int rowsUpdated = db.update(TransactionDbIds.TABLE, contentValues,
+                TransactionDbIds.NAME + "=?",
                 new String[]{Integer.toString(id)});
         db.close();
 
@@ -374,6 +376,23 @@ public class DBHelper extends SQLiteOpenHelper
         Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
                 TransactionDbIds.TYPE + "=" + TransactionDbIds.REVENUE +
                 " ORDER BY " + TransactionDbIds.DATE + " DESC", null);
+        return res;
+    }
+
+    public Cursor getTransactionsWithReceipts(Long endDate)
+    {
+        List<String> argList = new ArrayList<>();
+        if(endDate != null)
+        {
+            argList.add(endDate.toString());
+        }
+        String [] args = argList.toArray(new String[]{});
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
+                " LENGTH(" + TransactionDbIds.RECEIPT + ") > 0 " +
+                (endDate != null ? " AND " + TransactionDbIds.DATE + "<=? " : ""),
+                args);
         return res;
     }
 }

@@ -424,4 +424,59 @@ public class DatabaseTest
 
         database.close();
     }
+
+    @Test
+    public void queryTransactionsWithReceipts()
+    {
+        final int NUM_TRANSACTIONS_PER_TYPE = 1000;
+
+        for(int index = 0; index < NUM_TRANSACTIONS_PER_TYPE; index++)
+        {
+            for(int type : new int[]{DBHelper.TransactionDbIds.EXPENSE, DBHelper.TransactionDbIds.REVENUE})
+            {
+                for(boolean hasReceipt : new boolean[]{true, false})
+                {
+                    String receipt = hasReceipt ? "receipt" : "";
+                    db.insertTransaction(type, "description", "account", "budget", 0, "note", index, receipt);
+                }
+            }
+        }
+
+        assertEquals(NUM_TRANSACTIONS_PER_TYPE * 2,
+                db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+        assertEquals(NUM_TRANSACTIONS_PER_TYPE * 2,
+                db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
+
+        // There are 1000 * 2 * 2 transactions, half of which have a receipt.
+        // Check that only those with receipts are queried
+        final Long dateCutoffValue = (long)250;
+        Cursor receiptTransactions = db.getTransactionsWithReceipts(dateCutoffValue);
+
+        // There are 2000 transactions with a receipt. A cutoff of 250 will return
+        // the first quarter + 2 for the half way point.
+        assertEquals(NUM_TRANSACTIONS_PER_TYPE / 2 + 2, receiptTransactions.getCount());
+
+        while(receiptTransactions.moveToNext())
+        {
+            Transaction transaction = Transaction.toTransaction(receiptTransactions);
+            assertEquals("receipt", transaction.receipt);
+            assertTrue(transaction.dateMs <= dateCutoffValue);
+        }
+
+        receiptTransactions.close();
+
+        // Now ensure that all receipt transactions will be found if no cutoff
+        // date is provided
+
+        receiptTransactions = db.getTransactionsWithReceipts(null);
+
+        // There are 2000 transactions with a receipt.
+        assertEquals(NUM_TRANSACTIONS_PER_TYPE*2, receiptTransactions.getCount());
+
+        while(receiptTransactions.moveToNext())
+        {
+            Transaction transaction = Transaction.toTransaction(receiptTransactions);
+            assertEquals("receipt", transaction.receipt);
+        }
+    }
 }
