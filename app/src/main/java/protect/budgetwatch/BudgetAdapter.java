@@ -12,9 +12,13 @@ import java.util.List;
 
 class BudgetAdapter extends ArrayAdapter<Budget>
 {
+    private final String FRACTION_FORMAT;
+
     public BudgetAdapter(Context context, List<Budget> items)
     {
         super(context, 0, items);
+
+        FRACTION_FORMAT = context.getResources().getString(R.string.fraction);
     }
 
     static class ViewHolder
@@ -55,8 +59,7 @@ class BudgetAdapter extends ArrayAdapter<Budget>
         holder.budgetBar.setMax(item.max);
         holder.budgetBar.setProgress(item.current);
 
-        String fractionFormat = getContext().getResources().getString(R.string.fraction);
-        String fraction = String.format(fractionFormat, item.current, item.max);
+        String fraction = String.format(FRACTION_FORMAT, item.current, item.max);
 
         holder.budgetValue.setText(fraction);
 
