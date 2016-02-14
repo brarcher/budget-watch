@@ -18,6 +18,8 @@ class TransactionCursorAdapter extends CursorAdapter
         super(context, cursor, 0);
     }
 
+    private final DateFormat DATE_FORMATTER = SimpleDateFormat.getDateInstance();
+
     // The newView method is used to inflate a new view and return it,
     // you don't bind any data to the view at this point.
     @Override
@@ -45,7 +47,6 @@ class TransactionCursorAdapter extends CursorAdapter
         valueField.setText(String.format("%.2f", transaction.value));
         budgetField.setText(transaction.budget);
 
-        final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
-        dateField.setText(dateFormatter.format(transaction.dateMs));
+        dateField.setText(DATE_FORMATTER.format(transaction.dateMs));
     }
 }
