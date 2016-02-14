@@ -14,6 +14,7 @@
         <ImageView android:layout_gravity="start"
                      android:layout_width="60.0dip"
                      android:layout_height="60.0dip"
+                     android:contentDescription="@string/iconDescription"
                      android:src="@mipmap/ic_launcher" />
     </LinearLayout>
     <LinearLayout android:orientation="vertical"
@@ -25,6 +26,7 @@
                      android:layout_width="60.0dip"
                      android:layout_height="60.0dip"
                      android:background="@color/grey"
+                     android:contentDescription="@string/addExpenseDescription"
                      android:src="@android:drawable/ic_input_add" />
     </LinearLayout>
 </LinearLayout>
