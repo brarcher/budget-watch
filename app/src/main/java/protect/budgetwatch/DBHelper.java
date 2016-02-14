@@ -221,8 +221,40 @@ public class DBHelper extends SQLiteOpenHelper
     public List<Budget> getBudgets(long startDateMs, long endDateMs)
     {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor data = db.rawQuery("select * from " + BudgetDbIds.TABLE +
-                " ORDER BY " + BudgetDbIds.NAME, null);
+
+        final String TOTAL_EXPENSE_COL = "total_expense";
+        final String TOTAL_REVENUE_COL = "total_revenue";
+
+        final String BUDGET_ID = BudgetDbIds.TABLE + "." + BudgetDbIds.NAME;
+        final String BUDGET_MAX = BudgetDbIds.TABLE + "." + BudgetDbIds.MAX;
+        final String TRANS_VALUE = TransactionDbIds.TABLE + "." + TransactionDbIds.VALUE;
+        final String TRANS_TYPE = TransactionDbIds.TABLE + "." + TransactionDbIds.TYPE;
+        final String TRANS_DATE = TransactionDbIds.TABLE + "." + TransactionDbIds.DATE;
+        final String TRANS_BUDGET = TransactionDbIds.TABLE + "." + TransactionDbIds.BUDGET;
+
+        Cursor data = db.rawQuery("select " + BUDGET_ID + ", " + BUDGET_MAX + ", " +
+                "(select total(" + TRANS_VALUE + ") from " + TransactionDbIds.TABLE + " where " +
+                    BUDGET_ID + " = " + TRANS_BUDGET + " and " +
+                    TRANS_TYPE + " = ? and " +
+                    TRANS_DATE + " >= ? and " +
+                    TRANS_DATE + " <= ?) " +
+                    "as " + TOTAL_EXPENSE_COL + ", " +
+                "(select total(" + TRANS_VALUE + ") from " + TransactionDbIds.TABLE + " where " +
+                    BUDGET_ID + " = " + TRANS_BUDGET + " and " +
+                    TRANS_TYPE + " = ? and " +
+                    TRANS_DATE + " >= ? and " +
+                    TRANS_DATE + " <= ?) " +
+                    "as " + TOTAL_REVENUE_COL + " " +
+                "from " + BudgetDbIds.TABLE + " order by " + BUDGET_ID,
+                new String[]
+                    {
+                        Integer.toString(TransactionDbIds.EXPENSE),
+                        Long.toString(startDateMs),
+                        Long.toString(endDateMs),
+                        Integer.toString(TransactionDbIds.REVENUE),
+                        Long.toString(startDateMs),
+                        Long.toString(endDateMs)
+                    });
 
         LinkedList<Budget> budgets = new LinkedList<>();
 
@@ -243,7 +275,9 @@ public class DBHelper extends SQLiteOpenHelper
             {
                 String name = data.getString(data.getColumnIndexOrThrow(BudgetDbIds.NAME));
                 int max = data.getInt(data.getColumnIndexOrThrow(BudgetDbIds.MAX)) * totalMonthsInRange;
-                int current = getTotalForBudget(name, startDateMs, endDateMs);
+                int expenses = data.getInt(data.getColumnIndexOrThrow(TOTAL_EXPENSE_COL));
+                int revenues = data.getInt(data.getColumnIndexOrThrow(TOTAL_REVENUE_COL));
+                int current = expenses - revenues;
 
                 budgets.add(new Budget(name, max, current));
             } while(data.moveToNext());
@@ -253,66 +287,6 @@ public class DBHelper extends SQLiteOpenHelper
         db.close();
 
         return budgets;
-    }
-
-    /**
-     * Determine the total value, expenses - revenues, for all transactions
-     * of the given budget over the provided time interval.
-     *
-     * @param budget
-     *      budget to compute value for
-     * @param startDateMs
-     *      first date in milliseconds for transactions to use in
-     *      the computation
-     * @param endDateMs
-     *      last date in milliseconds for transactions to use in
-     *      the computation
-     * @return value of all expenses less all revenues for all transactions
-     * in the given time window, where the expense and revenue values
-     * are truncated into integers.
-     */
-    public int getTotalForBudget(String budget, long startDateMs, long endDateMs)
-    {
-        int expense = getTotalForTransactionType(TransactionDbIds.EXPENSE, budget, startDateMs, endDateMs);
-        int revenue = getTotalForTransactionType(TransactionDbIds.REVENUE, budget, startDateMs, endDateMs);
-
-        return expense - revenue;
-    }
-
-    /**
-     * Get the total value of all transactions of the provided type for the provided
-     * budget over the given interval, truncated to an integer.
-     *
-     * @param type
-     *      transaction type, either EXPENSE or REVENUE
-     * @param budget
-     *      budget to compute value for
-     * @param startDateMs
-     *      first date in milliseconds for transactions to use in
-     *      the computation
-     * @param endDateMs
-     *      last date in milliseconds for transactions to use in
-     *      the computation
-     * @return value of either all expenses or revenues for all transactions
-     * in the given time window, where the values is truncated into an integer.
-     */
-    public int getTotalForTransactionType(int type, String budget, long startDateMs, long endDateMs)
-    {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor data = db.rawQuery("select total(" + TransactionDbIds.VALUE + ") " +
-                        "from " + TransactionDbIds.TABLE + " " +
-                        "WHERE " + TransactionDbIds.BUDGET + " = ? AND " +
-                        TransactionDbIds.TYPE + " = ? AND " +
-                        TransactionDbIds.DATE + " >= ? AND " +
-                        TransactionDbIds.DATE + " <= ?",
-                new String[]{budget, Integer.toString(type),
-                        Long.toString(startDateMs), Long.toString(endDateMs)});
-        data.moveToFirst();
-        int value = data.getInt(0);
-        data.close();
-        db.close();
-
-        return value;
     }
 
     /**

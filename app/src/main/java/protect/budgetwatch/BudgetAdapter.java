@@ -12,9 +12,20 @@ import java.util.List;
 
 class BudgetAdapter extends ArrayAdapter<Budget>
 {
+    private final String FRACTION_FORMAT;
+
     public BudgetAdapter(Context context, List<Budget> items)
     {
         super(context, 0, items);
+
+        FRACTION_FORMAT = context.getResources().getString(R.string.fraction);
+    }
+
+    static class ViewHolder
+    {
+        TextView budgetName;
+        ProgressBar budgetBar;
+        TextView budgetValue;
     }
 
     @Override
@@ -23,27 +34,34 @@ class BudgetAdapter extends ArrayAdapter<Budget>
         // Get the data item for this position
         Budget item = getItem(position);
 
+        ViewHolder holder;
+
         // Check if an existing view is being reused, otherwise inflate the view
 
         if (convertView == null)
         {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.budget_layout,
                     parent, false);
+
+            holder = new ViewHolder();
+            holder.budgetName = (TextView) convertView.findViewById(R.id.budgetName);
+            holder.budgetBar = (ProgressBar) convertView.findViewById(R.id.budgetBar);
+            holder.budgetValue = (TextView) convertView.findViewById(R.id.budgetValue);
+            convertView.setTag(holder);
+        }
+        else
+        {
+            holder = (ViewHolder)convertView.getTag();
         }
 
-        TextView budgetName = (TextView) convertView.findViewById(R.id.budgetName);
-        ProgressBar budgetBar = (ProgressBar) convertView.findViewById(R.id.budgetBar);
-        TextView budgetValue = (TextView) convertView.findViewById(R.id.budgetValue);
+        holder.budgetName.setText(item.name);
 
-        budgetName.setText(item.name);
+        holder.budgetBar.setMax(item.max);
+        holder.budgetBar.setProgress(item.current);
 
-        budgetBar.setMax(item.max);
-        budgetBar.setProgress(item.current);
+        String fraction = String.format(FRACTION_FORMAT, item.current, item.max);
 
-        String fractionFormat = getContext().getResources().getString(R.string.fraction);
-        String fraction = String.format(fractionFormat, item.current, item.max);
-
-        budgetValue.setText(fraction);
+        holder.budgetValue.setText(fraction);
 
         return convertView;
     }
