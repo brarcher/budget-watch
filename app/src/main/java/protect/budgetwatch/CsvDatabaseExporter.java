@@ -14,7 +14,7 @@ import java.io.OutputStreamWriter;
  */
 public class CsvDatabaseExporter implements DatabaseExporter
 {
-    public void exportData(DBHelper db, OutputStreamWriter output) throws IOException
+    public void exportData(DBHelper db, OutputStreamWriter output) throws IOException, InterruptedException
     {
         CSVPrinter printer = new CSVPrinter(output, CSVFormat.RFC4180);
 
@@ -43,6 +43,11 @@ public class CsvDatabaseExporter implements DatabaseExporter
                         transaction.value,
                         transaction.note,
                         transaction.dateMs);
+
+                if(Thread.currentThread().isInterrupted())
+                {
+                    throw new InterruptedException();
+                }
             }
 
             cursor.close();
@@ -61,6 +66,11 @@ public class CsvDatabaseExporter implements DatabaseExporter
                     budget.max,
                     "", // blank note
                     ""); // blank date
+
+            if(Thread.currentThread().isInterrupted())
+            {
+                throw new InterruptedException();
+            }
         }
 
         printer.close();

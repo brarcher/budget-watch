@@ -62,11 +62,11 @@ public class BudgetActivity extends AppCompatActivity
         final Calendar date = Calendar.getInstance();
 
         // Set to the last ms at the end of the month
-        final long dateMonthEndMs = getEndOfMonthMs(date.get(Calendar.YEAR),
+        final long dateMonthEndMs = CalendarUtil.getEndOfMonthMs(date.get(Calendar.YEAR),
                 date.get(Calendar.MONTH));
 
         // Set to beginning of the month
-        final long dateMonthStartMs = getStartOfMonthMs(date.get(Calendar.YEAR),
+        final long dateMonthStartMs = CalendarUtil.getStartOfMonthMs(date.get(Calendar.YEAR),
                 date.get(Calendar.MONTH));
 
         final Bundle b = getIntent().getExtras();
@@ -104,62 +104,6 @@ public class BudgetActivity extends AppCompatActivity
                 startActivity(i);
             }
         });
-    }
-
-    private long getStartOfMonthMs(int year, int month)
-    {
-        final Calendar date = Calendar.getInstance();
-
-        date.set(Calendar.YEAR, year);
-        date.set(Calendar.MONTH, month);
-        date.set(Calendar.DAY_OF_MONTH, date.getActualMinimum(Calendar.DAY_OF_MONTH));
-        date.set(Calendar.HOUR_OF_DAY, date.getActualMinimum(Calendar.HOUR_OF_DAY));
-        date.set(Calendar.MINUTE, date.getActualMinimum(Calendar.MINUTE));
-        date.set(Calendar.SECOND, date.getActualMinimum(Calendar.SECOND));
-        date.set(Calendar.MILLISECOND, date.getActualMinimum(Calendar.MILLISECOND));
-        return date.getTimeInMillis();
-    }
-
-    private long getEndOfMonthMs(int year, int month)
-    {
-        final Calendar date = Calendar.getInstance();
-
-        date.set(Calendar.YEAR, year);
-        date.set(Calendar.MONTH, month);
-        date.set(Calendar.DAY_OF_MONTH, date.getActualMaximum(Calendar.DAY_OF_MONTH));
-        date.set(Calendar.HOUR_OF_DAY, date.getActualMaximum(Calendar.HOUR_OF_DAY));
-        date.set(Calendar.MINUTE, date.getActualMaximum(Calendar.MINUTE));
-        date.set(Calendar.SECOND, date.getActualMaximum(Calendar.SECOND));
-        date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
-        return date.getTimeInMillis();
-    }
-
-    private long getStartOfDayMs(int year, int month, int day)
-    {
-        final Calendar date = Calendar.getInstance();
-
-        date.set(Calendar.YEAR, year);
-        date.set(Calendar.MONTH, month);
-        date.set(Calendar.DAY_OF_MONTH, day);
-        date.set(Calendar.HOUR_OF_DAY, date.getActualMinimum(Calendar.HOUR_OF_DAY));
-        date.set(Calendar.MINUTE, date.getActualMinimum(Calendar.MINUTE));
-        date.set(Calendar.SECOND, date.getActualMinimum(Calendar.SECOND));
-        date.set(Calendar.MILLISECOND, date.getActualMinimum(Calendar.MILLISECOND));
-        return date.getTimeInMillis();
-    }
-
-    private long getEndOfDayMs(int year, int month, int day)
-    {
-        final Calendar date = Calendar.getInstance();
-
-        date.set(Calendar.YEAR, year);
-        date.set(Calendar.MONTH, month);
-        date.set(Calendar.DAY_OF_MONTH, day);
-        date.set(Calendar.HOUR_OF_DAY, date.getActualMaximum(Calendar.HOUR_OF_DAY));
-        date.set(Calendar.MINUTE, date.getActualMaximum(Calendar.MINUTE));
-        date.set(Calendar.SECOND, date.getActualMaximum(Calendar.SECOND));
-        date.set(Calendar.MILLISECOND, date.getActualMaximum(Calendar.MILLISECOND));
-        return date.getTimeInMillis();
     }
 
     @Override
@@ -206,9 +150,9 @@ public class BudgetActivity extends AppCompatActivity
                     DatePicker startDatePicker = (DatePicker) view.findViewById(R.id.startDate);
                     DatePicker endDatePicker = (DatePicker) view.findViewById(R.id.endDate);
 
-                    long startOfBudgetMs = getStartOfDayMs(startDatePicker.getYear(),
+                    long startOfBudgetMs = CalendarUtil.getStartOfDayMs(startDatePicker.getYear(),
                             startDatePicker.getMonth(), startDatePicker.getDayOfMonth());
-                    long endOfBudgetMs = getEndOfDayMs(endDatePicker.getYear(),
+                    long endOfBudgetMs = CalendarUtil.getEndOfDayMs(endDatePicker.getYear(),
                             endDatePicker.getMonth(), endDatePicker.getDayOfMonth());
 
                     if (startOfBudgetMs > endOfBudgetMs)

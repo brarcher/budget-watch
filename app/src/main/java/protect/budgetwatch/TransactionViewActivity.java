@@ -2,11 +2,16 @@ package protect.budgetwatch;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,17 +20,26 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Date;
+import java.util.UUID;
 
 public class TransactionViewActivity extends AppCompatActivity
 {
+    private static final String TAG = "BudgetWatch";
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private String capturedUncommittedReceipt = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -131,6 +145,13 @@ public class TransactionViewActivity extends AppCompatActivity
         final EditText noteField = (EditText) findViewById(R.id.note);
         final Button cancelButton = (Button)findViewById(R.id.cancelButton);
         final Button saveButton = (Button)findViewById(R.id.saveButton);
+        final Button captureButton = (Button)findViewById(R.id.captureButton);
+        final Button viewButton = (Button)findViewById(R.id.viewButton);
+        final Button updateButton = (Button)findViewById(R.id.updateButton);
+        final View receiptLayout = findViewById(R.id.receiptLayout);
+        final TextView receiptLocationField = (TextView) findViewById(R.id.receiptLocation);
+        final View noReceiptButtonLayout = findViewById(R.id.noReceiptButtonLayout);
+        final View hasReceiptButtonLayout = findViewById(R.id.hasReceiptButtonLayout);
 
         if(updateTransaction || viewTransaction)
         {
@@ -147,6 +168,7 @@ public class TransactionViewActivity extends AppCompatActivity
             valueField.setText(String.format("%.2f", transaction.value));
             noteField.setText(transaction.note);
             dateField.setText(dateFormatter.format(new Date(transaction.dateMs)));
+            receiptLocationField.setText(transaction.receipt);
 
             if(viewTransaction)
             {
@@ -158,8 +180,122 @@ public class TransactionViewActivity extends AppCompatActivity
                 dateField.setEnabled(false);
                 cancelButton.setVisibility(Button.GONE);
                 saveButton.setVisibility(Button.GONE);
+
+                // The no receipt layout need never be displayed
+                // when only viewing a transaction, as one should
+                // not be able to capture a receipt
+                noReceiptButtonLayout.setVisibility(View.GONE);
+
+                // If viewing a transaction, only display the receipt
+                // field if a receipt is captured
+                if(transaction.receipt.isEmpty() == false)
+                {
+                    receiptLayout.setVisibility(View.VISIBLE);
+                    hasReceiptButtonLayout.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    receiptLayout.setVisibility(View.GONE);
+                }
+            }
+            else
+            {
+                // If editing a transaction, always list the receipt field
+                receiptLayout.setVisibility(View.VISIBLE);
+                if(transaction.receipt.isEmpty() && capturedUncommittedReceipt == null)
+                {
+                    noReceiptButtonLayout.setVisibility(View.VISIBLE);
+                    hasReceiptButtonLayout.setVisibility(View.GONE);
+                }
+                else
+                {
+                    noReceiptButtonLayout.setVisibility(View.GONE);
+                    hasReceiptButtonLayout.setVisibility(View.VISIBLE);
+                    updateButton.setVisibility(View.VISIBLE);
+                }
             }
         }
+        else
+        {
+            // If adding a transaction, always list the receipt field
+            receiptLayout.setVisibility(View.VISIBLE);
+            if(capturedUncommittedReceipt == null)
+            {
+                noReceiptButtonLayout.setVisibility(View.VISIBLE);
+                hasReceiptButtonLayout.setVisibility(View.GONE);
+            }
+            else
+            {
+                noReceiptButtonLayout.setVisibility(View.GONE);
+                hasReceiptButtonLayout.setVisibility(View.VISIBLE);
+                updateButton.setVisibility(View.VISIBLE);
+            }
+        }
+
+        View.OnClickListener captureCallback = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(capturedUncommittedReceipt != null)
+                {
+                    Log.i(TAG, "Deleting unsaved image: " + capturedUncommittedReceipt);
+                    File unneededReceipt = new File(capturedUncommittedReceipt);
+                    if(unneededReceipt.delete() == false)
+                    {
+                        Log.e(TAG, "Unable to delete unnecessary file: " + capturedUncommittedReceipt);
+                    }
+                    capturedUncommittedReceipt = null;
+                }
+
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                PackageManager packageManager = getPackageManager();
+                if(packageManager == null)
+                {
+                    Log.e(TAG, "Failed to get package manager, cannot take picture");
+                    Toast.makeText(getApplicationContext(), R.string.pictureCaptureError,
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                if(takePictureIntent.resolveActivity(packageManager) == null)
+                {
+                    Log.e(TAG, "Could not find an activity to take a picture");
+                    Toast.makeText(getApplicationContext(), R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                File imageLocation = getNewImageLocation();
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageLocation));
+                capturedUncommittedReceipt = imageLocation.getAbsolutePath();
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        };
+
+        captureButton.setOnClickListener(captureCallback);
+        updateButton.setOnClickListener(captureCallback);
+
+        viewButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent i = new Intent(v.getContext(), ReceiptViewActivity.class);
+                final Bundle b = new Bundle();
+
+                final TextView receiptField = (TextView) findViewById(R.id.receiptLocation);
+
+                String receipt = receiptField.getText().toString();
+                if(capturedUncommittedReceipt != null)
+                {
+                    receipt = capturedUncommittedReceipt;
+                }
+
+                b.putString("receipt", receipt);
+                i.putExtras(b);
+                startActivity(i);
+            }
+        });
 
         saveButton.setOnClickListener(new View.OnClickListener()
         {
@@ -218,18 +354,34 @@ public class TransactionViewActivity extends AppCompatActivity
                     return;
                 }
 
+                String receipt = receiptLocationField.getText().toString();
+                if(capturedUncommittedReceipt != null)
+                {
+                    // Delete the old receipt, it is no longer needed
+                    File oldReceipt = new File(receipt);
+                    if(oldReceipt.delete() == false)
+                    {
+                        Log.e(TAG, "Unable to delete old receipt file: " + capturedUncommittedReceipt);
+                    }
+
+                    // Remember the new receipt to save
+                    receipt = capturedUncommittedReceipt;
+                    capturedUncommittedReceipt = null;
+                }
+
+
                 DBHelper db = new DBHelper(TransactionViewActivity.this);
 
                 if(updateTransaction)
                 {
                     db.updateTransaction(transactionId, type, name, account,
-                            budget, value, note, dateMs);
+                            budget, value, note, dateMs, receipt);
 
                 }
                 else
                 {
                     db.insertTransaction(type, name, account, budget,
-                            value, note, dateMs);
+                            value, note, dateMs, receipt);
                 }
 
                 finish();
@@ -244,6 +396,24 @@ public class TransactionViewActivity extends AppCompatActivity
                 finish();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        if(capturedUncommittedReceipt != null)
+        {
+            // The receipt was captured but never used
+            Log.i(TAG, "Deleting unsaved image: " + capturedUncommittedReceipt);
+            File unneededReceipt = new File(capturedUncommittedReceipt);
+            if(unneededReceipt.delete() == false)
+            {
+                Log.e(TAG, "Unable to delete unnecessary file: " + capturedUncommittedReceipt);
+            }
+            capturedUncommittedReceipt = null;
+        }
+
+        super.onDestroy();
     }
 
     @Override
@@ -278,6 +448,8 @@ public class TransactionViewActivity extends AppCompatActivity
         switch(id)
         {
             case R.id.action_edit:
+                finish();
+
                 Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putInt("id", transactionId);
@@ -285,7 +457,6 @@ public class TransactionViewActivity extends AppCompatActivity
                 bundle.putBoolean("update", true);
                 i.putExtras(bundle);
                 startActivity(i);
-                onResume();
                 return true;
 
             case R.id.action_delete:
@@ -296,5 +467,52 @@ public class TransactionViewActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private File getNewImageLocation()
+    {
+        File imageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        if(imageDir == null)
+        {
+            Log.e(TAG, "Failed to locate directory for pictures");
+            Toast.makeText(this, R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
+            return null;
+        }
+
+        if(imageDir.exists() == false)
+        {
+            if(imageDir.mkdirs() == false)
+            {
+                Log.e(TAG, "Failed to create receipts image directory");
+                Toast.makeText(this, R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
+                return null;
+            }
+        }
+
+        UUID imageFilename = UUID.randomUUID();
+        File receiptFile = new File(imageDir, imageFilename.toString() + ".png");
+
+        return receiptFile;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(requestCode == REQUEST_IMAGE_CAPTURE)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                Log.i(TAG, "Image file saved: " + capturedUncommittedReceipt);
+            }
+            else
+            {
+                Log.e(TAG, "Failed to create receipt image: " + resultCode);
+                // No image was actually created, simply forget the patch
+                capturedUncommittedReceipt = null;
+            }
+
+            onResume();
+        }
     }
 }

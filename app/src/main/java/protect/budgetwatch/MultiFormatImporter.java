@@ -46,6 +46,10 @@ public class MultiFormatImporter
             {
                 Log.e(TAG, "Failed to input data", e);
             }
+            catch(InterruptedException e)
+            {
+                Log.e(TAG, "Failed to input data", e);
+            }
 
             return false;
         }

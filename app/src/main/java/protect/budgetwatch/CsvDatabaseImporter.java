@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
  */
 public class CsvDatabaseImporter implements DatabaseImporter
 {
-    public void importData(DBHelper db, InputStreamReader input) throws IOException, FormatException
+    public void importData(DBHelper db, InputStreamReader input) throws IOException, FormatException, InterruptedException
     {
         final CSVParser parser = new CSVParser(input, CSVFormat.RFC4180.withHeader());
 
@@ -39,6 +39,11 @@ public class CsvDatabaseImporter implements DatabaseImporter
                 else
                 {
                     importTransaction(database, db, record);
+                }
+
+                if(Thread.currentThread().isInterrupted())
+                {
+                    throw new InterruptedException();
                 }
             }
 
@@ -184,8 +189,10 @@ public class CsvDatabaseImporter implements DatabaseImporter
         double value = extractDouble(DBHelper.TransactionDbIds.VALUE, record);
         String note = extractString(DBHelper.TransactionDbIds.NOTE, record, "");
         long dateMs = extractLong(DBHelper.TransactionDbIds.DATE, record);
+        // Unable to export/import receipts
+        String receipt = "";
 
-        helper.insertTransaction(database, id, type, description, account, budget, value, note, dateMs);
+        helper.insertTransaction(database, id, type, description, account, budget, value, note, dateMs, receipt);
     }
 
     /**

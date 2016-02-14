@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 17)
@@ -87,5 +89,20 @@ public class TransactionActivityTest
 
         checkFragmentStatus(activity, 0);
         checkFragmentStatus(activity, 1);
+    }
+
+    @Test
+    public void onCreateShouldInflateMenu() throws Exception
+    {
+        final Activity activity = Robolectric.setupActivity(TransactionActivity.class);
+
+        final Menu menu = shadowOf(activity).getOptionsMenu();
+        assertTrue(menu != null);
+
+        // The purge and add button should be present
+        assertEquals(menu.size(), 2);
+
+        assertEquals("Add", menu.findItem(R.id.action_add).getTitle().toString());
+        assertEquals("Purge Old Receipts", menu.findItem(R.id.action_purge_receipts).getTitle().toString());
     }
 }

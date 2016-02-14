@@ -1,5 +1,7 @@
 package protect.budgetwatch;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -10,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.DatePicker;
 
 public class TransactionActivity extends AppCompatActivity
 {
@@ -71,8 +75,8 @@ public class TransactionActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.add_menu, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.transaction_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -88,6 +92,41 @@ public class TransactionActivity extends AppCompatActivity
             i.putExtras(b);
             startActivity(i);
             return true;
+        }
+
+        if(id == R.id.action_purge_receipts)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.cleanupHelp);
+
+            final View view = getLayoutInflater().inflate(R.layout.cleanup_layout, null, false);
+
+            builder.setView(view);
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    dialog.cancel();
+                }
+            });
+            builder.setPositiveButton(R.string.clean, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    DatePicker endDatePicker = (DatePicker) view.findViewById(R.id.endDate);
+
+                    long endOfBudgetMs = CalendarUtil.getEndOfDayMs(endDatePicker.getYear(),
+                            endDatePicker.getMonth(), endDatePicker.getDayOfMonth());
+
+                    DatabaseCleanupTask task = new DatabaseCleanupTask(TransactionActivity.this,
+                            endOfBudgetMs);
+                    task.execute();
+                }
+            });
+
+            builder.show();
         }
 
         return super.onOptionsItemSelected(item);
