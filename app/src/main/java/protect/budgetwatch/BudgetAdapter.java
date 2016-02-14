@@ -17,11 +17,20 @@ class BudgetAdapter extends ArrayAdapter<Budget>
         super(context, 0, items);
     }
 
+    static class ViewHolder
+    {
+        TextView budgetName;
+        ProgressBar budgetBar;
+        TextView budgetValue;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
         // Get the data item for this position
         Budget item = getItem(position);
+
+        ViewHolder holder;
 
         // Check if an existing view is being reused, otherwise inflate the view
 
@@ -29,21 +38,27 @@ class BudgetAdapter extends ArrayAdapter<Budget>
         {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.budget_layout,
                     parent, false);
+
+            holder = new ViewHolder();
+            holder.budgetName = (TextView) convertView.findViewById(R.id.budgetName);
+            holder.budgetBar = (ProgressBar) convertView.findViewById(R.id.budgetBar);
+            holder.budgetValue = (TextView) convertView.findViewById(R.id.budgetValue);
+            convertView.setTag(holder);
+        }
+        else
+        {
+            holder = (ViewHolder)convertView.getTag();
         }
 
-        TextView budgetName = (TextView) convertView.findViewById(R.id.budgetName);
-        ProgressBar budgetBar = (ProgressBar) convertView.findViewById(R.id.budgetBar);
-        TextView budgetValue = (TextView) convertView.findViewById(R.id.budgetValue);
+        holder.budgetName.setText(item.name);
 
-        budgetName.setText(item.name);
-
-        budgetBar.setMax(item.max);
-        budgetBar.setProgress(item.current);
+        holder.budgetBar.setMax(item.max);
+        holder.budgetBar.setProgress(item.current);
 
         String fractionFormat = getContext().getResources().getString(R.string.fraction);
         String fraction = String.format(fractionFormat, item.current, item.max);
 
-        budgetValue.setText(fraction);
+        holder.budgetValue.setText(fraction);
 
         return convertView;
     }

@@ -20,12 +20,29 @@ class TransactionCursorAdapter extends CursorAdapter
 
     private final DateFormat DATE_FORMATTER = SimpleDateFormat.getDateInstance();
 
+    static class ViewHolder
+    {
+        TextView nameField;
+        TextView valueField;
+        TextView dateField;
+        TextView budgetField;
+    }
+
     // The newView method is used to inflate a new view and return it,
     // you don't bind any data to the view at this point.
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent)
     {
-        return LayoutInflater.from(context).inflate(R.layout.transaction_layout, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.transaction_layout, parent, false);
+
+        ViewHolder holder = new ViewHolder();
+        holder.nameField = (TextView) view.findViewById(R.id.name);
+        holder.valueField = (TextView) view.findViewById(R.id.value);
+        holder.dateField = (TextView) view.findViewById(R.id.date);
+        holder.budgetField = (TextView) view.findViewById(R.id.budget);
+        view.setTag(holder);
+
+        return view;
     }
 
     // The bindView method is used to bind all data to a given view
@@ -33,20 +50,16 @@ class TransactionCursorAdapter extends CursorAdapter
     @Override
     public void bindView(View view, Context context, Cursor cursor)
     {
-        // Find fields to populate in inflated template
-        TextView nameField = (TextView) view.findViewById(R.id.name);
-        TextView valueField = (TextView) view.findViewById(R.id.value);
-        TextView dateField = (TextView) view.findViewById(R.id.date);
-        TextView budgetField = (TextView) view.findViewById(R.id.budget);
+        ViewHolder holder = (ViewHolder)view.getTag();
 
         // Extract properties from cursor
         Transaction transaction = Transaction.toTransaction(cursor);
 
         // Populate fields with extracted properties
-        nameField.setText(transaction.description);
-        valueField.setText(String.format("%.2f", transaction.value));
-        budgetField.setText(transaction.budget);
+        holder.nameField.setText(transaction.description);
+        holder.valueField.setText(String.format("%.2f", transaction.value));
+        holder.budgetField.setText(transaction.budget);
 
-        dateField.setText(DATE_FORMATTER.format(transaction.dateMs));
+        holder.dateField.setText(DATE_FORMATTER.format(transaction.dateMs));
     }
 }
