@@ -168,13 +168,14 @@ public class BudgetViewActivity extends AppCompatActivity
         switch(id)
         {
             case R.id.action_edit:
+                finish();
+
                 Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("id", budgetName);
                 bundle.putBoolean("update", true);
                 i.putExtras(bundle);
                 startActivity(i);
-                onResume();
                 return true;
 
             case R.id.action_delete:
