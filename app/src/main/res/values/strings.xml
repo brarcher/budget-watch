@@ -32,6 +32,7 @@
     <string name="capture">Capture</string>
     <string name="view">View</string>
     <string name="update">Update</string>
+    <string name="clean">Clean</string>
 
     <string name="Grocery">Grocery</string>
     <string name="one_hundred">100</string>
@@ -58,6 +59,8 @@
     <string name="endDate">End date</string>
     <string name="startDateAfterEndDate">Start date must be on or before end date</string>
 
+    <string name="cleanupHelp">Select date; all receipts on or before the date will be deleted</string>
+
     <string name="importExport">Import/Export</string>
     <string name="importName">Import</string>
     <string name="exportName">Export</string>
@@ -69,6 +72,8 @@
     <string name="exportFailed">Failed to export: %1$s</string>
     <string name="importing">Importing&#8230;</string>
     <string name="exporting">Exporting&#8230;</string>
+
+    <string name="purgeOldReceipts">Purge Old Receipts</string>
     <string name="cleaning">Cleaning&#8230;</string>
 
     <string name="loading">Loading&#8230;</string>
