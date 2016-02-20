@@ -57,7 +57,7 @@
     <string name="budgetDateRangeHelp">Select date range to display for budgets</string>
     <string name="startDate">Start Datum</string>
     <string name="endDate">Ende Datum</string>
-    <string name="startDateAfterEndDate">Startdatum muß gleich oder vor dem Enddatum sein</string>
+    <string name="startDateAfterEndDate">Startdatum muas gleich oder vor dem Enddatum sein</string>
 
     <string name="cleanupHelp">Datum wählen; alle Quittungen dieses oder vorheriger Daten werden gelöscht</string>
 
