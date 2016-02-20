@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 
 class ImportExportTask extends AsyncTask<Void, Void, Void>
 {
@@ -61,7 +62,7 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
         try
         {
             FileInputStream fileReader = new FileInputStream(importFile);
-            InputStreamReader reader = new InputStreamReader(fileReader);
+            InputStreamReader reader = new InputStreamReader(fileReader, Charset.forName("UTF-8"));
             boolean result = MultiFormatImporter.importData(db, reader, format);
             reader.close();
 
@@ -79,7 +80,7 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
         try
         {
             FileOutputStream fileWriter = new FileOutputStream(exportFile);
-            OutputStreamWriter writer = new OutputStreamWriter(fileWriter);
+            OutputStreamWriter writer = new OutputStreamWriter(fileWriter, Charset.forName("UTF-8"));
             boolean result = MultiFormatExporter.exportData(db, writer, format);
             writer.close();
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
+    private final static String TAG = "BudgetWatch";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -56,6 +58,9 @@ public class MainActivity extends AppCompatActivity
                     case R.string.transactionsTitle:
                         goalClass = TransactionActivity.class;
                         break;
+                    default:
+                        Log.w(TAG, "Unexpected menu text id: " + item.menuTextId);
+                        break;
                 }
 
                 if(goalClass != null)
@@ -67,7 +72,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    class MainMenuItem
+    static class MainMenuItem
     {
         public final int iconId;
         public final int menuTextId;
@@ -81,7 +86,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    class MenuAdapter extends ArrayAdapter<MainMenuItem>
+    static class MenuAdapter extends ArrayAdapter<MainMenuItem>
     {
         public MenuAdapter(Context context, List<MainMenuItem> items)
         {
@@ -126,12 +131,11 @@ public class MainActivity extends AppCompatActivity
     {
         int id = item.getItemId();
 
-        switch(id)
+        if(id == R.id.action_import_export)
         {
-            case R.id.action_import_export:
-                Intent i = new Intent(getApplicationContext(), ImportExportActivity.class);
-                startActivity(i);
-                return true;
+            Intent i = new Intent(getApplicationContext(), ImportExportActivity.class);
+            startActivity(i);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

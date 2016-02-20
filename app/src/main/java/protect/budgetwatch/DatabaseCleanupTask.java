@@ -108,7 +108,15 @@ public class DatabaseCleanupTask  extends AsyncTask<Void, Void, Void>
 
         Cursor cursor = db.getTransactionsWithReceipts(null);
 
-        for(File receipt : imageDir.listFiles())
+        File [] files = imageDir.listFiles();
+        if(files == null)
+        {
+            // If the directory could not be queried, fill in with
+            // an empty list so nothing is processed.
+            files = new File[0];
+        }
+
+        for(File receipt : files)
         {
             // Search for this receipt attached to a transaction
             boolean found = false;

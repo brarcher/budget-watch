@@ -467,7 +467,7 @@ public class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
         Cursor data =  db.rawQuery("SELECT Count(*) FROM " + TransactionDbIds.TABLE +
-                " where " + TransactionDbIds.TYPE + "=?", new String[]{Integer.valueOf(type).toString()});
+                " where " + TransactionDbIds.TYPE + "=?", new String[]{Integer.toString(type)});
 
         int numItems = 0;
 
@@ -496,7 +496,7 @@ public class DBHelper extends SQLiteOpenHelper
         SQLiteDatabase db = getWritableDatabase();
         int rowsDeleted =  db.delete(TransactionDbIds.TABLE,
                 TransactionDbIds.NAME + " = ? ",
-                new String[]{Integer.valueOf(id).toString()});
+                new String[]{Integer.toString(id)});
         db.close();
         return (rowsDeleted == 1);
     }
