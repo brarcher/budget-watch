@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-    class MainMenuItem
+    static class MainMenuItem
     {
         public final int iconId;
         public final int menuTextId;
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    class MenuAdapter extends ArrayAdapter<MainMenuItem>
+    static class MenuAdapter extends ArrayAdapter<MainMenuItem>
     {
         public MenuAdapter(Context context, List<MainMenuItem> items)
         {
