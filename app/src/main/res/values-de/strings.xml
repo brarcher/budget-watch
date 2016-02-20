@@ -1,0 +1,86 @@
+<resources>
+    <string name="app_name">Budget Watch</string>
+    <string name="icon">icon</string>
+    <string name="budgetsTitle">Budgets</string>
+    <string name="addBudgetTitle">Budget hinzufügen</string>
+    <string name="viewBudgetTitle">Budget ansehen</string>
+    <string name="editBudgetTitle">Budget bearbeiten</string>
+    <string name="budgetDescription">Budgets erstellen und verwalten</string>
+    <string name="transactionsTitle">Transaktionen</string>
+    <string name="transactionsDescription">Transaktionen und Einnahmen</string>
+    <string name="addExpenseTransactionTitle">Ausgabe hinzufügen</string>
+    <string name="editExpenseTransactionTitle">Ausgabe bearbeiten</string>
+    <string name="viewExpenseTransactionTitle">Ausgabe ansehen</string>
+    <string name="addRevenueTransactionTitle">Einnahme hinzufügen</string>
+    <string name="editRevenueTransactionTitle">Einnahme bearbeiten</string>
+    <string name="viewRevenueTransactionTitle">Einnahme ansehen</string>
+    <string name="importExportTitle">Import/Export</string>
+
+    <string name="add">Hinzufügen</string>
+    <string name="selectDates">Daten auswählen</string>
+    <string name="type">Typ</string>
+    <string name="value">Wert</string>
+    <string name="name">Name</string>
+    <string name="budget">Budget</string>
+    <string name="account">Konto</string>
+    <string name="note">Notiz</string>
+    <string name="date">Datum</string>
+    <string name="save">Speichern</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="set">Einrichten</string>
+    <string name="receipt">Quittung</string>
+    <string name="capture">Erfassung</string>
+    <string name="view">Ansicht</string>
+    <string name="update">Update</string>
+    <string name="clean">Löschen</string>
+
+    <string name="Grocery">Lebensmittel</string>
+    <string name="one_hundred">100</string>
+    <string name="fraction">%1$d/%2$d</string>
+
+    <string name="budgetTypeMissing">Budgettyp ist leer</string>
+    <string name="budgetValueMissing">Budgetwert ist leer</string>
+
+    <string name="expensesTitle">Einnahmen</string>
+    <string name="revenuesTitle">Ausgaben</string>
+
+    <string name="edit">Bearbeiten</string>
+    <string name="delete">Löschen</string>
+
+    <!-- A date range, where both arguments are date strings -->
+    <string name="dateRangeFormat">%1$s ~ %2$s</string>
+
+    <string name="noBudgets">Sie haben derzeit keine Budgets. Drücken Sie den "+" (plus) Knopf um anzufangen.\n\nBudget Watch lässt Sie Budgets erstellen und dann die monatlichen Ausgaben verfolgen.</string>
+    <string name="noExpenses">Sie haben derzeit keine Ausgabentransaktionen. Drücken Sie den "+" (plus) Knopf um anzufangen.</string>
+    <string name="noRevenues">Sie haben derzeit keine Einnahmentransaktionen. Drücken Sie den "+" (plus) Knopf um anzufangen.</string>
+
+    <string name="budgetDateRangeHelp">Select date range to display for budgets</string>
+    <string name="startDate">Start Datum</string>
+    <string name="endDate">Ende Datum</string>
+    <string name="startDateAfterEndDate">Startdatum muß gleich oder vor dem Enddatum sein</string>
+
+    <string name="cleanupHelp">Datum wählen; alle Quittungen dieses oder vorheriger Daten werden gelöscht</string>
+
+    <string name="importExport">Import/Export</string>
+    <string name="importName">Import</string>
+    <string name="exportName">Export</string>
+    <string name="importExportHelp">Daten werden importiert nach/exportiert von BudgetWatch.csv im externen Speicher</string>
+    <string name="importedFrom">Importiert von: %1$s</string>
+    <string name="exportedTo">Exportiert nach: %1$s</string>
+    <string name="fileMissing">Datei fehlt: %1$s</string>
+    <string name="importFailed">Import fehlgeschlagen: %1$s</string>
+    <string name="exportFailed">Export fehlgeschlagen: %1$s</string>
+    <string name="importing">Importiere&#8230;</string>
+    <string name="exporting">Exportiere&#8230;</string>
+
+    <string name="purgeOldReceipts">Lösche alte Quittungen</string>
+    <string name="cleaning">Lösche&#8230;</string>
+
+    <string name="loading">Lade&#8230;</string>
+
+    <string name="pictureCaptureError">Bild konnte nicht mit der Kamera aufgenommen werden</string>
+
+    <string name="iconDescription">BudgetWatch icon</string>
+    <string name="addExpenseDescription">Eine Ausgabentransaktion hinzufügen</string>
+</resources>
+
