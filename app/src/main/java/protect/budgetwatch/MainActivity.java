@@ -126,12 +126,11 @@ public class MainActivity extends AppCompatActivity
     {
         int id = item.getItemId();
 
-        switch(id)
+        if(id == R.id.action_import_export)
         {
-            case R.id.action_import_export:
-                Intent i = new Intent(getApplicationContext(), ImportExportActivity.class);
-                startActivity(i);
-                return true;
+            Intent i = new Intent(getApplicationContext(), ImportExportActivity.class);
+            startActivity(i);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

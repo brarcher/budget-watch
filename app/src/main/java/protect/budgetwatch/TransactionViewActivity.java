@@ -66,39 +66,35 @@ public class TransactionViewActivity extends AppCompatActivity
         final boolean updateTransaction = b.getBoolean("update", false);
         final boolean viewTransaction = b.getBoolean("view", false);
 
-        switch(type)
+        if(type == DBHelper.TransactionDbIds.EXPENSE)
         {
-            case DBHelper.TransactionDbIds.EXPENSE:
-                if(updateTransaction)
-                {
-                    setTitle(R.string.editExpenseTransactionTitle);
-                }
-                else if(viewTransaction)
-                {
-                    setTitle(R.string.viewExpenseTransactionTitle);
-                }
-                else
-                {
-                    setTitle(R.string.addExpenseTransactionTitle);
-                }
-
-                break;
-
-            case DBHelper.TransactionDbIds.REVENUE:
-                if(updateTransaction)
-                {
-                    setTitle(R.string.editRevenueTransactionTitle);
-                }
-                else if(viewTransaction)
-                {
-                    setTitle(R.string.viewRevenueTransactionTitle);
-                }
-                else
-                {
-                    setTitle(R.string.addRevenueTransactionTitle);
-                }
-
-                break;
+            if (updateTransaction)
+            {
+                setTitle(R.string.editExpenseTransactionTitle);
+            }
+            else if (viewTransaction)
+            {
+                setTitle(R.string.viewExpenseTransactionTitle);
+            }
+            else
+            {
+                setTitle(R.string.addExpenseTransactionTitle);
+            }
+        }
+        else if(type == DBHelper.TransactionDbIds.REVENUE)
+        {
+            if(updateTransaction)
+            {
+                setTitle(R.string.editRevenueTransactionTitle);
+            }
+            else if(viewTransaction)
+            {
+                setTitle(R.string.viewRevenueTransactionTitle);
+            }
+            else
+            {
+                setTitle(R.string.addRevenueTransactionTitle);
+            }
         }
 
         final Calendar date = new GregorianCalendar();
