@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
+    private final static String TAG = "BudgetWatch";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -55,6 +57,9 @@ public class MainActivity extends AppCompatActivity
                         break;
                     case R.string.transactionsTitle:
                         goalClass = TransactionActivity.class;
+                        break;
+                    default:
+                        Log.w(TAG, "Unexpected menu text id: " + item.menuTextId);
                         break;
                 }
 
