@@ -82,5 +82,9 @@
 
     <string name="iconDescription">BudgetWatch icon</string>
     <string name="addExpenseDescription">Eine Ausgabentransaktion hinzufügen</string>
+    <string name="budgetMissing">Kein Budget ausgewählt</string>
+    <string name="dateInvalid">Datum ist ungültig</string>
+    <string name="valueInvalid">Wert ist ungültig</string>
+    <string name="valueMissing">Wert ist leer</string>
 </resources>
 
