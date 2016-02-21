@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -272,12 +273,19 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
         DBHelper db = new DBHelper(activity);
-        db.insertBudget(budget, 0);
 
-        if(receipt != null)
+        if(budget != null)
         {
-            db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description", "account", budget,
-                    100, "note", nowMs, receipt);
+            boolean result = db.insertBudget(budget, 0);
+            assertTrue(result);
+
+            if (receipt != null)
+            {
+                result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
+                        "account", budget,
+                        100, "note", nowMs, receipt);
+                assertTrue(result);
+            }
         }
 
         activityController.start();
@@ -300,7 +308,7 @@ public class TransactionViewActivityTest
     @Test
     public void startAsAddCannotCreateExpense()
     {
-        ActivityController activityController = setupActivity("budget", null, false, false);
+        ActivityController activityController = setupActivity(null, null, false, false);
 
         Activity activity = (Activity)activityController.get();
         DBHelper db = new DBHelper(activity);
@@ -308,26 +316,53 @@ public class TransactionViewActivityTest
 
         final Button saveButton = (Button) activity.findViewById(R.id.saveButton);
 
-        saveButton.performClick();
-        assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+        for(String[] test : Arrays.asList(
+                new String[]{null, null},
+                new String[]{null, "100"},
+                new String[]{"budget", null},
+                new String[]{"budget", "NotANumber"}
+        ))
+        {
+            String budget = test[0];
+            String value = test[1];
 
-        final EditText nameField = (EditText) activity.findViewById(R.id.name);
-        nameField.setText("name");
-        saveButton.performClick();
-        assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+            boolean result;
 
-        // Add a budget and reload, so the budget spinner has an item
-        db.insertBudget("budget", 100);
-        activityController.resume();
-        final Spinner budgetSpinner = (Spinner) activity.findViewById(R.id.budgetSpinner);
-        budgetSpinner.setSelection(0);
-        saveButton.performClick();
-        assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+            final Spinner budgetSpinner = (Spinner) activity.findViewById(R.id.budgetSpinner);
+            if(budget != null)
+            {
+                // Add a budget and reload, so the budget spinner has an item
+                result = db.insertBudget(budget, 100);
+                assertTrue(result);
+                assertEquals(1, db.getBudgetCount());
+                activityController.resume();
+                budgetSpinner.setSelection(0);
+            }
 
-        final EditText valueField = (EditText) activity.findViewById(R.id.value);
-        valueField.setText("NotANumber");
-        saveButton.performClick();
-        assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+            final EditText valueField = (EditText) activity.findViewById(R.id.value);
+            if(value != null)
+            {
+                valueField.setText(value);
+            }
+            else
+            {
+                valueField.setText("");
+            }
+
+            // Perform the actual test, no transaction should be created
+            saveButton.performClick();
+            assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+
+            if(budget != null)
+            {
+                // Remove a budget and reload, so the budget spinner will have no item
+                result = db.deleteBudget(budget);
+                assertTrue(result);
+                assertEquals(0, db.getBudgetCount());
+                activityController.resume();
+                budgetSpinner.setSelection(0);
+            }
+        }
     }
 
     @Test

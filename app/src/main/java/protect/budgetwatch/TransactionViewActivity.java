@@ -299,11 +299,7 @@ public class TransactionViewActivity extends AppCompatActivity
             public void onClick(final View v)
             {
                 final String name = nameField.getText().toString();
-                if (name.isEmpty())
-                {
-                    Snackbar.make(v, "Name needed", Snackbar.LENGTH_LONG).show();
-                    return;
-                }
+                // name field is optional, so it is OK if it is empty
 
                 final String budget = (String)budgetSpinner.getSelectedItem();
                 if (budget == null)
