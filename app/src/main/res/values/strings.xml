@@ -40,6 +40,10 @@
 
     <string name="budgetTypeMissing">Budget type is empty</string>
     <string name="budgetValueMissing">Budget value is empty</string>
+    <string name="budgetMissing">No budget selected</string>
+    <string name="valueMissing">Value is empty</string>
+    <string name="valueInvalid">Value invalid</string>
+    <string name="dateInvalid">Date invalid</string>
 
     <string name="expensesTitle">Expenses</string>
     <string name="revenuesTitle">Revenues</string>
