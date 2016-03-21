@@ -132,8 +132,13 @@ public class TransactionViewActivity extends AppCompatActivity
         final Spinner budgetSpinner = (Spinner) findViewById(R.id.budgetSpinner);
         DBHelper db = new DBHelper(TransactionViewActivity.this);
         List<String> budgetNames = db.getBudgetNames();
-        ArrayAdapter<String> budgets = new ArrayAdapter<>(this, R.layout.spinner_textview, budgetNames);
-        budgetSpinner.setAdapter(budgets);
+
+        // Add budget items to spinner if it has not been initialized yet
+        if(budgetSpinner.getCount() == 0)
+        {
+            ArrayAdapter<String> budgets = new ArrayAdapter<>(this, R.layout.spinner_textview, budgetNames);
+            budgetSpinner.setAdapter(budgets);
+        }
 
         final EditText nameField = (EditText) findViewById(R.id.name);
         final EditText accountField = (EditText) findViewById(R.id.account);
