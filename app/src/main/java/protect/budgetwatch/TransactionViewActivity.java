@@ -238,38 +238,7 @@ public class TransactionViewActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                if(capturedUncommittedReceipt != null)
-                {
-                    Log.i(TAG, "Deleting unsaved image: " + capturedUncommittedReceipt);
-                    File unneededReceipt = new File(capturedUncommittedReceipt);
-                    if(unneededReceipt.delete() == false)
-                    {
-                        Log.e(TAG, "Unable to delete unnecessary file: " + capturedUncommittedReceipt);
-                    }
-                    capturedUncommittedReceipt = null;
-                }
-
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                PackageManager packageManager = getPackageManager();
-                if(packageManager == null)
-                {
-                    Log.e(TAG, "Failed to get package manager, cannot take picture");
-                    Toast.makeText(getApplicationContext(), R.string.pictureCaptureError,
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if(takePictureIntent.resolveActivity(packageManager) == null)
-                {
-                    Log.e(TAG, "Could not find an activity to take a picture");
-                    Toast.makeText(getApplicationContext(), R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                File imageLocation = getNewImageLocation();
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageLocation));
-                capturedUncommittedReceipt = imageLocation.getAbsolutePath();
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                captureReceipt();
             }
         };
 
@@ -393,6 +362,42 @@ public class TransactionViewActivity extends AppCompatActivity
                 finish();
             }
         });
+    }
+
+    private void captureReceipt()
+    {
+        if(capturedUncommittedReceipt != null)
+        {
+            Log.i(TAG, "Deleting unsaved image: " + capturedUncommittedReceipt);
+            File unneededReceipt = new File(capturedUncommittedReceipt);
+            if(unneededReceipt.delete() == false)
+            {
+                Log.e(TAG, "Unable to delete unnecessary file: " + capturedUncommittedReceipt);
+            }
+            capturedUncommittedReceipt = null;
+        }
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        PackageManager packageManager = getPackageManager();
+        if(packageManager == null)
+        {
+            Log.e(TAG, "Failed to get package manager, cannot take picture");
+            Toast.makeText(getApplicationContext(), R.string.pictureCaptureError,
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(takePictureIntent.resolveActivity(packageManager) == null)
+        {
+            Log.e(TAG, "Could not find an activity to take a picture");
+            Toast.makeText(getApplicationContext(), R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        File imageLocation = getNewImageLocation();
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageLocation));
+        capturedUncommittedReceipt = imageLocation.getAbsolutePath();
+        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }
 
     @Override
