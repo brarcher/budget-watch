@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,6 +41,8 @@ public class TransactionRevenueFragment extends Fragment
         final TransactionCursorAdapter adapter = new TransactionCursorAdapter(getContext(), expenseCursor);
         listView.setAdapter(adapter);
 
+        registerForContextMenu(listView);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -57,5 +62,44 @@ public class TransactionRevenueFragment extends Fragment
         });
 
         return layout;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.list)
+        {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.edit_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ListView listView = (ListView) getActivity().findViewById(R.id.list);
+        Cursor selected = (Cursor)listView.getItemAtPosition(info.position);
+
+        if(selected != null)
+        {
+            Transaction transaction = Transaction.toTransaction(selected);
+
+            if(item.getItemId() == R.id.action_edit)
+            {
+                Intent i = new Intent(getActivity(), TransactionViewActivity.class);
+                final Bundle b = new Bundle();
+                b.putInt("id", transaction.id);
+                b.putInt("type", DBHelper.TransactionDbIds.REVENUE);
+                b.putBoolean("update", true);
+                i.putExtras(b);
+                startActivity(i);
+
+                return true;
+            }
+        }
+
+        return super.onContextItemSelected(item);
     }
 }
