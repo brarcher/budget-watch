@@ -79,6 +79,7 @@
     <string name="loading">Lade&#8230;</string>
 
     <string name="pictureCaptureError">Bild konnte nicht mit der Kamera aufgenommen werden</string>
+    <string name="noCameraPermissionError">Quittung kann nicht photographiert werden ohne Erlaubnis für die Kamera</string>
 
     <string name="iconDescription">BudgetWatch icon</string>
     <string name="addExpenseDescription">Eine Ausgabentransaktion hinzufügen</string>

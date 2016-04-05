@@ -1,5 +1,6 @@
 package protect.budgetwatch;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,6 +40,7 @@ public class TransactionViewActivity extends AppCompatActivity
 {
     private static final String TAG = "BudgetWatch";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int PERMISSIONS_REQUEST_CAMERA = 2;
 
     private String capturedUncommittedReceipt = null;
 
@@ -238,38 +242,17 @@ public class TransactionViewActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                if(capturedUncommittedReceipt != null)
+                if (ContextCompat.checkSelfPermission(TransactionViewActivity.this,
+                        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
                 {
-                    Log.i(TAG, "Deleting unsaved image: " + capturedUncommittedReceipt);
-                    File unneededReceipt = new File(capturedUncommittedReceipt);
-                    if(unneededReceipt.delete() == false)
-                    {
-                        Log.e(TAG, "Unable to delete unnecessary file: " + capturedUncommittedReceipt);
-                    }
-                    capturedUncommittedReceipt = null;
+                    captureReceipt();
                 }
-
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                PackageManager packageManager = getPackageManager();
-                if(packageManager == null)
+                else
                 {
-                    Log.e(TAG, "Failed to get package manager, cannot take picture");
-                    Toast.makeText(getApplicationContext(), R.string.pictureCaptureError,
-                            Toast.LENGTH_LONG).show();
-                    return;
+                    ActivityCompat.requestPermissions(TransactionViewActivity.this,
+                            new String[]{Manifest.permission.CAMERA},
+                            PERMISSIONS_REQUEST_CAMERA);
                 }
-
-                if(takePictureIntent.resolveActivity(packageManager) == null)
-                {
-                    Log.e(TAG, "Could not find an activity to take a picture");
-                    Toast.makeText(getApplicationContext(), R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                File imageLocation = getNewImageLocation();
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageLocation));
-                capturedUncommittedReceipt = imageLocation.getAbsolutePath();
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         };
 
@@ -395,6 +378,42 @@ public class TransactionViewActivity extends AppCompatActivity
         });
     }
 
+    private void captureReceipt()
+    {
+        if(capturedUncommittedReceipt != null)
+        {
+            Log.i(TAG, "Deleting unsaved image: " + capturedUncommittedReceipt);
+            File unneededReceipt = new File(capturedUncommittedReceipt);
+            if(unneededReceipt.delete() == false)
+            {
+                Log.e(TAG, "Unable to delete unnecessary file: " + capturedUncommittedReceipt);
+            }
+            capturedUncommittedReceipt = null;
+        }
+
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        PackageManager packageManager = getPackageManager();
+        if(packageManager == null)
+        {
+            Log.e(TAG, "Failed to get package manager, cannot take picture");
+            Toast.makeText(getApplicationContext(), R.string.pictureCaptureError,
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if(takePictureIntent.resolveActivity(packageManager) == null)
+        {
+            Log.e(TAG, "Could not find an activity to take a picture");
+            Toast.makeText(getApplicationContext(), R.string.pictureCaptureError, Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        File imageLocation = getNewImageLocation();
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageLocation));
+        capturedUncommittedReceipt = imageLocation.getAbsolutePath();
+        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+    }
+
     @Override
     protected void onDestroy()
     {
@@ -510,6 +529,29 @@ public class TransactionViewActivity extends AppCompatActivity
             }
 
             onResume();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        if(requestCode == PERMISSIONS_REQUEST_CAMERA)
+        {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                // permission was granted.
+                captureReceipt();
+            }
+            else
+            {
+                // Camera permission rejected, inform user that
+                // no receipt can be taken.
+                Toast.makeText(getApplicationContext(), R.string.noCameraPermissionError,
+                        Toast.LENGTH_LONG).show();
+            }
+
         }
     }
 }
