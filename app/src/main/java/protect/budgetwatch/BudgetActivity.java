@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -89,21 +91,41 @@ public class BudgetActivity extends AppCompatActivity
         final BudgetAdapter budgetListAdapter = new BudgetAdapter(this, budgets);
         budgetList.setAdapter(budgetListAdapter);
 
-        budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                Budget budget = (Budget)parent.getItemAtPosition(position);
+        registerForContextMenu(budgetList);
+    }
 
-                Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("id", budget.name);
-                bundle.putBoolean("view", true);
-                i.putExtras(bundle);
-                startActivity(i);
-            }
-        });
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
+    {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        if (v.getId()==R.id.list)
+        {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.edit_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item)
+    {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ListView listView = (ListView) findViewById(R.id.list);
+
+        Budget budget = (Budget)listView.getItemAtPosition(info.position);
+
+        if(budget != null && item.getItemId() == R.id.action_edit)
+        {
+            Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("id", budget.name);
+            bundle.putBoolean("view", true);
+            i.putExtras(bundle);
+            startActivity(i);
+
+            return true;
+        }
+
+        return super.onContextItemSelected(item);
     }
 
     @Override
