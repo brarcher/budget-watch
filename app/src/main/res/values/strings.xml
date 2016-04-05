@@ -83,6 +83,7 @@
     <string name="loading">Loading&#8230;</string>
 
     <string name="pictureCaptureError">Unable to capture image with camera</string>
+    <string name="noCameraPermissionError">Unable to capture receipt without the camera permission</string>
 
     <string name="iconDescription">BudgetWatch icon</string>
     <string name="addExpenseDescription">Add an expense transaction</string>

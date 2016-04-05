@@ -1,5 +1,6 @@
 package protect.budgetwatch;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -37,6 +40,7 @@ public class TransactionViewActivity extends AppCompatActivity
 {
     private static final String TAG = "BudgetWatch";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int PERMISSIONS_REQUEST_CAMERA = 2;
 
     private String capturedUncommittedReceipt = null;
 
@@ -238,7 +242,17 @@ public class TransactionViewActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                captureReceipt();
+                if (ContextCompat.checkSelfPermission(TransactionViewActivity.this,
+                        Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+                {
+                    captureReceipt();
+                }
+                else
+                {
+                    ActivityCompat.requestPermissions(TransactionViewActivity.this,
+                            new String[]{Manifest.permission.CAMERA},
+                            PERMISSIONS_REQUEST_CAMERA);
+                }
             }
         };
 
@@ -515,6 +529,29 @@ public class TransactionViewActivity extends AppCompatActivity
             }
 
             onResume();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    {
+        if(requestCode == PERMISSIONS_REQUEST_CAMERA)
+        {
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED)
+            {
+                // permission was granted.
+                captureReceipt();
+            }
+            else
+            {
+                // Camera permission rejected, inform user that
+                // no receipt can be taken.
+                Toast.makeText(getApplicationContext(), R.string.noCameraPermissionError,
+                        Toast.LENGTH_LONG).show();
+            }
+
         }
     }
 }
