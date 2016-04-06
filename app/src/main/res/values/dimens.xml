@@ -5,4 +5,7 @@
 
     <dimen name="no_data_textSize">16sp</dimen>
     <dimen name="no_data_padding">22dp</dimen>
+
+    <dimen name="receipt_icon_size">18dp</dimen>
+    <dimen name="receipt_icon_padding">2dp</dimen>
 </resources>
