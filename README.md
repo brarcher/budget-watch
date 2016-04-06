@@ -12,5 +12,5 @@ proposed changes.
 
 # Thanks
 
-App icon originals from [Icons4Android](http://www.icons4android.com/)
+App icon originals from [Icons4Android](http://www.icons4android.com/) and [Icons8]{https://icons8.com}
 and formatted using [Android Asset Studio](https://romannurik.github.io/AndroidAssetStudio/index.html).

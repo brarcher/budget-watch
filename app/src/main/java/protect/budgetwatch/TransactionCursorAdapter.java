@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -26,6 +27,7 @@ class TransactionCursorAdapter extends CursorAdapter
         TextView valueField;
         TextView dateField;
         TextView budgetField;
+        ImageView receiptIcon;
     }
 
     // The newView method is used to inflate a new view and return it,
@@ -40,6 +42,7 @@ class TransactionCursorAdapter extends CursorAdapter
         holder.valueField = (TextView) view.findViewById(R.id.value);
         holder.dateField = (TextView) view.findViewById(R.id.date);
         holder.budgetField = (TextView) view.findViewById(R.id.budget);
+        holder.receiptIcon = (ImageView) view.findViewById(R.id.receiptIcon);
         view.setTag(holder);
 
         return view;
@@ -61,5 +64,14 @@ class TransactionCursorAdapter extends CursorAdapter
         holder.budgetField.setText(transaction.budget);
 
         holder.dateField.setText(DATE_FORMATTER.format(transaction.dateMs));
+
+        if(transaction.receipt.isEmpty())
+        {
+            holder.receiptIcon.setVisibility(View.GONE);
+        }
+        else
+        {
+            holder.receiptIcon.setVisibility(View.VISIBLE);
+        }
     }
 }
