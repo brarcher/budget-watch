@@ -92,6 +92,21 @@ public class BudgetActivity extends AppCompatActivity
         budgetList.setAdapter(budgetListAdapter);
 
         registerForContextMenu(budgetList);
+
+        budgetList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                Budget budget = (Budget)parent.getItemAtPosition(position);
+
+                Intent i = new Intent(getApplicationContext(), TransactionActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("budget", budget.name);
+                i.putExtras(bundle);
+                startActivity(i);
+            }
+        });
     }
 
     @Override

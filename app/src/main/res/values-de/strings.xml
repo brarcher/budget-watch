@@ -87,5 +87,7 @@
     <string name="dateInvalid">Datum ist ungültig</string>
     <string name="valueInvalid">Wert ist ungültig</string>
     <string name="valueMissing">Wert ist leer</string>
+    <string name="noExpensesForBudget">Sie haben keine Ausgabentransaktionen im Budget \"%1$s\"</string>
+    <string name="noRevenuesForBudget">Sie haben keine Einkommenstransaktionen im Budget \"%1$s\"</string>
 </resources>
 

@@ -1,6 +1,7 @@
 package protect.budgetwatch;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -17,7 +18,6 @@ import org.robolectric.util.ActivityController;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -59,17 +59,11 @@ public class TransactionActivityTest
         Fragment fragment = adapter.getItem(adapterItemIndex);
         assertNotNull(fragment);
 
-        switch(adapterItemIndex)
-        {
-            case 0:
-                assertTrue(fragment instanceof TransactionExpenseFragment);
-                break;
-            case 1:
-                assertTrue(fragment instanceof TransactionRevenueFragment);
-                break;
-            default:
-                fail("Unexpected adapter item index: " + adapterItemIndex);
-        }
+        Bundle arguments = fragment.getArguments();
+        assertNotNull(arguments);
+        final int expectedTransactionType = (adapterItemIndex == 0) ?
+                DBHelper.TransactionDbIds.EXPENSE : DBHelper.TransactionDbIds.REVENUE;
+        assertEquals(expectedTransactionType, arguments.getInt("type"));
     }
 
     @Test
