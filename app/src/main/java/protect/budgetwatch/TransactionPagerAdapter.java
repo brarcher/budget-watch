@@ -1,5 +1,6 @@
 package protect.budgetwatch;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -17,15 +18,13 @@ class TransactionPagerAdapter extends FragmentStatePagerAdapter
     @Override
     public Fragment getItem(int position)
     {
-        switch (position)
-        {
-            case 0:
-                return new TransactionExpenseFragment();
-            case 1:
-                return new TransactionRevenueFragment();
-            default:
-                return null;
-        }
+        Fragment fragment = new TransactionFragment();
+        Bundle arguments = new Bundle();
+        int transactionType = (position == 0) ?
+                DBHelper.TransactionDbIds.EXPENSE : DBHelper.TransactionDbIds.REVENUE;
+        arguments.putInt("type", transactionType);
+        fragment.setArguments(arguments);
+        return fragment;
     }
 
     @Override

@@ -16,17 +16,37 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class TransactionExpenseFragment extends Fragment
+public class TransactionFragment extends Fragment
 {
+    private int _transactionType;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        Bundle arguments = getArguments();
+        if(arguments == null || arguments.getInt("type", -1) == -1)
+        {
+            throw new IllegalStateException("Required argument 'type' is missing");
+        }
+
+        _transactionType = arguments.getInt("type");
+
         View layout = inflater.inflate(R.layout.list_layout, container, false);
         ListView listView = (ListView) layout.findViewById(R.id.list);
         final TextView helpText = (TextView) layout.findViewById(R.id.helpText);
         DBHelper dbhelper = new DBHelper(getContext());
 
-        if(dbhelper.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE) > 0)
+        Cursor cursor;
+        if(_transactionType == DBHelper.TransactionDbIds.EXPENSE)
+        {
+            cursor = dbhelper.getExpenses();
+        }
+        else
+        {
+            cursor = dbhelper.getRevenues();
+        }
+
+        if(cursor.getCount() > 0)
         {
             listView.setVisibility(View.VISIBLE);
             helpText.setVisibility(View.GONE);
@@ -35,11 +55,13 @@ public class TransactionExpenseFragment extends Fragment
         {
             listView.setVisibility(View.GONE);
             helpText.setVisibility(View.VISIBLE);
-            helpText.setText(R.string.noExpenses);
+
+            int stringId = (_transactionType == DBHelper.TransactionDbIds.EXPENSE) ?
+                    R.string.noExpenses : R.string.noRevenues;
+            helpText.setText(stringId);
         }
 
-        Cursor expenseCursor = dbhelper.getExpenses();
-        final TransactionCursorAdapter adapter = new TransactionCursorAdapter(getContext(), expenseCursor);
+        final TransactionCursorAdapter adapter = new TransactionCursorAdapter(getContext(), cursor);
         listView.setAdapter(adapter);
 
         registerForContextMenu(listView);
@@ -55,7 +77,7 @@ public class TransactionExpenseFragment extends Fragment
                 Intent i = new Intent(view.getContext(), TransactionViewActivity.class);
                 final Bundle b = new Bundle();
                 b.putInt("id", transaction.id);
-                b.putInt("type", DBHelper.TransactionDbIds.EXPENSE);
+                b.putInt("type", _transactionType);
                 b.putBoolean("view", true);
                 i.putExtras(b);
                 startActivity(i);
@@ -92,7 +114,7 @@ public class TransactionExpenseFragment extends Fragment
                 Intent i = new Intent(getActivity(), TransactionViewActivity.class);
                 final Bundle b = new Bundle();
                 b.putInt("id", transaction.id);
-                b.putInt("type", DBHelper.TransactionDbIds.EXPENSE);
+                b.putInt("type", _transactionType);
                 b.putBoolean("update", true);
                 i.putExtras(b);
                 startActivity(i);
