@@ -37,6 +37,7 @@
             android:name=".TransactionActivity"
             android:label="@string/transactionsTitle"
             android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".TransactionViewActivity"

@@ -31,6 +31,11 @@ public class TransactionFragment extends Fragment
 
         _transactionType = arguments.getInt("type");
 
+        // If a budget has been passed then only transactions from that budget
+        // will be displayed. Otherwise, all transactions wil be displayed.
+        final Bundle b = getActivity().getIntent().getExtras();
+        final String budgetToDisplay = b != null ? b.getString("budget", null) : null;
+
         View layout = inflater.inflate(R.layout.list_layout, container, false);
         ListView listView = (ListView) layout.findViewById(R.id.list);
         final TextView helpText = (TextView) layout.findViewById(R.id.helpText);
@@ -39,11 +44,25 @@ public class TransactionFragment extends Fragment
         Cursor cursor;
         if(_transactionType == DBHelper.TransactionDbIds.EXPENSE)
         {
-            cursor = dbhelper.getExpenses();
+            if(budgetToDisplay == null)
+            {
+                cursor = dbhelper.getExpenses();
+            }
+            else
+            {
+                cursor = dbhelper.getExpensesForBudget(budgetToDisplay);
+            }
         }
         else
         {
-            cursor = dbhelper.getRevenues();
+            if(budgetToDisplay == null)
+            {
+                cursor = dbhelper.getRevenues();
+            }
+            else
+            {
+                cursor = dbhelper.getRevenuesForBudget(budgetToDisplay);
+            }
         }
 
         if(cursor.getCount() > 0)
@@ -56,9 +75,23 @@ public class TransactionFragment extends Fragment
             listView.setVisibility(View.GONE);
             helpText.setVisibility(View.VISIBLE);
 
-            int stringId = (_transactionType == DBHelper.TransactionDbIds.EXPENSE) ?
-                    R.string.noExpenses : R.string.noRevenues;
-            helpText.setText(stringId);
+            String message;
+
+            if(budgetToDisplay == null)
+            {
+                int stringId = (_transactionType == DBHelper.TransactionDbIds.EXPENSE) ?
+                        R.string.noExpenses : R.string.noRevenues;
+                message = getResources().getString(stringId);
+            }
+            else
+            {
+                int stringId = (_transactionType == DBHelper.TransactionDbIds.EXPENSE) ?
+                        R.string.noExpensesForBudget : R.string.noRevenuesForBudget;
+                String base = getResources().getString(stringId);
+                message = String.format(base, budgetToDisplay);
+            }
+
+            helpText.setText(message);
         }
 
         final TransactionCursorAdapter adapter = new TransactionCursorAdapter(getContext(), cursor);

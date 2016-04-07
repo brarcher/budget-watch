@@ -515,6 +515,21 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
+     * @return Cursor pointing to all expense transactions
+     * in the database which are from the given budget
+     */
+    public Cursor getExpensesForBudget(String budget)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        String [] args = new String[]{budget};
+        Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
+                TransactionDbIds.TYPE + "=" + TransactionDbIds.EXPENSE +
+                " AND " + TransactionDbIds.BUDGET + "=?" +
+                " ORDER BY " + TransactionDbIds.DATE + " DESC", args);
+        return res;
+    }
+
+    /**
      * @return Cursor pointing to all revenue transactions
      * in the database
      */
@@ -524,6 +539,21 @@ public class DBHelper extends SQLiteOpenHelper
         Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
                 TransactionDbIds.TYPE + "=" + TransactionDbIds.REVENUE +
                 " ORDER BY " + TransactionDbIds.DATE + " DESC", null);
+        return res;
+    }
+
+    /**
+     * @return Cursor pointing to all revenue transactions
+     * in the database which are from the given budget.
+     */
+    public Cursor getRevenuesForBudget(String budget)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        String [] args = new String[]{budget};
+        Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
+                TransactionDbIds.TYPE + "=" + TransactionDbIds.REVENUE +
+                " AND " + TransactionDbIds.BUDGET + "=?" +
+                " ORDER BY " + TransactionDbIds.DATE + " DESC", args);
         return res;
     }
 

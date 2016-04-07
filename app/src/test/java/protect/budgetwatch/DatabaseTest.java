@@ -479,4 +479,55 @@ public class DatabaseTest
             assertEquals("receipt", transaction.receipt);
         }
     }
+
+    @Test
+    public void filterTransactionsByBudget()
+    {
+        boolean result;
+
+        final String BUDGET_1 = "budget1";
+        final String BUDGET_2 = "budget2";
+
+        for(String budget : new String[]{BUDGET_1, BUDGET_2})
+        {
+            result = db.insertBudget(budget, 100);
+            assertTrue(result);
+        }
+
+        final int NUM_TRANSACTIONS_BUDGET_1 = 10;
+        for(int index = 0; index < NUM_TRANSACTIONS_BUDGET_1; index++)
+        {
+            for(int type : new int[]{DBHelper.TransactionDbIds.EXPENSE, DBHelper.TransactionDbIds.REVENUE})
+            {
+                result = db.insertTransaction(type, "description", "account", BUDGET_1, 0, "note", index, "");
+                assertTrue(result);
+            }
+        }
+
+        final int NUM_TRANSACTIONS_BUDGET_2 = 50;
+        for(int index = 0; index < NUM_TRANSACTIONS_BUDGET_2; index++)
+        {
+            for(int type : new int[]{DBHelper.TransactionDbIds.EXPENSE, DBHelper.TransactionDbIds.REVENUE})
+            {
+                result = db.insertTransaction(type, "description", "account", BUDGET_2, 0, "note", index, "");
+                assertTrue(result);
+            }
+        }
+
+        Cursor cursor = db.getExpensesForBudget(BUDGET_1);
+        assertEquals(NUM_TRANSACTIONS_BUDGET_1, cursor.getCount());
+        cursor.close();
+
+        cursor = db.getRevenuesForBudget(BUDGET_1);
+        assertEquals(NUM_TRANSACTIONS_BUDGET_1, cursor.getCount());
+        cursor.close();
+
+        cursor = db.getExpensesForBudget(BUDGET_2);
+        assertEquals(NUM_TRANSACTIONS_BUDGET_2, cursor.getCount());
+        cursor.close();
+
+        cursor = db.getRevenuesForBudget(BUDGET_2);
+        assertEquals(NUM_TRANSACTIONS_BUDGET_2, cursor.getCount());
+        cursor.close();
+    }
 }

@@ -56,7 +56,9 @@
 
     <string name="noBudgets">You don\'t have any budgets at the moment. Click the "+" (plus) button up top to get started.\n\nBudget Watch lets you create budgets, then track spending during the month.</string>
     <string name="noExpenses">You don\'t have any expense transactions at the moment. Click the "+" (plus) button up top to get started.</string>
+    <string name="noExpensesForBudget">You don\'t have any expense transactions for budget \"%1$s\"</string>
     <string name="noRevenues">You don\'t have any revenue transactions at the moment. Click the "+" (plus) button up top to get started.</string>
+    <string name="noRevenuesForBudget">You don\'t have any revenue transactions for budget \"%1$s\"</string>
 
     <string name="budgetDateRangeHelp">Select date range to display for budgets</string>
     <string name="startDate">Start date</string>
