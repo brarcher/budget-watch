@@ -10,6 +10,21 @@ You can then view how close your sending is to your budget.
 If there is any interest in improving this project, kindly submit a pull request with
 proposed changes.
 
+# Building
+
+To build, use the gradle wrapper scripts provided in the top level directory of the project. The following will
+compile the application and run all unit tests:
+
+GNU/Linux, OSX, UNIX:
+```
+./gradlew build
+```
+
+Windows:
+```
+./gradlew.bat build
+```
+
 # Thanks
 
 App icon originals from [Icons4Android](http://www.icons4android.com/) and [Icons8](https://icons8.com)
