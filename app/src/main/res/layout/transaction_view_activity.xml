@@ -40,7 +40,7 @@
                           android:layout_height="wrap_content"
                           android:labelFor="@+id/name"
                           android:text="@string/name" />
-                <AutoCompleteTextView android:id="@+id/name"
+                <EditText android:id="@+id/name"
                                       android:layout_width="fill_parent"
                                       android:layout_height="wrap_content"
                                       android:inputType="text" />
@@ -79,7 +79,7 @@
                           android:layout_height="wrap_content"
                           android:labelFor="@+id/account"
                           android:text="@string/account" />
-                <AutoCompleteTextView android:id="@+id/account"
+                <EditText android:id="@+id/account"
                                       android:layout_width="fill_parent"
                                       android:layout_height="wrap_content"
                                       android:inputType="text" />
