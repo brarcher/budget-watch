@@ -4,8 +4,7 @@
                                                  xmlns:tools="http://schemas.android.com/tools"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
-                                                 android:fitsSystemWindows="true"
-                                                 tools:context="protect.budgetwatch.AccountsActivity">
+                                                 android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -41,7 +40,7 @@
                           android:layout_height="wrap_content"
                           android:labelFor="@+id/name"
                           android:text="@string/name" />
-                <AutoCompleteTextView android:id="@+id/name"
+                <EditText android:id="@+id/name"
                                       android:layout_width="fill_parent"
                                       android:layout_height="wrap_content"
                                       android:inputType="text" />
@@ -80,7 +79,7 @@
                           android:layout_height="wrap_content"
                           android:labelFor="@+id/account"
                           android:text="@string/account" />
-                <AutoCompleteTextView android:id="@+id/account"
+                <EditText android:id="@+id/account"
                                       android:layout_width="fill_parent"
                                       android:layout_height="wrap_content"
                                       android:inputType="text" />
