@@ -59,38 +59,42 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
             return;
         }
 
+        boolean result = false;
+
         try
         {
             FileInputStream fileReader = new FileInputStream(importFile);
             InputStreamReader reader = new InputStreamReader(fileReader, Charset.forName("UTF-8"));
-            boolean result = MultiFormatImporter.importData(db, reader, format);
+            result = MultiFormatImporter.importData(db, reader, format);
             reader.close();
-
-            int messageId = result ? R.string.importedFrom : R.string.importFailed;
-            toastWithArg(messageId, importFile.getAbsolutePath());
         }
         catch(IOException e)
         {
             Log.e(TAG, "Unable to import file", e);
         }
+
+        int messageId = result ? R.string.importedFrom : R.string.importFailed;
+        toastWithArg(messageId, importFile.getAbsolutePath());
     }
 
     private void performExport(File exportFile, DBHelper db)
     {
+        boolean result = false;
+
         try
         {
             FileOutputStream fileWriter = new FileOutputStream(exportFile);
             OutputStreamWriter writer = new OutputStreamWriter(fileWriter, Charset.forName("UTF-8"));
-            boolean result = MultiFormatExporter.exportData(db, writer, format);
+            result = MultiFormatExporter.exportData(db, writer, format);
             writer.close();
-
-            int messageId = result ? R.string.exportedTo : R.string.exportFailed;
-            toastWithArg(messageId, exportFile.getAbsolutePath());
         }
         catch (IOException e)
         {
             Log.e(TAG, "Unable to export file", e);
         }
+
+        int messageId = result ? R.string.exportedTo : R.string.exportFailed;
+        toastWithArg(messageId, exportFile.getAbsolutePath());
     }
 
     protected void onPreExecute()
