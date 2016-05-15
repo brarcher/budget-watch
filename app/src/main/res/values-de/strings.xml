@@ -1,4 +1,6 @@
-<resources>
+<resources
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
     <string name="app_name">Budget Watch</string>
     <string name="icon">icon</string>
     <string name="budgetsTitle">Budgets</string>
@@ -33,6 +35,7 @@
     <string name="view">Ansicht</string>
     <string name="update">Update</string>
     <string name="clean">Löschen</string>
+    <string name="ok">OK</string>
 
     <string name="Grocery">Lebensmittel</string>
     <string name="one_hundred">100</string>
@@ -89,5 +92,13 @@
     <string name="valueMissing">Wert ist leer</string>
     <string name="noExpensesForBudget">Sie haben keine Ausgabentransaktionen im Budget \"%1$s\"</string>
     <string name="noRevenuesForBudget">Sie haben keine Einkommenstransaktionen im Budget \"%1$s\"</string>
+
+    <string name="about">Über</string>
+    <string name="app_copyright_fmt">Copyright 2016-<xliff:g>%s</xliff:g> Branden Archer</string>
+    <string name="app_license">Lizenziert unter der GPLv3.</string>
+    <string name="about_title_fmt">Über <xliff:g id="app_name">%s</xliff:g></string>
+    <string name="debug_version_fmt">Version: <xliff:g id="version">%s</xliff:g></string>
+    <string name="app_revision_fmt">Revision Information: <xliff:g id="app_revision_url">%s</xliff:g></string>
+    <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> benutzt die folgenden third-party libraries: <xliff:g id="app_libraries_list">%s</xliff:g></string>
 </resources>
 
