@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class BudgetViewActivity extends AppCompatActivity
 {
@@ -107,9 +106,6 @@ public class BudgetViewActivity extends AppCompatActivity
                     {
                         db.updateBudget(budgetName, value);
                     }
-
-                    Toast.makeText(BudgetViewActivity.this, "Budget account: " + budgetName,
-                            Toast.LENGTH_SHORT).show();
 
                     finish();
                 }
