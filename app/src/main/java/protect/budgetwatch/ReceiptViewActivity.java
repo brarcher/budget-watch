@@ -1,17 +1,30 @@
 package protect.budgetwatch;
 
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
 
+import java.io.File;
+
 public class ReceiptViewActivity  extends AppCompatActivity
 {
+    private static final String TAG = "BudgetWatch";
+
+    private String receiptFilename = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -27,7 +40,7 @@ public class ReceiptViewActivity  extends AppCompatActivity
         }
 
         final Bundle b = getIntent().getExtras();
-        final String receiptFileName = b.getString("receipt");
+        receiptFilename = b.getString("receipt");
 
         final WebView receiptView = (WebView) findViewById(R.id.imageView);
         receiptView.getSettings().setBuiltInZoomControls(true);
@@ -39,10 +52,46 @@ public class ReceiptViewActivity  extends AppCompatActivity
 
         String data = "<html><body>" +
                 "<img width=\"" + size.x + "\" " +
-                "src=\"file://" + receiptFileName + "\"/>" +
+                "src=\"file://" + receiptFilename + "\"/>" +
                 "</body></html>";
 
         receiptView.loadDataWithBaseURL("", data, "text/html", "utf-8", null);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.share_menu, menu);
+
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.action_share);
+
+        // Fetch ShareActionProvider
+        ShareActionProvider shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        if (shareActionProvider == null)
+        {
+            Log.w(TAG, "Failed to find share action provider");
+            return false;
+        }
+
+        if(receiptFilename == null)
+        {
+            Log.w(TAG, "No receipt to share");
+            return false;
+        }
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+
+        // Determine mimetype of image
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(receiptFilename, opt);
+        shareIntent.setType(opt.outMimeType);
+
+        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(receiptFilename)));
+        shareActionProvider.setShareIntent(shareIntent);
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
