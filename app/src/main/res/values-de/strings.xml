@@ -44,8 +44,8 @@
     <string name="budgetTypeMissing">Budgettyp ist leer</string>
     <string name="budgetValueMissing">Budgetwert ist leer</string>
 
-    <string name="expensesTitle">Einnahmen</string>
-    <string name="revenuesTitle">Ausgaben</string>
+    <string name="expensesTitle">Ausgaben</string>
+    <string name="revenuesTitle">Einnahmen</string>
 
     <string name="edit">Bearbeiten</string>
     <string name="delete">Löschen</string>
