@@ -2,6 +2,8 @@ package protect.budgetwatch;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -19,11 +21,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 17)
 public class DatabaseTest
 {
+    private Context context;
     private DBHelper db;
     private long nowMs;
     private long lastYearMs;
@@ -33,6 +37,7 @@ public class DatabaseTest
     public void setUp()
     {
         Activity activity = Robolectric.setupActivity(BudgetViewActivity.class);
+        context = activity;
         db = new DBHelper(activity);
         nowMs = System.currentTimeMillis();
 
@@ -234,11 +239,20 @@ public class DatabaseTest
     @Test
     public void addRemoveOneTransaction()
     {
+        TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
+        context.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        assertFalse(dbChanged.hasChanged());
+
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
+        assertFalse(dbChanged.hasChanged());
+
         db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description", "account", "budget",
                 100.50, "note", nowMs, "receipt");
+
+        assertTrue(dbChanged.hasChanged());
+        dbChanged.reset();
 
         assertEquals(1, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
@@ -257,14 +271,24 @@ public class DatabaseTest
         checkTransaction(expenseTransaction, DBHelper.TransactionDbIds.EXPENSE, "description", "account",
                 "budget", 100.50, "note", nowMs, "receipt");
 
+        assertFalse(dbChanged.hasChanged());
+
         db.deleteTransaction(expenseId);
+
+        assertTrue(dbChanged.hasChanged());
+        dbChanged.reset();
 
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
+        assertFalse(dbChanged.hasChanged());
+
         db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "description2", "account2",
                 "budget2",
                 100.25, "note2", nowMs + 1, "receipt2");
+
+        assertTrue(dbChanged.hasChanged());
+        dbChanged.reset();
 
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(1, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
@@ -282,10 +306,19 @@ public class DatabaseTest
         checkTransaction(revenueTransaction, DBHelper.TransactionDbIds.REVENUE, "description2", "account2",
                 "budget2", 100.25, "note2", nowMs+1, "receipt2");
 
+        assertFalse(dbChanged.hasChanged());
+
         db.deleteTransaction(revenueId);
+
+        assertTrue(dbChanged.hasChanged());
+        dbChanged.reset();
 
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
+
+        assertFalse(dbChanged.hasChanged());
+
+        context.unregisterReceiver(dbChanged);
     }
 
     @Test
@@ -323,27 +356,53 @@ public class DatabaseTest
     @Test
     public void updateTransaction()
     {
+        TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
+        context.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        assertFalse(dbChanged.hasChanged());
+
         boolean result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
                 "account", "budget", 100.50, "note", nowMs, "receipt");
         assertTrue(result);
+
+        assertTrue(dbChanged.hasChanged());
+        dbChanged.reset();
+
         Transaction transaction = db.getTransaction(1);
         checkTransaction(transaction, DBHelper.TransactionDbIds.EXPENSE, "description",
                 "account", "budget", 100.50, "note", nowMs, "receipt");
 
+        assertFalse(dbChanged.hasChanged());
+
         result = db.updateTransaction(1, DBHelper.TransactionDbIds.EXPENSE, "description2",
                 "account2", "budget2", 25, "note2", nowMs + 1, "receipt2");
         assertTrue(result);
+
+        assertTrue(dbChanged.hasChanged());
+        dbChanged.reset();
+
         transaction = db.getTransaction(1);
         checkTransaction(transaction, DBHelper.TransactionDbIds.EXPENSE, "description2",
                 "account2", "budget2", 25, "note2", nowMs + 1, "receipt2");
+
+        assertFalse(dbChanged.hasChanged());
+
+        context.unregisterReceiver(dbChanged);
     }
 
     @Test
     public void updateMissingTransaction()
     {
+        TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
+        context.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        assertFalse(dbChanged.hasChanged());
+
         boolean result = db.updateTransaction(1, DBHelper.TransactionDbIds.EXPENSE, "", "", "", 0,
                 "", 0, "");
         assertEquals(false, result);
+
+        assertFalse(dbChanged.hasChanged());
+
+        context.unregisterReceiver(dbChanged);
     }
 
     private void setupDatabaseVersion1(SQLiteDatabase database)

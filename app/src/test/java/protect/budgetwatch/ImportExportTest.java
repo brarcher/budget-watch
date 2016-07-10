@@ -1,6 +1,7 @@
 package protect.budgetwatch;
 
 import android.app.Activity;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -20,6 +21,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -265,9 +267,17 @@ public class ImportExportTest
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
             InputStreamReader inStream = new InputStreamReader(inData);
 
+            TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
+            activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+            assertFalse(dbChanged.hasChanged());
+
             // Import the CSV data
             result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
             assertTrue(result);
+
+            // The contents of the database should have changed
+            assertTrue(dbChanged.hasChanged());
+            activity.unregisterReceiver(dbChanged);
 
             assertEquals(NUM_TRANSACTIONS,
                     db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
@@ -302,9 +312,17 @@ public class ImportExportTest
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
             InputStreamReader inStream = new InputStreamReader(inData);
 
+            TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
+            activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+            assertFalse(dbChanged.hasChanged());
+
             // Import the CSV data on top of the existing database
             result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
             assertTrue(result);
+
+            // The contents of the database should not have changed
+            assertFalse(dbChanged.hasChanged());
+            activity.unregisterReceiver(dbChanged);
 
             assertEquals(NUM_TRANSACTIONS,
                     db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));

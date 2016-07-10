@@ -3,6 +3,7 @@ package protect.budgetwatch;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -17,6 +18,8 @@ import android.widget.DatePicker;
 
 public class TransactionActivity extends AppCompatActivity
 {
+    private TransactionDatabaseChangedReceiver _dbChanged;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -30,13 +33,15 @@ public class TransactionActivity extends AppCompatActivity
         {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        _dbChanged = new TransactionDatabaseChangedReceiver();
+        this.registerReceiver(_dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+
+        resetView();
     }
 
-    @Override
-    public void onResume()
+    private void resetView()
     {
-        super.onResume();
-
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.removeAllTabs();
         tabLayout.addTab(tabLayout.newTab().setText(R.string.expensesTitle));
@@ -69,6 +74,18 @@ public class TransactionActivity extends AppCompatActivity
 
             }
         });
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+
+        if(_dbChanged.hasChanged())
+        {
+            resetView();
+            _dbChanged.reset();
+        }
     }
 
     @Override
@@ -144,5 +161,12 @@ public class TransactionActivity extends AppCompatActivity
         {
             return DBHelper.TransactionDbIds.REVENUE;
         }
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        this.unregisterReceiver(_dbChanged);
+        super.onDestroy();
     }
 }
