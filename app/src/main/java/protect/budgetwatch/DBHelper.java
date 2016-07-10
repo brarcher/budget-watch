@@ -2,6 +2,7 @@ package protect.budgetwatch;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -50,9 +51,20 @@ public class DBHelper extends SQLiteOpenHelper
         public static final int REVENUE = 2;
     }
 
+    private Context _context;
+
     public DBHelper(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        _context = context;
+    }
+
+    /**
+     * Send a notification that the transaction database has changed
+     */
+    private void sendChangeNotification()
+    {
+        _context.sendBroadcast(new Intent(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
     }
 
     @Override
@@ -361,6 +373,11 @@ public class DBHelper extends SQLiteOpenHelper
         long newId = db.insert(TransactionDbIds.TABLE, null, contentValues);
         db.close();
 
+        if(newId != -1)
+        {
+            sendChangeNotification();
+        }
+
         return (newId != -1);
     }
 
@@ -389,6 +406,12 @@ public class DBHelper extends SQLiteOpenHelper
         contentValues.put(TransactionDbIds.RECEIPT, receipt);
 
         long newId = writableDb.insert(TransactionDbIds.TABLE, null, contentValues);
+
+        if(newId != -1)
+        {
+            sendChangeNotification();
+        }
+
         return (newId != -1);
     }
 
@@ -421,6 +444,11 @@ public class DBHelper extends SQLiteOpenHelper
                 TransactionDbIds.NAME + "=?",
                 new String[]{Integer.toString(id)});
         db.close();
+
+        if(rowsUpdated == 1)
+        {
+            sendChangeNotification();
+        }
 
         return (rowsUpdated == 1);
     }
@@ -498,6 +526,12 @@ public class DBHelper extends SQLiteOpenHelper
                 TransactionDbIds.NAME + " = ? ",
                 new String[]{Integer.toString(id)});
         db.close();
+
+        if(rowsDeleted == 1)
+        {
+            sendChangeNotification();
+        }
+
         return (rowsDeleted == 1);
     }
 
