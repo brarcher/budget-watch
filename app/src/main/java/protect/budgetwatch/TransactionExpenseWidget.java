@@ -20,6 +20,7 @@ public class TransactionExpenseWidget extends AppWidgetProvider
         Bundle extras = new Bundle();
         extras.putInt("type", DBHelper.TransactionDbIds.EXPENSE);
         intent.putExtras(extras);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
         remoteView.setOnClickPendingIntent(R.id.addTransaction, pendingIntent);
 
