@@ -507,7 +507,7 @@ public class TransactionViewActivity extends AppCompatActivity
         }
 
         UUID imageFilename = UUID.randomUUID();
-        File receiptFile = new File(imageDir, imageFilename.toString() + ".png");
+        File receiptFile = new File(imageDir, imageFilename.toString() + ".jpg");
 
         return receiptFile;
     }
