@@ -17,6 +17,7 @@
     <string name="editRevenueTransactionTitle">Edit Revenue</string>
     <string name="viewRevenueTransactionTitle">View Revenue</string>
     <string name="importExportTitle">Import/Export</string>
+    <string name="totalBudgetTitle">Total</string>
 
     <string name="add">Add</string>
     <string name="selectDates">Select Dates</string>

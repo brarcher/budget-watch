@@ -33,6 +33,16 @@
             android:layout_gravity="center"/>
 
         <include layout="@layout/list_layout" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
+            android:background="@android:color/darker_gray"/>
+
+        <include layout="@layout/budget_layout"/>
+
     </LinearLayout>
 
 

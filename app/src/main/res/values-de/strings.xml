@@ -101,5 +101,6 @@
     <string name="app_revision_fmt">Revision Information: <xliff:g id="app_revision_url">%s</xliff:g></string>
     <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> benutzt die folgenden third-party libraries: <xliff:g id="app_libraries_list">%s</xliff:g></string>
     <string name="share">Teilen</string>
+    <string name="totalBudgetTitle">Gesamt</string>
 </resources>
 

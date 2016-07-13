@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.junit.Test;
@@ -101,5 +102,61 @@ public class BudgetActivityTest
         assertEquals("name", budget.name);
         assertEquals(100, budget.max);
         assertEquals(0, budget.current);
+    }
+
+    private void checkTotalItem(final Activity activity, final int current, final int max)
+    {
+        final TextView budgetName = (TextView)activity.findViewById(R.id.budgetName);
+        final TextView budgetValue = (TextView)activity.findViewById(R.id.budgetValue);
+        final ProgressBar budgetBar = (ProgressBar)activity.findViewById(R.id.budgetBar);
+
+        final String totalBudgetTitle = activity.getResources().getString(R.string.totalBudgetTitle);
+        final String fractionFormat = activity.getResources().getString(R.string.fraction);
+
+        String fraction = String.format(fractionFormat, current, max);
+        assertEquals(budgetName.getText().toString(), totalBudgetTitle);
+        assertEquals(budgetValue.getText().toString(), fraction);
+        assertEquals(budgetBar.getProgress(), current);
+        assertEquals(budgetBar.getMax(), max);
+    }
+
+    @Test
+    public void addBudgetTotal()
+    {
+        ActivityController activityController = Robolectric.buildActivity(BudgetActivity.class).create();
+
+        Activity mainActivity = (Activity)activityController.get();
+        activityController.start();
+        activityController.resume();
+
+        final long nowMs = System.currentTimeMillis();
+
+        int current = 0;
+        int max = 0;
+
+        checkTotalItem(mainActivity, current, max);
+
+        DBHelper db = new DBHelper(mainActivity);
+
+        final int budgetValue = 1234;
+        final int expenseValue = 123;
+        final int revenueValue = 12;
+
+        for(int index = 0; index < 10; index++)
+        {
+            final String budgetName = "budget" + index;
+            db.insertBudget("budget" + index, budgetValue);
+            max += budgetValue;
+
+            db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description", "account", budgetName, expenseValue, "note", nowMs, "receipt");
+            db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "description", "account", budgetName, revenueValue, "note", nowMs, "receipt");
+
+            current = current + expenseValue - revenueValue;
+        }
+
+        activityController.pause();
+        activityController.resume();
+
+        checkTotalItem(mainActivity, current, max);
     }
 }
