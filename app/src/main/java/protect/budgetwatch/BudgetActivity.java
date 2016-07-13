@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,6 +108,32 @@ public class BudgetActivity extends AppCompatActivity
                 startActivity(i);
             }
         });
+
+        setupTotalEntry(budgets);
+    }
+
+    private void setupTotalEntry(final List<Budget> budgets)
+    {
+        final TextView budgetName = (TextView)findViewById(R.id.budgetName);
+        final TextView budgetValue = (TextView)findViewById(R.id.budgetValue);
+        final ProgressBar budgetBar = (ProgressBar)findViewById(R.id.budgetBar);
+
+        budgetName.setText(R.string.totalBudgetTitle);
+
+        int max = 0;
+        int current = 0;
+
+        for(Budget budget : budgets)
+        {
+            max += budget.max;
+            current += budget.current;
+        }
+
+        budgetBar.setMax(max);
+        budgetBar.setProgress(current);
+
+        String fraction = String.format(getResources().getString(R.string.fraction), current, max);
+        budgetValue.setText(fraction);
     }
 
     @Override
