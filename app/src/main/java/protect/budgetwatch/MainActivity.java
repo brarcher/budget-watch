@@ -144,6 +144,13 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+        if(id == R.id.action_settings)
+        {
+            Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
+            startActivity(i);
+            return true;
+        }
+
         if(id == R.id.action_about)
         {
             displayAboutDialog();

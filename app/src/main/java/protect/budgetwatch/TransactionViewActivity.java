@@ -2,11 +2,17 @@ package protect.budgetwatch;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +33,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -507,28 +515,154 @@ public class TransactionViewActivity extends AppCompatActivity
         }
 
         UUID imageFilename = UUID.randomUUID();
-        File receiptFile = new File(imageDir, imageFilename.toString() + ".png");
+        File receiptFile = new File(imageDir, imageFilename.toString() + ".jpg");
 
         return receiptFile;
+    }
+
+    private boolean reencodeImageWithQuality(String original, int quality)
+    {
+        File destFile = new File(original);
+        File tmpLocation = getNewImageLocation();
+
+        try
+        {
+            if (tmpLocation == null)
+            {
+                throw new IOException("Could not create location for tmp file");
+            }
+
+            boolean created = tmpLocation.createNewFile();
+            if (created == false)
+            {
+                throw new IOException("Could not create tmp file");
+            }
+
+            Bitmap bitmap = BitmapFactory.decodeFile(original);
+            FileOutputStream fOut = new FileOutputStream(tmpLocation);
+            boolean fileWritten = bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fOut);
+            fOut.flush();
+            fOut.close();
+
+            if (fileWritten == false)
+            {
+                throw new IOException("Could not down compress file");
+            }
+
+            boolean renamed = tmpLocation.renameTo(destFile);
+            if (renamed == false)
+            {
+                throw new IOException("Could not move converted file");
+            }
+
+            Log.i(TAG, "Image file " + original + " saved at quality " + quality);
+
+            return true;
+        }
+        catch(IOException e)
+        {
+            Log.e(TAG, "Failed to encode image", e);
+
+            for(File item : new File[]{tmpLocation, destFile})
+            {
+                if(item != null)
+                {
+                    boolean result = item.delete();
+                    if(result == false)
+                    {
+                        Log.w(TAG, "Failed to delete image file: " + item.getAbsolutePath());
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        Log.d(TAG, "Received image from camera");
+
         if(requestCode == REQUEST_IMAGE_CAPTURE)
         {
-            if (resultCode == RESULT_OK)
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+            String jpegQualityLevelStr = prefs.getString("jpegQuality", "");
+            int jpegQualityLevel = 40; // default value
+
+            try
             {
-                Log.i(TAG, "Image file saved: " + capturedUncommittedReceipt);
+                jpegQualityLevel = Integer.parseInt(jpegQualityLevelStr);
+            }
+            catch(NumberFormatException e)
+            {
+                // If the setting has no value or is otherwise invalid, fall back
+                // on a default value
+            }
+
+            final int JPEG_QUALITY_LEVEL = jpegQualityLevel;
+
+            if (resultCode != RESULT_OK || JPEG_QUALITY_LEVEL == 100)
+            {
+                if(resultCode != RESULT_OK)
+                {
+                    Log.e(TAG, "Failed to create receipt image: " + resultCode);
+                    // No image was actually created, simply forget the patch
+                    capturedUncommittedReceipt = null;
+                }
+                else
+                {
+                    Log.i(TAG, "Image file saved: " + capturedUncommittedReceipt);
+                }
+
+                onResume();
             }
             else
             {
-                Log.e(TAG, "Failed to create receipt image: " + resultCode);
-                // No image was actually created, simply forget the patch
-                capturedUncommittedReceipt = null;
-            }
+                Log.i(TAG, "Re-encoding image in background");
 
-            onResume();
+                AsyncTask<Void, Void, Boolean> imageConverter = new AsyncTask<Void, Void, Boolean>()
+                {
+                    ProgressDialog dialog;
+
+                    @Override
+                    protected void onPreExecute()
+                    {
+                        dialog = new ProgressDialog(TransactionViewActivity.this);
+                        dialog.setMessage(TransactionViewActivity.this.getResources().getString(R.string.encodingReceipt));
+                        dialog.setCancelable(false);
+                        dialog.setCanceledOnTouchOutside(false);
+                        dialog.show();
+                    }
+
+                    @Override
+                    protected Boolean doInBackground(Void... params)
+                    {
+                        return reencodeImageWithQuality(capturedUncommittedReceipt, JPEG_QUALITY_LEVEL);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Boolean result)
+                    {
+                        if(result != null && result)
+                        {
+                            Log.i(TAG, "Image file re-encoded: " + capturedUncommittedReceipt);
+                        }
+                        else
+                        {
+                            Log.e(TAG, "Failed to re-encode image");
+                            // No image was actually created, simply forget the patch
+                            capturedUncommittedReceipt = null;
+                        }
+
+                        dialog.hide();
+                        TransactionViewActivity.this.onResume();
+                    }
+                };
+
+                imageConverter.execute();
+            }
         }
     }
 

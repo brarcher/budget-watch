@@ -3,11 +3,13 @@ package protect.budgetwatch;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,6 +46,9 @@ import static org.robolectric.Shadows.shadowOf;
 @Config(constants = BuildConfig.class, sdk = 17)
 public class TransactionViewActivityTest
 {
+    private static final int ORIGINAL_JPEG_QUALITY = 100;
+    private static final int LOWER_JPEG_QUALITY = 0;
+
     private long nowMs;
     private String nowString;
 
@@ -145,7 +150,8 @@ public class TransactionViewActivityTest
      * @return The URI pointing to the image file location,
      * regardless if the operation was successful or not.
      */
-    private Uri captureImageWithResult(final Activity activity, final int buttonId, final boolean success) throws IOException
+    private Uri captureImageWithResult(final Activity activity, final int buttonId,
+                                       final boolean success, final int jpegQuality) throws IOException
     {
         // Start image capture
         final Button captureButton = (Button) activity.findViewById(buttonId);
@@ -169,18 +175,39 @@ public class TransactionViewActivityTest
         assertNotNull(argument);
         assertTrue(argument.toString().length() > 0);
 
+        // Set the JPEG quality setting, which will determine if the fake jpeg
+        // file is converted to a lower quality
+        final SharedPreferences.Editor preferencesEditor = PreferenceManager.getDefaultSharedPreferences(activity).edit();
+        preferencesEditor.putString("jpegQuality", Integer.toString(jpegQuality));
+        preferencesEditor.apply();
+
         // Respond to image capture, success
         shadowOf(activity).receiveResult(
                 intent,
                 success ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
                 null);
 
+        // If any async tasks were created, run them now
+        Robolectric.flushBackgroundThreadScheduler();
+
         if(success)
         {
             File imageFile = new File(argument.getPath());
-            assertEquals(false, imageFile.exists());
-            boolean result = imageFile.createNewFile();
-            assertTrue(result);
+
+            // No camera is actually invoked in the unit test to create a
+            // file. If the original JPEG quality is used, nothing creates
+            // a file. However, if a lower quality is used, an async task
+            // will generate a file, even if the original file was empty.
+            if(jpegQuality == ORIGINAL_JPEG_QUALITY)
+            {
+                assertEquals(false, imageFile.exists());
+                boolean result = imageFile.createNewFile();
+                assertTrue(result);
+            }
+            else
+            {
+                assertEquals(true, imageFile.exists());
+            }
         }
 
         return argument;
@@ -392,7 +419,7 @@ public class TransactionViewActivityTest
 
 
     @Test
-    public void startAsAddCaptureReceiptCreateExpense() throws IOException
+    public void startAsAddCaptureReceiptCreateExpenseImageUnedited() throws IOException
     {
         ActivityController activityController = setupActivity("budget", null, false, false);
 
@@ -404,7 +431,37 @@ public class TransactionViewActivityTest
         checkAllFields(activity, "", "", "budget", "", "", nowString, "", false, false);
 
         // Complete image capture successfully
-        Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, true);
+        Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, true, ORIGINAL_JPEG_QUALITY);
+
+        checkAllFields(activity, "", "", "budget","", "", nowString, "", true, false);
+
+        // Save and check the expense
+        saveExpenseWithArguments(activity, "name", "account", "budget", 100, "note",
+                nowString, nowMs, imageLocation.getPath(), true);
+
+        // Ensure that the file still exists
+        File imageFile = new File(imageLocation.getPath());
+        assertTrue(imageFile.isFile());
+
+        // Delete the file to cleanup
+        boolean result = imageFile.delete();
+        assertTrue(result);
+    }
+
+    @Test
+    public void startAsAddCaptureReceiptCreateExpenseImageReencoded() throws IOException
+    {
+        ActivityController activityController = setupActivity("budget", null, false, false);
+
+        // Add something that will 'handle' the media capture intent
+        registerMediaStoreIntentHandler();
+
+        Activity activity = (Activity)activityController.get();
+
+        checkAllFields(activity, "", "", "budget", "", "", nowString, "", false, false);
+
+        // Complete image capture successfully
+        Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, true, LOWER_JPEG_QUALITY);
 
         checkAllFields(activity, "", "", "budget","", "", nowString, "", true, false);
 
@@ -434,7 +491,7 @@ public class TransactionViewActivityTest
         checkAllFields(activity, "", "", "budget","", "", nowString, "", false, false);
 
         // Complete image capture in failure
-        Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, false);
+        Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, false, ORIGINAL_JPEG_QUALITY);
 
         checkAllFields(activity, "", "", "budget", "", "", nowString, "", false, false);
 
@@ -460,7 +517,7 @@ public class TransactionViewActivityTest
         checkAllFields(activity, "", "", "budget", "", "", nowString, "", false, false);
 
         // Complete image capture successfully
-        Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, true);
+        Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, true, ORIGINAL_JPEG_QUALITY);
 
         checkAllFields(activity, "", "", "budget", "", "", nowString, "", true, false);
 
@@ -513,7 +570,7 @@ public class TransactionViewActivityTest
         registerMediaStoreIntentHandler();
 
         // Complete image capture successfully
-        Uri imageLocation = captureImageWithResult(activity, R.id.updateButton, true);
+        Uri imageLocation = captureImageWithResult(activity, R.id.updateButton, true, ORIGINAL_JPEG_QUALITY);
 
         checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString,
                 "receipt", true, false);
@@ -544,7 +601,7 @@ public class TransactionViewActivityTest
         registerMediaStoreIntentHandler();
 
         // Complete image capture successfully
-        Uri imageLocation = captureImageWithResult(activity, R.id.updateButton, true);
+        Uri imageLocation = captureImageWithResult(activity, R.id.updateButton, true, ORIGINAL_JPEG_QUALITY);
 
         checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString,
                 "receipt", true, false);
