@@ -14,8 +14,8 @@ android {
         applicationId "protect.budgetwatch"
         minSdkVersion 13
         targetSdkVersion 23
-        versionCode 7
-        versionName "0.6"
+        versionCode 8
+        versionName "0.7"
     }
     buildTypes {
         release {
