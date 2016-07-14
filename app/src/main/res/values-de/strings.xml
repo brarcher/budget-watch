@@ -102,5 +102,9 @@
     <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> benutzt die folgenden third-party libraries: <xliff:g id="app_libraries_list">%s</xliff:g></string>
     <string name="share">Teilen</string>
     <string name="totalBudgetTitle">Gesamt</string>
+    <string name="settings">Einstellungen</string>
+    <string name="receiptQuality">Quittungsqualität</string>
+    <string name="receiptQualitySummary">Wählen Sie die JPEG Qualität für die Quittungsaufnahmen</string>
+    <string name="encodingReceipt">Quittung verschlüsseln</string>
 </resources>
 
