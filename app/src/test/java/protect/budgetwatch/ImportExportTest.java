@@ -32,7 +32,7 @@ public class ImportExportTest
     private DBHelper db;
     private long nowMs;
     private long lastYearMs;
-    private final int MONTHS_PER_YEAR = 12;
+    private static final int MONTHS_PER_YEAR = 12;
 
     @Before
     public void setUp()

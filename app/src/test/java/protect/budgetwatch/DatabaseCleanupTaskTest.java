@@ -28,9 +28,9 @@ public class DatabaseCleanupTaskTest
     File missingReceipt;
     File orphanReceipt;
 
-    private final int NUM_TRANSACTIONS = 10;
-    private final String WITH_RECEIPT_NAME = "receipt_exists";
-    private final String WITHOUT_RECEIPT_NAME = "receipt_missing";
+    private static final int NUM_TRANSACTIONS = 10;
+    private static final String WITH_RECEIPT_NAME = "receipt_exists";
+    private static final String WITHOUT_RECEIPT_NAME = "receipt_missing";
 
     @Before
     public void setUp() throws IOException
