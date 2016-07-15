@@ -53,6 +53,11 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 MainMenuItem item = (MainMenuItem)parent.getItemAtPosition(position);
+                if(item == null)
+                {
+                    Log.w(TAG, "Clicked menu item at position " + position + " is null");
+                    return;
+                }
 
                 Class goalClass = null;
 
@@ -180,8 +185,16 @@ public class MainActivity extends AppCompatActivity
         String version = "?";
         try
         {
-            PackageInfo pi = getPackageManager().getPackageInfo(getPackageName(), 0);
-            version = pi.versionName;
+            PackageManager manager = getPackageManager();
+            if(manager != null)
+            {
+                PackageInfo pi = manager.getPackageInfo(getPackageName(), 0);
+                version = pi.versionName;
+            }
+            else
+            {
+                Log.w(TAG, "Package name not found, PackageManager unavailable");
+            }
         }
         catch (PackageManager.NameNotFoundException e)
         {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 public class TransactionFragment extends Fragment
 {
+    private final static String TAG = "BudgetWatch";
+
     private int _transactionType;
 
     @Override
@@ -105,6 +108,12 @@ public class TransactionFragment extends Fragment
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 Cursor selected = (Cursor)parent.getItemAtPosition(position);
+                if(selected == null)
+                {
+                    Log.w(TAG, "Clicked transaction at position " + position + " is null");
+                    return;
+                }
+
                 Transaction transaction = Transaction.toTransaction(selected);
 
                 Intent i = new Intent(view.getContext(), TransactionViewActivity.class);
@@ -136,23 +145,27 @@ public class TransactionFragment extends Fragment
     {
         AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         ListView listView = (ListView) getActivity().findViewById(R.id.list);
-        Cursor selected = (Cursor)listView.getItemAtPosition(info.position);
 
-        if(selected != null)
+        if(info != null)
         {
-            Transaction transaction = Transaction.toTransaction(selected);
+            Cursor selected = (Cursor) listView.getItemAtPosition(info.position);
 
-            if(item.getItemId() == R.id.action_edit)
+            if (selected != null)
             {
-                Intent i = new Intent(getActivity(), TransactionViewActivity.class);
-                final Bundle b = new Bundle();
-                b.putInt("id", transaction.id);
-                b.putInt("type", _transactionType);
-                b.putBoolean("update", true);
-                i.putExtras(b);
-                startActivity(i);
+                Transaction transaction = Transaction.toTransaction(selected);
 
-                return true;
+                if (item.getItemId() == R.id.action_edit)
+                {
+                    Intent i = new Intent(getActivity(), TransactionViewActivity.class);
+                    final Bundle b = new Bundle();
+                    b.putInt("id", transaction.id);
+                    b.putInt("type", _transactionType);
+                    b.putBoolean("update", true);
+                    i.putExtras(b);
+                    startActivity(i);
+
+                    return true;
+                }
             }
         }
 
