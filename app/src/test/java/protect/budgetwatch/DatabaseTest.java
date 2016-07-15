@@ -537,6 +537,8 @@ public class DatabaseTest
             Transaction transaction = Transaction.toTransaction(receiptTransactions);
             assertEquals("receipt", transaction.receipt);
         }
+
+        receiptTransactions.close();
     }
 
     @Test

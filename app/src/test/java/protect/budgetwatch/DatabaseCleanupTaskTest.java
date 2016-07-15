@@ -129,6 +129,8 @@ public class DatabaseCleanupTaskTest
             assertEquals(true, receipt.exists());
             assertEquals(true, receipt.isFile());
         }
+
+        cursor.close();
     }
 
     @Test
@@ -167,5 +169,7 @@ public class DatabaseCleanupTaskTest
 
             assertTrue(transaction.dateMs > DATE_CUTOFF);
         }
+
+        cursor.close();
     }
 }
