@@ -89,6 +89,7 @@ public class BudgetActivityTest
 
         DBHelper db = new DBHelper(mainActivity);
         db.insertBudget("name", 100);
+        db.close();
 
         activityController.pause();
         activityController.resume();
@@ -158,5 +159,6 @@ public class BudgetActivityTest
         activityController.resume();
 
         checkTotalItem(mainActivity, current, max);
+        db.close();
     }
 }

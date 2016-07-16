@@ -102,6 +102,7 @@ public class TransactionViewActivityTest
         {
             assertEquals(1, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         }
+        db.close();
 
         final EditText nameField = (EditText) activity.findViewById(R.id.name);
         final EditText accountField = (EditText) activity.findViewById(R.id.account);
@@ -314,6 +315,7 @@ public class TransactionViewActivityTest
                 assertTrue(result);
             }
         }
+        db.close();
 
         activityController.start();
         activityController.visible();
@@ -390,6 +392,8 @@ public class TransactionViewActivityTest
                 budgetSpinner.setSelection(0);
             }
         }
+
+        db.close();
     }
 
     @Test
@@ -677,6 +681,8 @@ public class TransactionViewActivityTest
         assertEquals(1, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         shadowOf(activity).clickMenuItem(R.id.action_delete);
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+
+        db.close();
     }
 
     @Test

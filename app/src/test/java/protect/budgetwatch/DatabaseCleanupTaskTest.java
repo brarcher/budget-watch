@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.os.Environment;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,12 @@ public class DatabaseCleanupTaskTest
         orphanReceipt = new File(imageDir, "orphan");
         result = orphanReceipt.createNewFile();
         assertTrue(result);
+    }
+
+    @After
+    public void tearDown()
+    {
+        db.close();
     }
 
     /**

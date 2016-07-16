@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +19,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 17)
@@ -44,6 +45,12 @@ public class DatabaseTest
         Calendar lastYear = Calendar.getInstance();
         lastYear.set(Calendar.YEAR, lastYear.get(Calendar.YEAR)-1);
         lastYearMs = lastYear.getTimeInMillis();
+    }
+
+    @After
+    public void tearDown()
+    {
+        db.close();
     }
 
     @Test

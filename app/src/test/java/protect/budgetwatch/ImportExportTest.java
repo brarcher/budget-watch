@@ -5,6 +5,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,6 +45,12 @@ public class ImportExportTest
         Calendar lastYear = Calendar.getInstance();
         lastYear.set(Calendar.YEAR, lastYear.get(Calendar.YEAR)-1);
         lastYearMs = lastYear.getTimeInMillis();
+    }
+
+    @After
+    public void tearDown()
+    {
+        db.close();
     }
 
     /**
