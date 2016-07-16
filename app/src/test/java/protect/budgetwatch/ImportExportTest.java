@@ -180,7 +180,7 @@ public class ImportExportTest
     @Test
     public void multipleBudgetsExportImport() throws IOException
     {
-        final int NUM_BUDGETS = 1000;
+        final int NUM_BUDGETS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
@@ -215,7 +215,7 @@ public class ImportExportTest
     @Test
     public void importExistingBudgetsNotReplace() throws IOException
     {
-        final int NUM_BUDGETS = 1000;
+        final int NUM_BUDGETS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
@@ -248,7 +248,7 @@ public class ImportExportTest
     @Test
     public void multipleTransactionsExportImport() throws IOException
     {
-        final int NUM_TRANSACTIONS = 1000;
+        final int NUM_TRANSACTIONS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
@@ -293,7 +293,7 @@ public class ImportExportTest
     @Test
     public void importExistingTransactionsNotReplace() throws IOException
     {
-        final int NUM_TRANSACTIONS = 1000;
+        final int NUM_TRANSACTIONS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
@@ -338,7 +338,7 @@ public class ImportExportTest
     @Test
     public void multipleEverythingExportImport() throws IOException
     {
-        final int NUM_ITEMS = 1000;
+        final int NUM_ITEMS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
@@ -378,7 +378,7 @@ public class ImportExportTest
     @Test
     public void corruptedImportNothingSaved() throws IOException
     {
-        final int NUM_ITEMS = 1000;
+        final int NUM_ITEMS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
