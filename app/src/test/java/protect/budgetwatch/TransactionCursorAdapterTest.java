@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +29,12 @@ public class TransactionCursorAdapterTest
     {
         activity = Robolectric.setupActivity(BudgetViewActivity.class);
         db = new DBHelper(activity);
+    }
+
+    @After
+    public void tearDown()
+    {
+        db.close();
     }
 
     @Test

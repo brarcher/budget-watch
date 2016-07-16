@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +27,10 @@ import java.util.List;
 
 public class BudgetActivity extends AppCompatActivity
 {
+    private final static String TAG = "BudgetWatch";
+
+    private DBHelper _db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -38,6 +43,8 @@ public class BudgetActivity extends AppCompatActivity
         {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        _db = new DBHelper(this);
     }
 
     @Override
@@ -48,9 +55,7 @@ public class BudgetActivity extends AppCompatActivity
         final ListView budgetList = (ListView) findViewById(R.id.list);
         final TextView helpText = (TextView)findViewById(R.id.helpText);
 
-        DBHelper db = new DBHelper(this);
-
-        if(db.getBudgetCount() > 0)
+        if(_db.getBudgetCount() > 0)
         {
             budgetList.setVisibility(View.VISIBLE);
             helpText.setVisibility(View.GONE);
@@ -88,7 +93,7 @@ public class BudgetActivity extends AppCompatActivity
         final TextView dateRangeField = (TextView) findViewById(R.id.dateRange);
         dateRangeField.setText(dateRangeString);
 
-        final List<Budget> budgets = db.getBudgets(budgetStartMs, budgetEndMs);
+        final List<Budget> budgets = _db.getBudgets(budgetStartMs, budgetEndMs);
         final BudgetAdapter budgetListAdapter = new BudgetAdapter(this, budgets);
         budgetList.setAdapter(budgetListAdapter);
 
@@ -100,6 +105,11 @@ public class BudgetActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 Budget budget = (Budget)parent.getItemAtPosition(position);
+                if(budget == null)
+                {
+                    Log.w(TAG, "Clicked budget at position " + position + " is null");
+                    return;
+                }
 
                 Intent i = new Intent(getApplicationContext(), TransactionActivity.class);
                 Bundle bundle = new Bundle();
@@ -153,18 +163,21 @@ public class BudgetActivity extends AppCompatActivity
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         ListView listView = (ListView) findViewById(R.id.list);
 
-        Budget budget = (Budget)listView.getItemAtPosition(info.position);
-
-        if(budget != null && item.getItemId() == R.id.action_edit)
+        if(info != null)
         {
-            Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("id", budget.name);
-            bundle.putBoolean("view", true);
-            i.putExtras(bundle);
-            startActivity(i);
+            Budget budget = (Budget) listView.getItemAtPosition(info.position);
 
-            return true;
+            if (budget != null && item.getItemId() == R.id.action_edit)
+            {
+                Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", budget.name);
+                bundle.putBoolean("view", true);
+                i.putExtras(bundle);
+                startActivity(i);
+
+                return true;
+            }
         }
 
         return super.onContextItemSelected(item);
@@ -243,5 +256,12 @@ public class BudgetActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        _db.close();
+        super.onDestroy();
     }
 }

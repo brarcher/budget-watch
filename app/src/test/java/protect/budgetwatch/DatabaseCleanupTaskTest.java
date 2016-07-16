@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.os.Environment;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +29,9 @@ public class DatabaseCleanupTaskTest
     File missingReceipt;
     File orphanReceipt;
 
-    private final int NUM_TRANSACTIONS = 10;
-    private final String WITH_RECEIPT_NAME = "receipt_exists";
-    private final String WITHOUT_RECEIPT_NAME = "receipt_missing";
+    private static final int NUM_TRANSACTIONS = 10;
+    private static final String WITH_RECEIPT_NAME = "receipt_exists";
+    private static final String WITHOUT_RECEIPT_NAME = "receipt_missing";
 
     @Before
     public void setUp() throws IOException
@@ -53,6 +54,12 @@ public class DatabaseCleanupTaskTest
         orphanReceipt = new File(imageDir, "orphan");
         result = orphanReceipt.createNewFile();
         assertTrue(result);
+    }
+
+    @After
+    public void tearDown()
+    {
+        db.close();
     }
 
     /**
@@ -129,6 +136,8 @@ public class DatabaseCleanupTaskTest
             assertEquals(true, receipt.exists());
             assertEquals(true, receipt.isFile());
         }
+
+        cursor.close();
     }
 
     @Test
@@ -167,5 +176,7 @@ public class DatabaseCleanupTaskTest
 
             assertTrue(transaction.dateMs > DATE_CUTOFF);
         }
+
+        cursor.close();
     }
 }

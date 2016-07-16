@@ -5,6 +5,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +33,7 @@ public class ImportExportTest
     private DBHelper db;
     private long nowMs;
     private long lastYearMs;
-    private final int MONTHS_PER_YEAR = 12;
+    private static final int MONTHS_PER_YEAR = 12;
 
     @Before
     public void setUp()
@@ -44,6 +45,12 @@ public class ImportExportTest
         Calendar lastYear = Calendar.getInstance();
         lastYear.set(Calendar.YEAR, lastYear.get(Calendar.YEAR)-1);
         lastYearMs = lastYear.getTimeInMillis();
+    }
+
+    @After
+    public void tearDown()
+    {
+        db.close();
     }
 
     /**
@@ -180,14 +187,14 @@ public class ImportExportTest
     @Test
     public void multipleBudgetsExportImport() throws IOException
     {
-        final int NUM_BUDGETS = 1000;
+        final int NUM_BUDGETS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
             addBudgets(NUM_BUDGETS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData);
+            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
             boolean result = MultiFormatExporter.exportData(db, outStream, format);
@@ -197,7 +204,7 @@ public class ImportExportTest
             clearDatabase();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData);
+            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Import the CSV data
             result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
@@ -215,14 +222,14 @@ public class ImportExportTest
     @Test
     public void importExistingBudgetsNotReplace() throws IOException
     {
-        final int NUM_BUDGETS = 1000;
+        final int NUM_BUDGETS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
             addBudgets(NUM_BUDGETS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData);
+            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export into CSV data
             boolean result = MultiFormatExporter.exportData(db, outStream, format);
@@ -230,7 +237,7 @@ public class ImportExportTest
             outStream.close();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData);
+            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Import the CSV data on top of the existing database
             result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
@@ -248,14 +255,14 @@ public class ImportExportTest
     @Test
     public void multipleTransactionsExportImport() throws IOException
     {
-        final int NUM_TRANSACTIONS = 1000;
+        final int NUM_TRANSACTIONS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
             addTransactions(NUM_TRANSACTIONS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData);
+            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
             boolean result = MultiFormatExporter.exportData(db, outStream, format);
@@ -265,7 +272,7 @@ public class ImportExportTest
             clearDatabase();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData);
+            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
             activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
@@ -293,14 +300,14 @@ public class ImportExportTest
     @Test
     public void importExistingTransactionsNotReplace() throws IOException
     {
-        final int NUM_TRANSACTIONS = 1000;
+        final int NUM_TRANSACTIONS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
             addTransactions(NUM_TRANSACTIONS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData);
+            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
             boolean result = MultiFormatExporter.exportData(db, outStream, format);
@@ -310,7 +317,7 @@ public class ImportExportTest
             // Do not clear database
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData);
+            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
             activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
@@ -338,7 +345,7 @@ public class ImportExportTest
     @Test
     public void multipleEverythingExportImport() throws IOException
     {
-        final int NUM_ITEMS = 1000;
+        final int NUM_ITEMS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
@@ -346,7 +353,7 @@ public class ImportExportTest
             addTransactions(NUM_ITEMS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData);
+            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
             boolean result = MultiFormatExporter.exportData(db, outStream, format);
@@ -356,7 +363,7 @@ public class ImportExportTest
             clearDatabase();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData);
+            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Import the CSV data
             result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
@@ -378,7 +385,7 @@ public class ImportExportTest
     @Test
     public void corruptedImportNothingSaved() throws IOException
     {
-        final int NUM_ITEMS = 1000;
+        final int NUM_ITEMS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
@@ -386,7 +393,7 @@ public class ImportExportTest
             addTransactions(NUM_ITEMS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData);
+            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
             boolean result = MultiFormatExporter.exportData(db, outStream, format);
@@ -397,7 +404,7 @@ public class ImportExportTest
             String corruptEntry = "ThisStringIsLikelyNotPartOfAnyFormat";
 
             ByteArrayInputStream inData = new ByteArrayInputStream((outData.toString() + corruptEntry).getBytes());
-            InputStreamReader inStream = new InputStreamReader(inData);
+            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Attempt to import the CSV data
             result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);

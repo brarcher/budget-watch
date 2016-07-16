@@ -14,6 +14,8 @@ import android.widget.EditText;
 
 public class BudgetViewActivity extends AppCompatActivity
 {
+    private DBHelper _db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -27,6 +29,8 @@ public class BudgetViewActivity extends AppCompatActivity
         {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        _db = new DBHelper(this);
     }
 
     @Override
@@ -45,8 +49,7 @@ public class BudgetViewActivity extends AppCompatActivity
             budgetNameField.setText(budgetName);
 
             EditText valueField = (EditText) findViewById(R.id.value);
-            DBHelper db = new DBHelper(this);
-            Budget existingBudget = db.getBudgetStoredOnly(budgetName);
+            Budget existingBudget = _db.getBudgetStoredOnly(budgetName);
             valueField.setText(String.format("%d", existingBudget.max));
 
             if(updateBudget)
@@ -96,15 +99,13 @@ public class BudgetViewActivity extends AppCompatActivity
 
                 if (budgetName.length() > 0 && value >= 0)
                 {
-                    DBHelper db = new DBHelper(BudgetViewActivity.this);
-
                     if(updateBudget == false)
                     {
-                        db.insertBudget(budgetName, value);
+                        _db.insertBudget(budgetName, value);
                     }
                     else
                     {
-                        db.updateBudget(budgetName, value);
+                        _db.updateBudget(budgetName, value);
                     }
 
                     finish();
@@ -175,12 +176,18 @@ public class BudgetViewActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_delete:
-                DBHelper db = new DBHelper(this);
-                db.deleteBudget(budgetName);
+                _db.deleteBudget(budgetName);
                 finish();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        _db.close();
+        super.onDestroy();
     }
 }

@@ -49,6 +49,7 @@ public class BudgetAdapterTest
 
         db.insertBudget(NAME, BUDGET);
         db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "", "", NAME, CURRENT, "", nowMs, "");
+        db.close();
 
         final int SCALED_BUDGET = BUDGET * (MONTHS_PER_YEAR+1);
 

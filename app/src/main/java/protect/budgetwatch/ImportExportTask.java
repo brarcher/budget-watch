@@ -129,6 +129,8 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
             performExport(importExportFile, db);
         }
 
+        db.close();
+
         return null;
     }
 

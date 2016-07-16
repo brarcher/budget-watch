@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +19,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 17)
@@ -44,6 +45,12 @@ public class DatabaseTest
         Calendar lastYear = Calendar.getInstance();
         lastYear.set(Calendar.YEAR, lastYear.get(Calendar.YEAR)-1);
         lastYearMs = lastYear.getTimeInMillis();
+    }
+
+    @After
+    public void tearDown()
+    {
+        db.close();
     }
 
     @Test
@@ -78,7 +85,7 @@ public class DatabaseTest
         boolean result = db.insertBudget("budget", 100);
         assertTrue(result);
 
-        final int NUM_EXPENSES = 1000;
+        final int NUM_EXPENSES = 10;
         int expectedCurrent = 0;
 
         for(int index = 0; index < NUM_EXPENSES; index++)
@@ -104,7 +111,7 @@ public class DatabaseTest
         assertEquals(100*(MONTHS_PER_YEAR+1), budgets.get(0).max);
         assertEquals(expectedCurrent, budgets.get(0).current);
 
-        final int NUM_REVENUES = 2000;
+        final int NUM_REVENUES = 20;
 
         for(int index = 0; index < NUM_REVENUES; index++)
         {
@@ -147,7 +154,7 @@ public class DatabaseTest
     @Test
     public void multipleBudgets()
     {
-        final int NUM_BUDGETS = 1000;
+        final int NUM_BUDGETS = 10;
 
         // Add in reverse order to test sorting later
         for(int index = NUM_BUDGETS; index > 0; index--)
@@ -184,7 +191,7 @@ public class DatabaseTest
         boolean result = db.insertBudget("budget", 100);
         assertTrue(result);
 
-        for(int index = 0; index < 1000; index++)
+        for(int index = 0; index < 10; index++)
         {
             result = db.updateBudget("budget", index);
             assertTrue(result);
@@ -324,7 +331,7 @@ public class DatabaseTest
     @Test
     public void multipleTransactions()
     {
-        final int NUM_TRANSACTIONS = 1000;
+        final int NUM_TRANSACTIONS = 10;
         boolean result;
 
         for(int type : new Integer[]{DBHelper.TransactionDbIds.REVENUE, DBHelper.TransactionDbIds.EXPENSE})
@@ -487,7 +494,7 @@ public class DatabaseTest
     @Test
     public void queryTransactionsWithReceipts()
     {
-        final int NUM_TRANSACTIONS_PER_TYPE = 1000;
+        final int NUM_TRANSACTIONS_PER_TYPE = 100;
 
         for(int index = 0; index < NUM_TRANSACTIONS_PER_TYPE; index++)
         {
@@ -506,12 +513,12 @@ public class DatabaseTest
         assertEquals(NUM_TRANSACTIONS_PER_TYPE * 2,
                 db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
-        // There are 1000 * 2 * 2 transactions, half of which have a receipt.
+        // There are 100 * 2 * 2 transactions, half of which have a receipt.
         // Check that only those with receipts are queried
-        final Long dateCutoffValue = (long)250;
+        final Long dateCutoffValue = (long)25;
         Cursor receiptTransactions = db.getTransactionsWithReceipts(dateCutoffValue);
 
-        // There are 2000 transactions with a receipt. A cutoff of 250 will return
+        // There are 200 transactions with a receipt. A cutoff of 25 will return
         // the first quarter + 2 for the half way point.
         assertEquals(NUM_TRANSACTIONS_PER_TYPE / 2 + 2, receiptTransactions.getCount());
 
@@ -537,6 +544,8 @@ public class DatabaseTest
             Transaction transaction = Transaction.toTransaction(receiptTransactions);
             assertEquals("receipt", transaction.receipt);
         }
+
+        receiptTransactions.close();
     }
 
     @Test
@@ -563,7 +572,7 @@ public class DatabaseTest
             }
         }
 
-        final int NUM_TRANSACTIONS_BUDGET_2 = 50;
+        final int NUM_TRANSACTIONS_BUDGET_2 = 20;
         for(int index = 0; index < NUM_TRANSACTIONS_BUDGET_2; index++)
         {
             for(int type : new int[]{DBHelper.TransactionDbIds.EXPENSE, DBHelper.TransactionDbIds.REVENUE})
