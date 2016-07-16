@@ -22,6 +22,7 @@ public class TransactionFragment extends Fragment
     private final static String TAG = "BudgetWatch";
 
     private int _transactionType;
+    private DBHelper _db;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -33,6 +34,7 @@ public class TransactionFragment extends Fragment
         }
 
         _transactionType = arguments.getInt("type");
+        _db = new DBHelper(getContext());
 
         // If a budget has been passed then only transactions from that budget
         // will be displayed. Otherwise, all transactions wil be displayed.
@@ -42,29 +44,28 @@ public class TransactionFragment extends Fragment
         View layout = inflater.inflate(R.layout.list_layout, container, false);
         ListView listView = (ListView) layout.findViewById(R.id.list);
         final TextView helpText = (TextView) layout.findViewById(R.id.helpText);
-        DBHelper dbhelper = new DBHelper(getContext());
 
         Cursor cursor;
         if(_transactionType == DBHelper.TransactionDbIds.EXPENSE)
         {
             if(budgetToDisplay == null)
             {
-                cursor = dbhelper.getExpenses();
+                cursor = _db.getExpenses();
             }
             else
             {
-                cursor = dbhelper.getExpensesForBudget(budgetToDisplay);
+                cursor = _db.getExpensesForBudget(budgetToDisplay);
             }
         }
         else
         {
             if(budgetToDisplay == null)
             {
-                cursor = dbhelper.getRevenues();
+                cursor = _db.getRevenues();
             }
             else
             {
-                cursor = dbhelper.getRevenuesForBudget(budgetToDisplay);
+                cursor = _db.getRevenuesForBudget(budgetToDisplay);
             }
         }
 
@@ -170,5 +171,12 @@ public class TransactionFragment extends Fragment
         }
 
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onDestroyView()
+    {
+        _db.close();
+        super.onDestroyView();
     }
 }

@@ -51,6 +51,7 @@ public class TransactionViewActivity extends AppCompatActivity
     private static final int PERMISSIONS_REQUEST_CAMERA = 2;
 
     private String capturedUncommittedReceipt = null;
+    private DBHelper _db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -65,6 +66,8 @@ public class TransactionViewActivity extends AppCompatActivity
         {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+        _db = new DBHelper(this);
     }
 
     @Override
@@ -142,8 +145,7 @@ public class TransactionViewActivity extends AppCompatActivity
         });
 
         final Spinner budgetSpinner = (Spinner) findViewById(R.id.budgetSpinner);
-        DBHelper db = new DBHelper(TransactionViewActivity.this);
-        List<String> budgetNames = db.getBudgetNames();
+        List<String> budgetNames = _db.getBudgetNames();
 
         // Add budget items to spinner if it has not been initialized yet
         if(budgetSpinner.getCount() == 0)
@@ -168,7 +170,7 @@ public class TransactionViewActivity extends AppCompatActivity
 
         if(updateTransaction || viewTransaction)
         {
-            Transaction transaction = db.getTransaction(transactionId);
+            Transaction transaction = _db.getTransaction(transactionId);
             nameField.setText(transaction.description);
             accountField.setText(transaction.account);
 
@@ -357,18 +359,15 @@ public class TransactionViewActivity extends AppCompatActivity
                     capturedUncommittedReceipt = null;
                 }
 
-
-                DBHelper db = new DBHelper(TransactionViewActivity.this);
-
                 if(updateTransaction)
                 {
-                    db.updateTransaction(transactionId, type, name, account,
+                    _db.updateTransaction(transactionId, type, name, account,
                             budget, value, note, dateMs, receipt);
 
                 }
                 else
                 {
-                    db.insertTransaction(type, name, account, budget,
+                    _db.insertTransaction(type, name, account, budget,
                             value, note, dateMs, receipt);
                 }
 
@@ -437,6 +436,8 @@ public class TransactionViewActivity extends AppCompatActivity
             capturedUncommittedReceipt = null;
         }
 
+        _db.close();
+
         super.onDestroy();
     }
 
@@ -484,8 +485,7 @@ public class TransactionViewActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_delete:
-                DBHelper db = new DBHelper(this);
-                db.deleteTransaction(transactionId);
+                _db.deleteTransaction(transactionId);
                 finish();
                 return true;
         }

@@ -159,6 +159,8 @@ public class DatabaseCleanupTask  extends AsyncTask<Void, Void, Void>
         correctTransactionsWithMissingReceipts(db);
         deleteOrphanedReceipts(db);
 
+        db.close();
+
         return null;
     }
 

@@ -29,6 +29,8 @@ public class BudgetActivity extends AppCompatActivity
 {
     private final static String TAG = "BudgetWatch";
 
+    private DBHelper _db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -41,6 +43,8 @@ public class BudgetActivity extends AppCompatActivity
         {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        _db = new DBHelper(this);
     }
 
     @Override
@@ -51,9 +55,7 @@ public class BudgetActivity extends AppCompatActivity
         final ListView budgetList = (ListView) findViewById(R.id.list);
         final TextView helpText = (TextView)findViewById(R.id.helpText);
 
-        DBHelper db = new DBHelper(this);
-
-        if(db.getBudgetCount() > 0)
+        if(_db.getBudgetCount() > 0)
         {
             budgetList.setVisibility(View.VISIBLE);
             helpText.setVisibility(View.GONE);
@@ -91,7 +93,7 @@ public class BudgetActivity extends AppCompatActivity
         final TextView dateRangeField = (TextView) findViewById(R.id.dateRange);
         dateRangeField.setText(dateRangeString);
 
-        final List<Budget> budgets = db.getBudgets(budgetStartMs, budgetEndMs);
+        final List<Budget> budgets = _db.getBudgets(budgetStartMs, budgetEndMs);
         final BudgetAdapter budgetListAdapter = new BudgetAdapter(this, budgets);
         budgetList.setAdapter(budgetListAdapter);
 
@@ -254,5 +256,12 @@ public class BudgetActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        _db.close();
+        super.onDestroy();
     }
 }
