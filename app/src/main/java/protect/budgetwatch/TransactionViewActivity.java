@@ -3,6 +3,7 @@ package protect.budgetwatch;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -485,8 +487,33 @@ public class TransactionViewActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_delete:
-                _db.deleteTransaction(transactionId);
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.deleteTransactionTitle);
+                builder.setMessage(R.string.deleteTransactionConfirmation);
+                builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        Log.e(TAG, "Deleting transaction: " + transactionId);
+
+                        _db.deleteTransaction(transactionId);
+                        finish();
+
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
                 return true;
         }
 
