@@ -1,11 +1,14 @@
 package protect.budgetwatch;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.EditText;
 
 public class BudgetViewActivity extends AppCompatActivity
 {
+    private static final String TAG = "BudgetWatch";
     private DBHelper _db;
 
     @Override
@@ -176,8 +180,33 @@ public class BudgetViewActivity extends AppCompatActivity
                 return true;
 
             case R.id.action_delete:
-                _db.deleteBudget(budgetName);
-                finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(R.string.deleteBudgetTitle);
+                builder.setMessage(R.string.deleteBudgetConfirmation);
+                builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        Log.e(TAG, "Deleting budget: " + budgetName);
+
+                        _db.deleteBudget(budgetName);
+
+                        finish();
+                        dialog.dismiss();
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
                 return true;
         }
 

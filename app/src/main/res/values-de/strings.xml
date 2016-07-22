@@ -106,5 +106,10 @@
     <string name="receiptQuality">Quittungsqualität</string>
     <string name="receiptQualitySummary">Wählen Sie die JPEG Qualität für die Quittungsaufnahmen</string>
     <string name="encodingReceipt">Quittung verschlüsseln</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="deleteBudgetTitle">Budget entfernen</string>
+    <string name="deleteBudgetConfirmation">Bitte bestätigen Sie die Löschung dieses Budgets. Alle Transaktionen die mit diesem Budget verbunden sind bleiben bestehen.</string>
+    <string name="deleteTransactionTitle">Transaktion entfernen</string>
+    <string name="deleteTransactionConfirmation">Bitte bestätigen Sie die Löschung dieser Transaktion.</string>
 </resources>
 

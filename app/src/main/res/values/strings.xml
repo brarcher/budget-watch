@@ -38,6 +38,7 @@
     <string name="clean">Clean</string>
     <string name="ok">OK</string>
     <string name="share">Share</string>
+    <string name="confirm">Confirm</string>
 
     <string name="Grocery">Grocery</string>
     <string name="one_hundred">100</string>
@@ -107,4 +108,9 @@
     <string name="receiptQuality">Receipt Quality</string>
     <string name="receiptQualitySummary">Select the JPEG quality used when capturing receipt images</string>
     <string name="encodingReceipt">Encoding receipt</string>
+
+    <string name="deleteBudgetTitle">Remove Budget</string>
+    <string name="deleteBudgetConfirmation">Please confirm that you want to delete this budget. All transactions associated with this budget will remain.</string>
+    <string name="deleteTransactionTitle">Remove Transaction</string>
+    <string name="deleteTransactionConfirmation">Please confirm that you want to delete this transaction.</string>
 </resources>
