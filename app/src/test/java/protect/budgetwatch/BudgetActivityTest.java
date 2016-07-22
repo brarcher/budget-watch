@@ -71,6 +71,15 @@ public class BudgetActivityTest
     }
 
     @Test
+    public void clickBackFinishes()
+    {
+        final Activity activity = Robolectric.setupActivity(BudgetActivity.class);
+
+        shadowOf(activity).clickMenuItem(android.R.id.home);
+        assertTrue(shadowOf(activity).isFinishing());
+    }
+
+    @Test
     public void addOneBudget()
     {
         ActivityController activityController = Robolectric.buildActivity(BudgetActivity.class).create();

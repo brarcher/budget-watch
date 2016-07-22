@@ -99,4 +99,13 @@ public class TransactionActivityTest
         assertEquals("Add", menu.findItem(R.id.action_add).getTitle().toString());
         assertEquals("Purge Old Receipts", menu.findItem(R.id.action_purge_receipts).getTitle().toString());
     }
+
+    @Test
+    public void clickBackFinishes()
+    {
+        final Activity activity = Robolectric.setupActivity(TransactionActivity.class);
+
+        shadowOf(activity).clickMenuItem(android.R.id.home);
+        assertTrue(shadowOf(activity).isFinishing());
+    }
 }
