@@ -253,6 +253,7 @@ public class BudgetActivity extends AppCompatActivity
             });
 
             builder.show();
+            return true;
         }
 
         if(id == android.R.id.home)
