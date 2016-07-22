@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.WebView;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -22,16 +23,23 @@ import static org.robolectric.Shadows.shadowOf;
 @Config(constants = BuildConfig.class, sdk = 17)
 public class ReceiptViewActivityTest
 {
-    @Test
-    public void LoadReceipt()
+    private ActivityController activityController;
+
+    @Before
+    public void setUp()
     {
         Intent intent = new Intent();
         final Bundle bundle = new Bundle();
         bundle.putString("receipt", "receipt");
         intent.putExtras(bundle);
 
-        ActivityController activityController =  Robolectric.buildActivity(
-            ReceiptViewActivity.class).withIntent(intent).create();
+        activityController = Robolectric.buildActivity(
+                ReceiptViewActivity.class).withIntent(intent).create();
+    }
+
+    @Test
+    public void LoadReceipt()
+    {
         activityController.start();
         activityController.resume();
 

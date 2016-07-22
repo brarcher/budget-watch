@@ -146,6 +146,12 @@ public class TransactionActivity extends AppCompatActivity
             builder.show();
         }
 
+        if(id == android.R.id.home)
+        {
+            finish();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

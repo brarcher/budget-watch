@@ -515,6 +515,10 @@ public class TransactionViewActivity extends AppCompatActivity
                 dialog.show();
 
                 return true;
+
+            case android.R.id.home:
+                finish();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

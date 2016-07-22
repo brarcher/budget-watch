@@ -24,6 +24,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 17)
@@ -455,5 +456,12 @@ public class ImportExportTest
             // Clear the database for the next format under test
             clearDatabase();
         }
+    }
+
+    @Test
+    public void clickBackFinishes()
+    {
+        shadowOf(activity).clickMenuItem(android.R.id.home);
+        assertTrue(shadowOf(activity).isFinishing());
     }
 }

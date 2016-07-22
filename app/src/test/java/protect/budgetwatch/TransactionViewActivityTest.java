@@ -700,6 +700,16 @@ public class TransactionViewActivityTest
     }
 
     @Test
+    public void clickBackFinishes()
+    {
+        ActivityController activityController = setupActivity("budget", "", false, true);
+        Activity activity = (Activity)activityController.get();
+
+        shadowOf(activity).clickMenuItem(android.R.id.home);
+        assertTrue(shadowOf(activity).isFinishing());
+    }
+
+    @Test
     public void startAsViewCheckActionBar() throws Exception
     {
         ActivityController activityController = setupActivity("budget", "", true, false);
