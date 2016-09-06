@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+import android.os.PowerManager;
+
+import com.google.common.io.ByteStreams;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,18 +16,26 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLog;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -111,6 +123,18 @@ public class ImportExportTest
         assertEquals(0, db.getBudgetCount());
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
+
+        // Also delete all the receipt images, in case the exporter should have saved them
+        File receiptFolder = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        assertNotNull(receiptFolder);
+        File [] files = receiptFolder.listFiles();
+        assertNotNull(files);
+        for(File file : files)
+        {
+            boolean result = file.delete();
+            assertTrue(result);
+            assertTrue(file.exists() == false);
+        }
     }
 
     /**
@@ -195,20 +219,17 @@ public class ImportExportTest
             addBudgets(NUM_BUDGETS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             clearDatabase();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Import the CSV data
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             assertEquals(NUM_BUDGETS, db.getBudgetCount());
@@ -230,18 +251,15 @@ public class ImportExportTest
             addBudgets(NUM_BUDGETS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export into CSV data
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Import the CSV data on top of the existing database
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             assertEquals(NUM_BUDGETS, db.getBudgetCount());
@@ -263,24 +281,20 @@ public class ImportExportTest
             addTransactions(NUM_TRANSACTIONS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             clearDatabase();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
-
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
             activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
             assertFalse(dbChanged.hasChanged());
 
             // Import the CSV data
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             // The contents of the database should have changed
@@ -308,24 +322,21 @@ public class ImportExportTest
             addTransactions(NUM_TRANSACTIONS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             // Do not clear database
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
             activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
             assertFalse(dbChanged.hasChanged());
 
             // Import the CSV data on top of the existing database
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             // The contents of the database should not have changed
@@ -354,20 +365,17 @@ public class ImportExportTest
             addTransactions(NUM_ITEMS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             clearDatabase();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Import the CSV data
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             assertEquals(NUM_ITEMS, db.getBudgetCount());
@@ -394,10 +402,9 @@ public class ImportExportTest
             addTransactions(NUM_ITEMS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
 
             clearDatabase();
@@ -405,10 +412,9 @@ public class ImportExportTest
             String corruptEntry = "ThisStringIsLikelyNotPartOfAnyFormat";
 
             ByteArrayInputStream inData = new ByteArrayInputStream((outData.toString() + corruptEntry).getBytes());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Attempt to import the CSV data
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertEquals(false, result);
 
             assertEquals(0, db.getBudgetCount());

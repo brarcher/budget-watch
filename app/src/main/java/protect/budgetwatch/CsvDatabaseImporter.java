@@ -1,12 +1,18 @@
 package protect.budgetwatch;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+
+import com.google.common.base.Charsets;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
@@ -20,9 +26,10 @@ import java.io.InputStreamReader;
  */
 public class CsvDatabaseImporter implements DatabaseImporter
 {
-    public void importData(DBHelper db, InputStreamReader input) throws IOException, FormatException, InterruptedException
+    public void importData(Context context, DBHelper db, InputStream input) throws IOException, FormatException, InterruptedException
     {
-        final CSVParser parser = new CSVParser(input, CSVFormat.RFC4180.withHeader());
+        InputStreamReader reader = new InputStreamReader(input, Charsets.UTF_8);
+        final CSVParser parser = new CSVParser(reader, CSVFormat.RFC4180.withHeader());
 
         SQLiteDatabase database = db.getWritableDatabase();
         database.beginTransaction();
@@ -38,7 +45,7 @@ public class CsvDatabaseImporter implements DatabaseImporter
                 }
                 else
                 {
-                    importTransaction(database, db, record);
+                    importTransaction(context, database, db, record);
                 }
 
                 if(Thread.currentThread().isInterrupted())
@@ -161,10 +168,10 @@ public class CsvDatabaseImporter implements DatabaseImporter
     }
 
     /**
-     * Import a single transacton into the database using the given
+     * Import a single transaction into the database using the given
      * session.
      */
-    private void importTransaction(SQLiteDatabase database, DBHelper helper, CSVRecord record)
+    private void importTransaction(Context context, SQLiteDatabase database, DBHelper helper, CSVRecord record)
             throws IOException, FormatException
     {
         int id = extractInt(DBHelper.TransactionDbIds.NAME, record);
@@ -190,8 +197,22 @@ public class CsvDatabaseImporter implements DatabaseImporter
         double value = extractDouble(DBHelper.TransactionDbIds.VALUE, record);
         String note = extractString(DBHelper.TransactionDbIds.NOTE, record, "");
         long dateMs = extractLong(DBHelper.TransactionDbIds.DATE, record);
-        // Unable to export/import receipts
+
         String receipt = "";
+        String potentialReceipt = extractString(DBHelper.TransactionDbIds.RECEIPT, record, "");
+        if(potentialReceipt.length() > 0)
+        {
+            // There is a receipt here. If the file actually exists, go with it
+            File dir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            if(dir != null)
+            {
+                File imageFile = new File(dir, potentialReceipt);
+                if(imageFile.isFile())
+                {
+                    receipt = imageFile.getAbsolutePath();
+                }
+            }
+        }
 
         helper.insertTransaction(database, id, type, description, account, budget, value, note, dateMs, receipt);
     }

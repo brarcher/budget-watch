@@ -1,8 +1,10 @@
 package protect.budgetwatch;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class MultiFormatImporter
@@ -20,7 +22,7 @@ public class MultiFormatImporter
      * false otherwise. If false, no data was written to
      * the database.
      */
-    public static boolean importData(DBHelper db, InputStreamReader input, DataFormat format)
+    public static boolean importData(Context context, DBHelper db, InputStream input, DataFormat format)
     {
         DatabaseImporter importer = null;
 
@@ -35,7 +37,7 @@ public class MultiFormatImporter
         {
             try
             {
-                importer.importData(db, input);
+                importer.importData(context, db, input);
                 return true;
             }
             catch(IOException e)

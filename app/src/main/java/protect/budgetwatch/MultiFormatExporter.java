@@ -1,9 +1,10 @@
 package protect.budgetwatch;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
 
 public class MultiFormatExporter
 {
@@ -19,7 +20,7 @@ public class MultiFormatExporter
      * false otherwise. If false, partial data may have been
      * written to the output stream, and it should be discarded.
      */
-    public static boolean exportData(DBHelper db, OutputStreamWriter output, DataFormat format)
+    public static boolean exportData(Context context, DBHelper db, OutputStream output, DataFormat format)
     {
         DatabaseExporter exporter = null;
 
@@ -34,7 +35,7 @@ public class MultiFormatExporter
         {
             try
             {
-                exporter.exportData(db, output);
+                exporter.exportData(context, db, output);
                 return true;
             }
             catch(IOException e)

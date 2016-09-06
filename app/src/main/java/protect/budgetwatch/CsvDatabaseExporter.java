@@ -1,12 +1,18 @@
 package protect.budgetwatch;
 
+import android.content.Context;
 import android.database.Cursor;
+
+import com.google.common.base.Charsets;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 
 /**
  * Class for exporting the database into CSV (Comma Separate Values)
@@ -14,8 +20,9 @@ import java.io.OutputStreamWriter;
  */
 public class CsvDatabaseExporter implements DatabaseExporter
 {
-    public void exportData(DBHelper db, OutputStreamWriter output) throws IOException, InterruptedException
+    public void exportData(Context context, DBHelper db, OutputStream outStream) throws IOException, InterruptedException
     {
+        OutputStreamWriter output = new OutputStreamWriter(outStream, Charsets.UTF_8);
         CSVPrinter printer = new CSVPrinter(output, CSVFormat.RFC4180);
 
         try
@@ -29,13 +36,21 @@ public class CsvDatabaseExporter implements DatabaseExporter
                     DBHelper.TransactionDbIds.BUDGET,
                     DBHelper.TransactionDbIds.VALUE,
                     DBHelper.TransactionDbIds.NOTE,
-                    DBHelper.TransactionDbIds.DATE);
+                    DBHelper.TransactionDbIds.DATE,
+                    DBHelper.TransactionDbIds.RECEIPT);
 
             for (Cursor cursor : new Cursor[]{db.getExpenses(), db.getRevenues()})
             {
                 while (cursor.moveToNext())
                 {
                     Transaction transaction = Transaction.toTransaction(cursor);
+
+                    String receiptFilename = "";
+                    if(transaction.receipt.length() > 0)
+                    {
+                        File receiptFile = new File(transaction.receipt);
+                        receiptFilename = receiptFile.getName();
+                    }
 
                     printer.printRecord(transaction.id,
                             transaction.type == DBHelper.TransactionDbIds.EXPENSE ?
@@ -45,7 +60,8 @@ public class CsvDatabaseExporter implements DatabaseExporter
                             transaction.budget,
                             transaction.value,
                             transaction.note,
-                            transaction.dateMs);
+                            transaction.dateMs,
+                            receiptFilename);
 
                     if (Thread.currentThread().isInterrupted())
                     {
@@ -68,7 +84,8 @@ public class CsvDatabaseExporter implements DatabaseExporter
                         "", // blank budget (handled in id field)
                         budget.max,
                         "", // blank note
-                        ""); // blank date
+                        "", // blank date
+                        ""); // blank receipt
 
                 if (Thread.currentThread().isInterrupted())
                 {
