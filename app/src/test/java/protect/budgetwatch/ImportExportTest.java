@@ -148,13 +148,28 @@ public class ImportExportTest
      * @param transactionsToAdd
      *   Number of transaction to add.
      */
-    private void addTransactions(int transactionsToAdd)
+    private void addTransactions(int transactionsToAdd) throws IOException
     {
+        File receiptFolder = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        assertNotNull(receiptFolder);
+        if(receiptFolder.exists() == false)
+        {
+            boolean result = receiptFolder.mkdir();
+            assertTrue(result);
+        }
+
         // Add in increasing order to test sorting later
         for(int type : new Integer[]{DBHelper.TransactionDbIds.REVENUE, DBHelper.TransactionDbIds.EXPENSE})
         {
             for(int index = 1; index <= transactionsToAdd; index++)
             {
+                String receiptString = String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index);
+                File receiptFile = new File(receiptFolder, receiptString);
+
+                OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(receiptFile), Charset.forName("UTF-8"));
+                output.write(receiptString);
+                output.close();
+
                 boolean result = db.insertTransaction(type,
                         String.format(DBHelper.TransactionDbIds.DESCRIPTION + ", \"%4d", index),
                         String.format(DBHelper.TransactionDbIds.ACCOUNT + "%4d", index),
@@ -162,7 +177,7 @@ public class ImportExportTest
                         index,
                         String.format(DBHelper.TransactionDbIds.NOTE + "%4d", index),
                         index,
-                        String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index));
+                        receiptFile.getAbsolutePath());
                 assertTrue(result);
             }
         }
@@ -173,9 +188,11 @@ public class ImportExportTest
      * specified in addTransactions(), and are in sequential order
      * from the most recent to the oldest
      */
-    private void checkTransactions(boolean wasImported)
+    private void checkTransactions(boolean shouldHaveReceipts) throws IOException
     {
         boolean isExpense = true;
+
+        File receiptDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         for(Cursor cursor : new Cursor[]{db.getExpenses(), db.getRevenues()})
         {
@@ -191,14 +208,21 @@ public class ImportExportTest
                 assertEquals(String.format(DBHelper.TransactionDbIds.NOTE + "%4d", index), transaction.note);
                 assertEquals(index, transaction.dateMs);
 
-                if(wasImported)
+                if(shouldHaveReceipts)
                 {
-                    // Receipts cannot be imported, and will always be empty
-                    assertEquals("", transaction.receipt);
+                    String receiptName = String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index);
+                    File receiptFile = new File(receiptDir, receiptName);
+                    assertEquals(receiptFile.getAbsolutePath(), transaction.receipt);
+                    assertTrue(receiptFile.isFile());
+
+                    BufferedInputStream stream = new BufferedInputStream(new FileInputStream(receiptFile));
+                    String contents = new String(ByteStreams.toByteArray(stream));
+                    stream.close();
+                    assertEquals(receiptName, contents);
                 }
                 else
                 {
-                    assertEquals(String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index), transaction.receipt);
+                    assertEquals(0, transaction.receipt.length());
                 }
 
                 index--;
@@ -305,7 +329,7 @@ public class ImportExportTest
                     db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
             assertEquals(NUM_TRANSACTIONS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
-            checkTransactions(true);
+            checkTransactions(format == DataFormat.ZIP);
 
             // Clear the database for the next format under test
             clearDatabase();
@@ -347,7 +371,8 @@ public class ImportExportTest
                     db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
             assertEquals(NUM_TRANSACTIONS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
-            checkTransactions(false);
+            // Because the database is in tact, it should still have receipt data
+            checkTransactions(true);
 
             // Clear the database for the next format under test
             clearDatabase();
@@ -384,7 +409,7 @@ public class ImportExportTest
             assertEquals(NUM_ITEMS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
             checkBudgets();
-            checkTransactions(true);
+            checkTransactions(format == DataFormat.ZIP);
 
             // Clear the database for the next format under test
             clearDatabase();
@@ -425,7 +450,7 @@ public class ImportExportTest
     }
 
     @Test
-    public void useImportExportTask()
+    public void useImportExportTask() throws IOException
     {
         final int NUM_ITEMS = 10;
 
@@ -457,7 +482,7 @@ public class ImportExportTest
             assertEquals(NUM_ITEMS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
             checkBudgets();
-            checkTransactions(true);
+            checkTransactions(format == DataFormat.ZIP);
 
             // Clear the database for the next format under test
             clearDatabase();

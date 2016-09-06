@@ -67,7 +67,7 @@
     <string name="importExport">Import/Export</string>
     <string name="importName">Import</string>
     <string name="exportName">Export</string>
-    <string name="importExportHelp">Daten werden importiert nach/exportiert von BudgetWatch.csv im externen Speicher</string>
+    <string name="importExportHelp">Daten werden importiert nach/exportiert von BudgetWatch.<xliff:g id="extension">%s</xliff:g> im externen Speicher</string>
     <string name="importedFrom">Importiert von: %1$s</string>
     <string name="exportedTo">Exportiert nach: %1$s</string>
     <string name="fileMissing">Datei fehlt: %1$s</string>
@@ -111,5 +111,6 @@
     <string name="deleteBudgetConfirmation">Bitte bestätigen Sie die Löschung dieses Budgets. Alle Transaktionen die mit diesem Budget verbunden sind bleiben bestehen.</string>
     <string name="deleteTransactionTitle">Transaktion entfernen</string>
     <string name="deleteTransactionConfirmation">Bitte bestätigen Sie die Löschung dieser Transaktion.</string>
+    <string name="fileFormat">Datei format</string>
 </resources>
 

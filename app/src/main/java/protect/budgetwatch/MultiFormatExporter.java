@@ -29,6 +29,9 @@ public class MultiFormatExporter
             case CSV:
                 exporter = new CsvDatabaseExporter();
                 break;
+            case ZIP:
+                exporter = new ZipDatabaseExporter();
+                break;
         }
 
         if(exporter != null)

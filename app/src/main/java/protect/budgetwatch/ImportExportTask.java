@@ -20,7 +20,7 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
 {
     private static final String TAG = "BudgetWatch";
 
-    private static final String TARGET_FILE = "BudgetWatch.csv";
+    private static final String TARGET_FILE_NAME = "BudgetWatch";
 
     private Activity activity;
     private boolean doImport;
@@ -115,7 +115,10 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
     protected Void doInBackground(Void... nothing)
     {
         final File sdcardDir = Environment.getExternalStorageDirectory();
-        final File importExportFile = new File(sdcardDir, TARGET_FILE);
+
+        String filename = TARGET_FILE_NAME + "." + format.name().toLowerCase();
+
+        final File importExportFile = new File(sdcardDir, filename);
         final DBHelper db = new DBHelper(activity);
 
         if(doImport)
