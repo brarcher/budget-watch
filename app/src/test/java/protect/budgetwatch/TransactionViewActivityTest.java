@@ -28,6 +28,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowLog;
 import org.robolectric.util.ActivityController;
 
 import java.io.File;
@@ -55,6 +56,9 @@ public class TransactionViewActivityTest
     @Before
     public void setUp() throws ParseException
     {
+        // Output logs emitted during tests so they may be accessed
+        ShadowLog.stream = System.out;
+
         final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
         nowString = dateFormatter.format(System.currentTimeMillis());
         nowMs = dateFormatter.parse(nowString).getTime();

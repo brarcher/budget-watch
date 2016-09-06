@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLog;
 import org.robolectric.shadows.ShadowWebView;
 import org.robolectric.util.ActivityController;
 
@@ -28,6 +29,9 @@ public class ReceiptViewActivityTest
     @Before
     public void setUp()
     {
+        // Output logs emitted during tests so they may be accessed
+        ShadowLog.stream = System.out;
+
         Intent intent = new Intent();
         final Bundle bundle = new Bundle();
         bundle.putString("receipt", "receipt");

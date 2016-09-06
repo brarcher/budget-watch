@@ -51,6 +51,9 @@ public class ImportExportTest
     @Before
     public void setUp()
     {
+        // Output logs emitted during tests so they may be accessed
+        ShadowLog.stream = System.out;
+
         activity = Robolectric.setupActivity(BudgetViewActivity.class);
         db = new DBHelper(activity);
         nowMs = System.currentTimeMillis();

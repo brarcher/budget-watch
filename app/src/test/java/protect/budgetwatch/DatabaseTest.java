@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLog;
 
 import java.util.Calendar;
 import java.util.List;
@@ -37,6 +38,9 @@ public class DatabaseTest
     @Before
     public void setUp()
     {
+        // Output logs emitted during tests so they may be accessed
+        ShadowLog.stream = System.out;
+
         Activity activity = Robolectric.setupActivity(BudgetViewActivity.class);
         context = activity;
         db = new DBHelper(activity);

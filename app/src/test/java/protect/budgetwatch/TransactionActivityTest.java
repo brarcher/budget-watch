@@ -8,11 +8,13 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLog;
 import org.robolectric.util.ActivityController;
 
 import static org.junit.Assert.assertEquals;
@@ -24,6 +26,13 @@ import static org.robolectric.Shadows.shadowOf;
 @Config(constants = BuildConfig.class, sdk = 17)
 public class TransactionActivityTest
 {
+    @Before
+    public void setUp()
+    {
+        // Output logs emitted during tests so they may be accessed
+        ShadowLog.stream = System.out;
+    }
+
     @Test
     public void bothTabsExists() throws Exception
     {
