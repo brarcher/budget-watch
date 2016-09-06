@@ -47,7 +47,8 @@ public class CsvDatabaseImporter implements DatabaseImporter
                 }
             }
 
-            parser.close();
+            // Do not close the parser, as it will close the input stream;
+            // Closing the input stream is the responsibility of the caller.
             database.setTransactionSuccessful();
         }
         catch(IllegalArgumentException e)
