@@ -142,7 +142,7 @@ public class ImportExportTest
      * All string fields will be in the format
      *     name id
      * where "name" is the name of the field, and "id"
-     * is the index for the entry. All numberical fields will
+     * is the index for the entry. All numerical fields will
      * be assigned to the index.
      *
      * @param transactionsToAdd
