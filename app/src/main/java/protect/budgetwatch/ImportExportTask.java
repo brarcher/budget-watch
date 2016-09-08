@@ -20,7 +20,7 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
 {
     private static final String TAG = "BudgetWatch";
 
-    private static final String TARGET_FILE = "BudgetWatch.csv";
+    private static final String TARGET_FILE_NAME = "BudgetWatch";
 
     private Activity activity;
     private boolean doImport;
@@ -64,9 +64,8 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
         try
         {
             FileInputStream fileReader = new FileInputStream(importFile);
-            InputStreamReader reader = new InputStreamReader(fileReader, Charset.forName("UTF-8"));
-            result = MultiFormatImporter.importData(db, reader, format);
-            reader.close();
+            result = MultiFormatImporter.importData(activity, db, fileReader, format);
+            fileReader.close();
         }
         catch(IOException e)
         {
@@ -83,10 +82,9 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
 
         try
         {
-            FileOutputStream fileWriter = new FileOutputStream(exportFile);
-            OutputStreamWriter writer = new OutputStreamWriter(fileWriter, Charset.forName("UTF-8"));
-            result = MultiFormatExporter.exportData(db, writer, format);
-            writer.close();
+            FileOutputStream outStream = new FileOutputStream(exportFile);
+            result = MultiFormatExporter.exportData(this.activity, db, outStream, format);
+            outStream.close();
         }
         catch (IOException e)
         {
@@ -117,7 +115,10 @@ class ImportExportTask extends AsyncTask<Void, Void, Void>
     protected Void doInBackground(Void... nothing)
     {
         final File sdcardDir = Environment.getExternalStorageDirectory();
-        final File importExportFile = new File(sdcardDir, TARGET_FILE);
+
+        String filename = TARGET_FILE_NAME + "." + format.name().toLowerCase();
+
+        final File importExportFile = new File(sdcardDir, filename);
         final DBHelper db = new DBHelper(activity);
 
         if(doImport)

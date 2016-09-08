@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
+import android.os.PowerManager;
+
+import com.google.common.io.ByteStreams;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,18 +16,26 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLog;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.Calendar;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -39,6 +51,9 @@ public class ImportExportTest
     @Before
     public void setUp()
     {
+        // Output logs emitted during tests so they may be accessed
+        ShadowLog.stream = System.out;
+
         activity = Robolectric.setupActivity(BudgetViewActivity.class);
         db = new DBHelper(activity);
         nowMs = System.currentTimeMillis();
@@ -111,6 +126,18 @@ public class ImportExportTest
         assertEquals(0, db.getBudgetCount());
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
+
+        // Also delete all the receipt images, in case the exporter should have saved them
+        File receiptFolder = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        assertNotNull(receiptFolder);
+        File [] files = receiptFolder.listFiles();
+        assertNotNull(files);
+        for(File file : files)
+        {
+            boolean result = file.delete();
+            assertTrue(result);
+            assertTrue(file.exists() == false);
+        }
     }
 
     /**
@@ -118,19 +145,34 @@ public class ImportExportTest
      * All string fields will be in the format
      *     name id
      * where "name" is the name of the field, and "id"
-     * is the index for the entry. All numberical fields will
+     * is the index for the entry. All numerical fields will
      * be assigned to the index.
      *
      * @param transactionsToAdd
      *   Number of transaction to add.
      */
-    private void addTransactions(int transactionsToAdd)
+    private void addTransactions(int transactionsToAdd) throws IOException
     {
+        File receiptFolder = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        assertNotNull(receiptFolder);
+        if(receiptFolder.exists() == false)
+        {
+            boolean result = receiptFolder.mkdir();
+            assertTrue(result);
+        }
+
         // Add in increasing order to test sorting later
         for(int type : new Integer[]{DBHelper.TransactionDbIds.REVENUE, DBHelper.TransactionDbIds.EXPENSE})
         {
             for(int index = 1; index <= transactionsToAdd; index++)
             {
+                String receiptString = String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index);
+                File receiptFile = new File(receiptFolder, receiptString);
+
+                OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(receiptFile), Charset.forName("UTF-8"));
+                output.write(receiptString);
+                output.close();
+
                 boolean result = db.insertTransaction(type,
                         String.format(DBHelper.TransactionDbIds.DESCRIPTION + ", \"%4d", index),
                         String.format(DBHelper.TransactionDbIds.ACCOUNT + "%4d", index),
@@ -138,7 +180,7 @@ public class ImportExportTest
                         index,
                         String.format(DBHelper.TransactionDbIds.NOTE + "%4d", index),
                         index,
-                        String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index));
+                        receiptFile.getAbsolutePath());
                 assertTrue(result);
             }
         }
@@ -149,9 +191,11 @@ public class ImportExportTest
      * specified in addTransactions(), and are in sequential order
      * from the most recent to the oldest
      */
-    private void checkTransactions(boolean wasImported)
+    private void checkTransactions(boolean shouldHaveReceipts) throws IOException
     {
         boolean isExpense = true;
+
+        File receiptDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         for(Cursor cursor : new Cursor[]{db.getExpenses(), db.getRevenues()})
         {
@@ -167,14 +211,21 @@ public class ImportExportTest
                 assertEquals(String.format(DBHelper.TransactionDbIds.NOTE + "%4d", index), transaction.note);
                 assertEquals(index, transaction.dateMs);
 
-                if(wasImported)
+                if(shouldHaveReceipts)
                 {
-                    // Receipts cannot be imported, and will always be empty
-                    assertEquals("", transaction.receipt);
+                    String receiptName = String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index);
+                    File receiptFile = new File(receiptDir, receiptName);
+                    assertEquals(receiptFile.getAbsolutePath(), transaction.receipt);
+                    assertTrue(receiptFile.isFile());
+
+                    BufferedInputStream stream = new BufferedInputStream(new FileInputStream(receiptFile));
+                    String contents = new String(ByteStreams.toByteArray(stream));
+                    stream.close();
+                    assertEquals(receiptName, contents);
                 }
                 else
                 {
-                    assertEquals(String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index), transaction.receipt);
+                    assertEquals(0, transaction.receipt.length());
                 }
 
                 index--;
@@ -195,20 +246,17 @@ public class ImportExportTest
             addBudgets(NUM_BUDGETS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             clearDatabase();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Import the CSV data
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             assertEquals(NUM_BUDGETS, db.getBudgetCount());
@@ -230,18 +278,15 @@ public class ImportExportTest
             addBudgets(NUM_BUDGETS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export into CSV data
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Import the CSV data on top of the existing database
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             assertEquals(NUM_BUDGETS, db.getBudgetCount());
@@ -263,24 +308,20 @@ public class ImportExportTest
             addTransactions(NUM_TRANSACTIONS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             clearDatabase();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
-
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
             activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
             assertFalse(dbChanged.hasChanged());
 
             // Import the CSV data
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             // The contents of the database should have changed
@@ -291,7 +332,7 @@ public class ImportExportTest
                     db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
             assertEquals(NUM_TRANSACTIONS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
-            checkTransactions(true);
+            checkTransactions(format == DataFormat.ZIP);
 
             // Clear the database for the next format under test
             clearDatabase();
@@ -308,24 +349,21 @@ public class ImportExportTest
             addTransactions(NUM_TRANSACTIONS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             // Do not clear database
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
             activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
             assertFalse(dbChanged.hasChanged());
 
             // Import the CSV data on top of the existing database
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             // The contents of the database should not have changed
@@ -336,7 +374,8 @@ public class ImportExportTest
                     db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
             assertEquals(NUM_TRANSACTIONS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
-            checkTransactions(false);
+            // Because the database is in tact, it should still have receipt data
+            checkTransactions(true);
 
             // Clear the database for the next format under test
             clearDatabase();
@@ -354,20 +393,17 @@ public class ImportExportTest
             addTransactions(NUM_ITEMS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
-            outStream.close();
 
             clearDatabase();
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Import the CSV data
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
             assertEquals(NUM_ITEMS, db.getBudgetCount());
@@ -376,7 +412,7 @@ public class ImportExportTest
             assertEquals(NUM_ITEMS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
             checkBudgets();
-            checkTransactions(true);
+            checkTransactions(format == DataFormat.ZIP);
 
             // Clear the database for the next format under test
             clearDatabase();
@@ -394,10 +430,9 @@ public class ImportExportTest
             addTransactions(NUM_ITEMS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
-            OutputStreamWriter outStream = new OutputStreamWriter(outData, "UTF-8");
 
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(db, outStream, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
 
             clearDatabase();
@@ -405,10 +440,9 @@ public class ImportExportTest
             String corruptEntry = "ThisStringIsLikelyNotPartOfAnyFormat";
 
             ByteArrayInputStream inData = new ByteArrayInputStream((outData.toString() + corruptEntry).getBytes());
-            InputStreamReader inStream = new InputStreamReader(inData, "UTF-8");
 
             // Attempt to import the CSV data
-            result = MultiFormatImporter.importData(db, inStream, DataFormat.CSV);
+            result = MultiFormatImporter.importData(activity, db, inData, format);
             assertEquals(false, result);
 
             assertEquals(0, db.getBudgetCount());
@@ -419,7 +453,7 @@ public class ImportExportTest
     }
 
     @Test
-    public void useImportExportTask()
+    public void useImportExportTask() throws IOException
     {
         final int NUM_ITEMS = 10;
 
@@ -451,7 +485,7 @@ public class ImportExportTest
             assertEquals(NUM_ITEMS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
             checkBudgets();
-            checkTransactions(true);
+            checkTransactions(format == DataFormat.ZIP);
 
             // Clear the database for the next format under test
             clearDatabase();

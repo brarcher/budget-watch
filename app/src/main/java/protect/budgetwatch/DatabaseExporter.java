@@ -1,7 +1,8 @@
 package protect.budgetwatch;
 
+import android.content.Context;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.OutputStream;
 
 /**
  * Interface for a class which can export the contents of the database
@@ -13,5 +14,5 @@ public interface DatabaseExporter
      * Export the database to the output stream in a given format.
      * @throws IOException
      */
-    void exportData(DBHelper db, OutputStreamWriter output) throws IOException, InterruptedException;
+    void exportData(Context context, DBHelper db, OutputStream output) throws IOException, InterruptedException;
 }

@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLog;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,6 +37,9 @@ public class DatabaseCleanupTaskTest
     @Before
     public void setUp() throws IOException
     {
+        // Output logs emitted during tests so they may be accessed
+        ShadowLog.stream = System.out;
+
         activity = Robolectric.setupActivity(ImportExportActivity.class);
         db = new DBHelper(activity);
 

@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLog;
 import org.robolectric.util.ActivityController;
 
 import java.util.Calendar;
@@ -29,6 +30,9 @@ public class BudgetAdapterTest
     @Before
     public void setUp()
     {
+        // Output logs emitted during tests so they may be accessed
+        ShadowLog.stream = System.out;
+
         nowMs = System.currentTimeMillis();
 
         Calendar lastYear = Calendar.getInstance();

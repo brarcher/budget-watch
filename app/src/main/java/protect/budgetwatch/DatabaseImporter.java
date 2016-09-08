@@ -1,6 +1,9 @@
 package protect.budgetwatch;
 
+import android.content.Context;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
@@ -15,5 +18,5 @@ public interface DatabaseImporter
      * @throws IOException
      * @throws FormatException
      */
-    void importData(DBHelper db, InputStreamReader input) throws IOException, FormatException, InterruptedException;
+    void importData(Context context, DBHelper db, InputStream input) throws IOException, FormatException, InterruptedException;
 }

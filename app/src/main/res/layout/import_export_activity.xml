@@ -31,7 +31,29 @@
             android:padding="20dp"
             android:textSize="20sp"
             android:layout_gravity="center"
-            android:text="@string/importExportHelp"/>
+            android:id="@+id/helpText"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+            <TextView
+                android:textSize="20sp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:labelFor="@+id/budgetSpinner"
+                android:text="@string/fileFormat" />
+            <Spinner
+                android:id="@+id/fileFormatSpinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:drawSelectorOnTop="true" />
+        </LinearLayout>
 
         <LinearLayout android:orientation="horizontal"
                       android:layout_width="fill_parent"
