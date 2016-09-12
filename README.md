@@ -11,22 +11,11 @@ If there is any interest in improving this project, kindly submit a pull request
 proposed changes.
 
 # Screenshots
+[<img src="https://cloud.githubusercontent.com/assets/5264535/18039024/c6a35fb0-6d6c-11e6-8831-a4cca811458c.png" width=250>](https://cloud.githubusercontent.com/assets/5264535/18039024/c6a35fb0-6d6c-11e6-8831-a4cca811458c.png)
+[<img src="https://cloud.githubusercontent.com/assets/5264535/18039031/ee7574ba-6d6c-11e6-8289-55d15ffb3174.png" width=250>](https://cloud.githubusercontent.com/assets/5264535/18039031/ee7574ba-6d6c-11e6-8289-55d15ffb3174.png)
 
-Main page:
-
-![screenshot_2016-08-28-18-21-43](https://cloud.githubusercontent.com/assets/5264535/18039024/c6a35fb0-6d6c-11e6-8831-a4cca811458c.png)
-
-Budgets can be added and viewed. Each budget displays how much money has been spent so far this month. Example budgets:
-
-![screenshot_2016-08-28-18-22-25](https://cloud.githubusercontent.com/assets/5264535/18039031/ee7574ba-6d6c-11e6-8289-55d15ffb3174.png)
-
-Keep track of individual transactions, each on a given budget. Example transactions:
-
-![screenshot_2016-08-28-18-24-29](https://cloud.githubusercontent.com/assets/5264535/18039039/0c9dffac-6d6d-11e6-8a11-f5b57ec4b8c9.png)
-
-Each transaction contains several fields which can be filled out, and can also include an optional photo of a receipt:
-
-![screenshot_2016-08-28-22-22-48](https://cloud.githubusercontent.com/assets/5264535/18039156/1ba45d42-6d6e-11e6-8968-e3183f893886.png)
+[<img src="https://cloud.githubusercontent.com/assets/5264535/18039039/0c9dffac-6d6d-11e6-8a11-f5b57ec4b8c9.png" width=250>](https://cloud.githubusercontent.com/assets/5264535/18039039/0c9dffac-6d6d-11e6-8a11-f5b57ec4b8c9.png)
+[<img src="https://cloud.githubusercontent.com/assets/5264535/18039156/1ba45d42-6d6e-11e6-8968-e3183f893886.png" width=250>](https://cloud.githubusercontent.com/assets/5264535/18039156/1ba45d42-6d6e-11e6-8968-e3183f893886.png)
 
 # Building
 
