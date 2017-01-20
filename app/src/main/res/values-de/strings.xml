@@ -112,22 +112,22 @@
     <string name="deleteTransactionConfirmation">Bitte bestätigen Sie die Löschung dieser Transaktion.</string>
     <string name="fileFormat">Datei format</string>
 
-    <!-- needs translated --><string name="importExportHelp">Backed up data can allow you to move your budgets and transactions to another device.</string>
-    <!-- needs translated --><string name="importSuccessfulTitle">Import successful</string>
-    <!-- needs translated --><string name="importFailedTitle">Import failed</string>
-    <!-- needs translated --><string name="exportSuccessfulTitle">Export successful</string>
-    <!-- needs translated --><string name="exportFailedTitle">Export failed</string>
-    <!-- needs translated --><string name="noExternalStoragePermissionError">Unable to import or export cards without the external storage permission</string>
-    <!-- needs translated --><string name="exportOptionExplanation">Data is written to the top directory in external storage.</string>
-    <!-- needs translated --><string name="importOptionFilesystemTitle">Import from filesystem</string>
-    <!-- needs translated --><string name="importOptionFilesystemExplanation">Choose a specific file from the filesystem.</string>
-    <!-- needs translated --><string name="importOptionFilesystemButton">From filesystem</string>
-    <!-- needs translated --><string name="importOptionApplicationTitle">Import from filesystem</string>
-    <!-- needs translated --><string name="importOptionApplicationExplanation">Use an external application like Dropbox, Google Drive, or your favorite file manager to open a file.</string>
-    <!-- needs translated --><string name="importOptionApplicationButton">Use external application</string>
-    <!-- needs translated --><string name="importOptionFixedTitle">Import from export location</string>
-    <!-- needs translated --><string name="importOptionFixedExplanation">Import from the same location on the filesystem that is written to on export.</string>
-    <!-- needs translated --><string name="importOptionFixedButton">Use export location</string>
-    <!-- needs translated --><string name="sendLabel">Send&#8230;</string>
+    <string name="importExportHelp">Backup Daten ermöglichen es Ihnen Ihre Bugdets und Transaktionen auf ein anderes Gerät zu verschieben.</string>
+    <string name="importSuccessfulTitle">Import erfolgreich</string>
+    <string name="importFailedTitle">Import fehlgeschlagen</string>
+    <string name="exportSuccessfulTitle">Export erfolgreich</string>
+    <string name="exportFailedTitle">Export fehlgeschlagen</string>
+    <string name="noExternalStoragePermissionError">Importieren oder exportieren ist nicht möglich ohne externe Speichererlaubnis</string>
+    <string name="exportOptionExplanation">Daten werden in das Hauptverzeichnis des externen Speichers geschrieben.</string>
+    <string name="importOptionFilesystemTitle">Import von Dateisystem</string>
+    <string name="importOptionFilesystemExplanation">Wählen Sie eine bestimmte Datei aus dem Dateisystem.</string>
+    <string name="importOptionFilesystemButton">Aus Dateisystem</string>
+    <string name="importOptionApplicationTitle">Import aus Dateisystem</string>
+    <string name="importOptionApplicationExplanation">Verwenden Sie eine externe Applikation wie Dropbox, Google Drive, oder Ihren bevorzugten Dateimanager um eine Datei zu öffnen.</string>
+    <string name="importOptionApplicationButton">Verwende externe Applikation</string>
+    <string name="importOptionFixedTitle">Importiere von Exportort</string>
+    <string name="importOptionFixedExplanation">Importiere von dem gleichen Ort im Dateisystem wo auch die exportierten Dateien abgelegt werden.</string>
+    <string name="importOptionFixedButton">Verwende Exportort</string>
+    <string name="sendLabel">Senden&#8230;</string>
 </resources>
 
