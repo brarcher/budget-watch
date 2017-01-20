@@ -67,7 +67,6 @@
     <string name="importExport">Import/Export</string>
     <string name="importName">Import</string>
     <string name="exportName">Export</string>
-    <string name="importExportHelp">Daten werden importiert nach/exportiert von BudgetWatch.<xliff:g id="extension">%s</xliff:g> im externen Speicher</string>
     <string name="importedFrom">Importiert von: %1$s</string>
     <string name="exportedTo">Exportiert nach: %1$s</string>
     <string name="fileMissing">Datei fehlt: %1$s</string>
@@ -112,5 +111,23 @@
     <string name="deleteTransactionTitle">Transaktion entfernen</string>
     <string name="deleteTransactionConfirmation">Bitte bestätigen Sie die Löschung dieser Transaktion.</string>
     <string name="fileFormat">Datei format</string>
+
+    <!-- needs translated --><string name="importExportHelp">Backed up data can allow you to move your budgets and transactions to another device.</string>
+    <!-- needs translated --><string name="importSuccessfulTitle">Import successful</string>
+    <!-- needs translated --><string name="importFailedTitle">Import failed</string>
+    <!-- needs translated --><string name="exportSuccessfulTitle">Export successful</string>
+    <!-- needs translated --><string name="exportFailedTitle">Export failed</string>
+    <!-- needs translated --><string name="noExternalStoragePermissionError">Unable to import or export cards without the external storage permission</string>
+    <!-- needs translated --><string name="exportOptionExplanation">Data is written to the top directory in external storage.</string>
+    <!-- needs translated --><string name="importOptionFilesystemTitle">Import from filesystem</string>
+    <!-- needs translated --><string name="importOptionFilesystemExplanation">Choose a specific file from the filesystem.</string>
+    <!-- needs translated --><string name="importOptionFilesystemButton">From filesystem</string>
+    <!-- needs translated --><string name="importOptionApplicationTitle">Import from filesystem</string>
+    <!-- needs translated --><string name="importOptionApplicationExplanation">Use an external application like Dropbox, Google Drive, or your favorite file manager to open a file.</string>
+    <!-- needs translated --><string name="importOptionApplicationButton">Use external application</string>
+    <!-- needs translated --><string name="importOptionFixedTitle">Import from export location</string>
+    <!-- needs translated --><string name="importOptionFixedExplanation">Import from the same location on the filesystem that is written to on export.</string>
+    <!-- needs translated --><string name="importOptionFixedButton">Use export location</string>
+    <!-- needs translated --><string name="sendLabel">Send&#8230;</string>
 </resources>
 

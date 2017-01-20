@@ -48,6 +48,18 @@ public class ImportExportTest
     private long lastYearMs;
     private static final int MONTHS_PER_YEAR = 12;
 
+    class TestTaskCompleteListener implements ImportExportTask.TaskCompleteListener
+    {
+        Boolean success;
+        File file;
+
+        public void onTaskComplete(boolean success, File file)
+        {
+            this.success = success;
+            this.file = file;
+        }
+    }
+
     @Before
     public void setUp()
     {
@@ -456,6 +468,8 @@ public class ImportExportTest
     public void useImportExportTask() throws IOException
     {
         final int NUM_ITEMS = 10;
+        final File sdcardDir = Environment.getExternalStorageDirectory();
+        final File exportFile = new File(sdcardDir, "file.csv");
 
         for(DataFormat format : DataFormat.values())
         {
@@ -463,21 +477,32 @@ public class ImportExportTest
             addTransactions(NUM_ITEMS);
 
             // Export to whatever the default location is
-            ImportExportTask task = new ImportExportTask(activity, false, format);
+            TestTaskCompleteListener listener = new TestTaskCompleteListener();
+            ImportExportTask task = new ImportExportTask(activity, false, format, exportFile, listener);
             task.execute();
 
             // Actually run the task to completion
             Robolectric.flushBackgroundThreadScheduler();
+
+            assertNotNull(listener.success);
+            assertEquals(true, listener.success);
+            assertNotNull(listener.file);
+            assertEquals(exportFile, listener.file);
 
             clearDatabase();
 
             // Import everything back from the default location
-
-            task = new ImportExportTask(activity, true, format);
+            listener = new TestTaskCompleteListener();
+            task = new ImportExportTask(activity, true, format, exportFile, listener);
             task.execute();
 
             // Actually run the task to completion
             Robolectric.flushBackgroundThreadScheduler();
+
+            assertNotNull(listener.success);
+            assertEquals(true, listener.success);
+            assertNotNull(listener.file);
+            assertEquals(exportFile, listener.file);
 
             assertEquals(NUM_ITEMS, db.getBudgetCount());
             assertEquals(NUM_ITEMS,

@@ -4,4 +4,7 @@
 
     <dimen name="receipt_icon_size">18dp</dimen>
     <dimen name="receipt_icon_padding">2dp</dimen>
+
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_large">22sp</dimen>
 </resources>
