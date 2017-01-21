@@ -44,9 +44,6 @@ public class ImportExportTest
 {
     private Activity activity;
     private DBHelper db;
-    private long nowMs;
-    private long lastYearMs;
-    private static final int MONTHS_PER_YEAR = 12;
 
     class TestTaskCompleteListener implements ImportExportTask.TaskCompleteListener
     {
@@ -68,184 +65,12 @@ public class ImportExportTest
 
         activity = Robolectric.setupActivity(BudgetViewActivity.class);
         db = new DBHelper(activity);
-        nowMs = System.currentTimeMillis();
-
-        Calendar lastYear = Calendar.getInstance();
-        lastYear.set(Calendar.YEAR, lastYear.get(Calendar.YEAR)-1);
-        lastYearMs = lastYear.getTimeInMillis();
     }
 
     @After
     public void tearDown()
     {
         db.close();
-    }
-
-    /**
-     * Add the given number of budgets, each with
-     * an index in the name.
-     * @param budgetsToAdd
-     */
-    private void addBudgets(int budgetsToAdd)
-    {
-        // Add in reverse order to test sorting
-        for(int index = budgetsToAdd; index > 0; index--)
-        {
-            String name = String.format("budget, \"%4d", index);
-            boolean result = db.insertBudget(name, index);
-            assertTrue(result);
-        }
-
-        assertEquals(budgetsToAdd, db.getBudgetCount());
-    }
-
-    /**
-     * Check that all of the budgets follow the pattern
-     * specified in addBudgets(), and are in sequential order
-     * where the smallest budget value is 1
-     */
-    private void checkBudgets()
-    {
-        List<Budget> budgets = db.getBudgets(lastYearMs, nowMs);
-        int index = 1;
-        for(Budget budget : budgets)
-        {
-            assertEquals(budget.current, 0);
-            assertEquals(budget.max, index*(MONTHS_PER_YEAR+1));
-            index++;
-        }
-
-        List<String> names = db.getBudgetNames();
-        index = 1;
-        for(String name : names)
-        {
-            String expectedName = String.format("budget, \"%4d", index);
-            assertEquals(expectedName, name);
-            index++;
-        }
-    }
-
-    /**
-     * Delete the contents of the budgets and transactions databases
-     */
-    private void clearDatabase()
-    {
-        SQLiteDatabase database = db.getWritableDatabase();
-        database.execSQL("delete from " + DBHelper.BudgetDbIds.TABLE);
-        database.execSQL("delete from " + DBHelper.TransactionDbIds.TABLE);
-        database.close();
-
-        assertEquals(0, db.getBudgetCount());
-        assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
-        assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
-
-        // Also delete all the receipt images, in case the exporter should have saved them
-        File receiptFolder = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        assertNotNull(receiptFolder);
-        File [] files = receiptFolder.listFiles();
-        assertNotNull(files);
-        for(File file : files)
-        {
-            boolean result = file.delete();
-            assertTrue(result);
-            assertTrue(file.exists() == false);
-        }
-    }
-
-    /**
-     * Add the given number of revenue and expense transactions.
-     * All string fields will be in the format
-     *     name id
-     * where "name" is the name of the field, and "id"
-     * is the index for the entry. All numerical fields will
-     * be assigned to the index.
-     *
-     * @param transactionsToAdd
-     *   Number of transaction to add.
-     */
-    private void addTransactions(int transactionsToAdd) throws IOException
-    {
-        File receiptFolder = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        assertNotNull(receiptFolder);
-        if(receiptFolder.exists() == false)
-        {
-            boolean result = receiptFolder.mkdir();
-            assertTrue(result);
-        }
-
-        // Add in increasing order to test sorting later
-        for(int type : new Integer[]{DBHelper.TransactionDbIds.REVENUE, DBHelper.TransactionDbIds.EXPENSE})
-        {
-            for(int index = 1; index <= transactionsToAdd; index++)
-            {
-                String receiptString = String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index);
-                File receiptFile = new File(receiptFolder, receiptString);
-
-                OutputStreamWriter output = new OutputStreamWriter(new FileOutputStream(receiptFile), Charset.forName("UTF-8"));
-                output.write(receiptString);
-                output.close();
-
-                boolean result = db.insertTransaction(type,
-                        String.format(DBHelper.TransactionDbIds.DESCRIPTION + ", \"%4d", index),
-                        String.format(DBHelper.TransactionDbIds.ACCOUNT + "%4d", index),
-                        String.format(DBHelper.TransactionDbIds.BUDGET + "%4d", index),
-                        index,
-                        String.format(DBHelper.TransactionDbIds.NOTE + "%4d", index),
-                        index,
-                        receiptFile.getAbsolutePath());
-                assertTrue(result);
-            }
-        }
-    }
-
-    /**
-     * Check that all of the transactions follow the pattern
-     * specified in addTransactions(), and are in sequential order
-     * from the most recent to the oldest
-     */
-    private void checkTransactions(boolean shouldHaveReceipts) throws IOException
-    {
-        boolean isExpense = true;
-
-        File receiptDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-
-        for(Cursor cursor : new Cursor[]{db.getExpenses(), db.getRevenues()})
-        {
-            int index = cursor.getCount();
-            while(cursor.moveToNext())
-            {
-                Transaction transaction = Transaction.toTransaction(cursor);
-                assertEquals(isExpense ? DBHelper.TransactionDbIds.EXPENSE : DBHelper.TransactionDbIds.REVENUE, transaction.type);
-                assertEquals(String.format(DBHelper.TransactionDbIds.DESCRIPTION + ", \"%4d", index), transaction.description);
-                assertEquals(String.format(DBHelper.TransactionDbIds.ACCOUNT + "%4d", index), transaction.account);
-                assertEquals(String.format(DBHelper.TransactionDbIds.BUDGET + "%4d", index), transaction.budget);
-                assertEquals(index, (int)transaction.value);
-                assertEquals(String.format(DBHelper.TransactionDbIds.NOTE + "%4d", index), transaction.note);
-                assertEquals(index, transaction.dateMs);
-
-                if(shouldHaveReceipts)
-                {
-                    String receiptName = String.format(DBHelper.TransactionDbIds.RECEIPT + "%4d", index);
-                    File receiptFile = new File(receiptDir, receiptName);
-                    assertEquals(receiptFile.getAbsolutePath(), transaction.receipt);
-                    assertTrue(receiptFile.isFile());
-
-                    BufferedInputStream stream = new BufferedInputStream(new FileInputStream(receiptFile));
-                    String contents = new String(ByteStreams.toByteArray(stream));
-                    stream.close();
-                    assertEquals(receiptName, contents);
-                }
-                else
-                {
-                    assertEquals(0, transaction.receipt.length());
-                }
-
-                index--;
-            }
-            cursor.close();
-
-            isExpense = false;
-        }
     }
 
     @Test
@@ -255,7 +80,7 @@ public class ImportExportTest
 
         for(DataFormat format : DataFormat.values())
         {
-            addBudgets(NUM_BUDGETS);
+            DatabaseTestHelper.addBudgets(db, NUM_BUDGETS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
@@ -263,7 +88,7 @@ public class ImportExportTest
             boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
 
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
 
@@ -271,12 +96,10 @@ public class ImportExportTest
             result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
-            assertEquals(NUM_BUDGETS, db.getBudgetCount());
-
-            checkBudgets();
+            DatabaseTestHelper.checkBudgets(db, NUM_BUDGETS);
 
             // Clear the database for the next format under test
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
         }
     }
 
@@ -287,7 +110,7 @@ public class ImportExportTest
 
         for(DataFormat format : DataFormat.values())
         {
-            addBudgets(NUM_BUDGETS);
+            DatabaseTestHelper.addBudgets(db, NUM_BUDGETS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
@@ -301,12 +124,10 @@ public class ImportExportTest
             result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
-            assertEquals(NUM_BUDGETS, db.getBudgetCount());
-
-            checkBudgets();
+            DatabaseTestHelper.checkBudgets(db, NUM_BUDGETS);
 
             // Clear the database for the next format under test
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
         }
     }
 
@@ -317,7 +138,7 @@ public class ImportExportTest
 
         for(DataFormat format : DataFormat.values())
         {
-            addTransactions(NUM_TRANSACTIONS);
+            DatabaseTestHelper.addTransactions(db, activity, NUM_TRANSACTIONS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
@@ -325,7 +146,7 @@ public class ImportExportTest
             boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
 
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
@@ -340,14 +161,10 @@ public class ImportExportTest
             assertTrue(dbChanged.hasChanged());
             activity.unregisterReceiver(dbChanged);
 
-            assertEquals(NUM_TRANSACTIONS,
-                    db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
-            assertEquals(NUM_TRANSACTIONS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
-
-            checkTransactions(format == DataFormat.ZIP);
+            DatabaseTestHelper.checkTransactions(db, activity, NUM_TRANSACTIONS, format == DataFormat.ZIP);;
 
             // Clear the database for the next format under test
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
         }
     }
 
@@ -358,7 +175,7 @@ public class ImportExportTest
 
         for(DataFormat format : DataFormat.values())
         {
-            addTransactions(NUM_TRANSACTIONS);
+            DatabaseTestHelper.addTransactions(db, activity, NUM_TRANSACTIONS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
@@ -382,15 +199,11 @@ public class ImportExportTest
             assertFalse(dbChanged.hasChanged());
             activity.unregisterReceiver(dbChanged);
 
-            assertEquals(NUM_TRANSACTIONS,
-                    db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
-            assertEquals(NUM_TRANSACTIONS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
-
             // Because the database is in tact, it should still have receipt data
-            checkTransactions(true);
+            DatabaseTestHelper.checkTransactions(db, activity, NUM_TRANSACTIONS, true);
 
             // Clear the database for the next format under test
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
         }
     }
 
@@ -401,8 +214,8 @@ public class ImportExportTest
 
         for(DataFormat format : DataFormat.values())
         {
-            addBudgets(NUM_ITEMS);
-            addTransactions(NUM_ITEMS);
+            DatabaseTestHelper.addBudgets(db, NUM_ITEMS);
+            DatabaseTestHelper.addTransactions(db, activity, NUM_ITEMS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
@@ -410,7 +223,7 @@ public class ImportExportTest
             boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
 
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
 
@@ -418,16 +231,11 @@ public class ImportExportTest
             result = MultiFormatImporter.importData(activity, db, inData, format);
             assertTrue(result);
 
-            assertEquals(NUM_ITEMS, db.getBudgetCount());
-            assertEquals(NUM_ITEMS,
-                    db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
-            assertEquals(NUM_ITEMS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
-
-            checkBudgets();
-            checkTransactions(format == DataFormat.ZIP);
+            DatabaseTestHelper.checkBudgets(db, NUM_ITEMS);
+            DatabaseTestHelper.checkTransactions(db, activity, NUM_ITEMS, format == DataFormat.ZIP);
 
             // Clear the database for the next format under test
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
         }
     }
 
@@ -438,8 +246,8 @@ public class ImportExportTest
 
         for(DataFormat format : DataFormat.values())
         {
-            addBudgets(NUM_ITEMS);
-            addTransactions(NUM_ITEMS);
+            DatabaseTestHelper.addBudgets(db, NUM_ITEMS);
+            DatabaseTestHelper.addTransactions(db, activity, NUM_ITEMS);
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
@@ -447,7 +255,7 @@ public class ImportExportTest
             boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
             assertTrue(result);
 
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
 
             String corruptEntry = "ThisStringIsLikelyNotPartOfAnyFormat";
 
@@ -473,8 +281,8 @@ public class ImportExportTest
 
         for(DataFormat format : DataFormat.values())
         {
-            addBudgets(NUM_ITEMS);
-            addTransactions(NUM_ITEMS);
+            DatabaseTestHelper.addBudgets(db, NUM_ITEMS);
+            DatabaseTestHelper.addTransactions(db, activity, NUM_ITEMS);
 
             // Export to whatever the default location is
             TestTaskCompleteListener listener = new TestTaskCompleteListener();
@@ -489,7 +297,7 @@ public class ImportExportTest
             assertNotNull(listener.file);
             assertEquals(exportFile, listener.file);
 
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
 
             // Import everything back from the default location
             listener = new TestTaskCompleteListener();
@@ -504,16 +312,11 @@ public class ImportExportTest
             assertNotNull(listener.file);
             assertEquals(exportFile, listener.file);
 
-            assertEquals(NUM_ITEMS, db.getBudgetCount());
-            assertEquals(NUM_ITEMS,
-                    db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
-            assertEquals(NUM_ITEMS, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
-
-            checkBudgets();
-            checkTransactions(format == DataFormat.ZIP);
+            DatabaseTestHelper.checkBudgets(db, NUM_ITEMS);
+            DatabaseTestHelper.checkTransactions(db, activity, NUM_ITEMS, format == DataFormat.ZIP);
 
             // Clear the database for the next format under test
-            clearDatabase();
+            DatabaseTestHelper.clearDatabase(db, activity);
         }
     }
 
