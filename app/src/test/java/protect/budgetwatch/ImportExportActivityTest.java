@@ -25,6 +25,7 @@ import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowLog;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 import static org.junit.Assert.assertNotNull;
@@ -199,31 +200,21 @@ public class ImportExportActivityTest
                 R.id.importOptionFixedButton);
     }
 
-    private void clearDatabase()
-    {
-        SQLiteDatabase database = db.getWritableDatabase();
-        database.execSQL("delete from " + DBHelper.BudgetDbIds.TABLE);
-        database.execSQL("delete from " + DBHelper.TransactionDbIds.TABLE);
-        database.close();
-
-        assertEquals(0, db.getBudgetCount());
-    }
-
     @Test
-    public void testExportAndImportButtons()
+    public void testExportAndImportButtons() throws IOException
     {
         final Spinner exportSpinner = (Spinner)activity.findViewById(R.id.exportFileFormatSpinner);
 
         int selection = 0;
+        final int NUM_ITEMS = 10;
 
         for(DataFormat format : DataFormat.values())
         {
             for(int importButtonId : new int[]{R.id.importOptionFixedButton,
                     R.id.importOptionFilesystemButton, R.id.importOptionApplicationButton})
             {
-                // Add something to export, so it can be checked later
-                db.insertBudget("budgetName", 100);
-                assertTrue(db.getBudgetNames().contains("budgetName"));
+                DatabaseTestHelper.addBudgets(db, NUM_ITEMS);
+                DatabaseTestHelper.addTransactions(db, activity, NUM_ITEMS);
 
                 // This assumes that the DataFormat entries are in the same order in the spinner
                 // as they appear in the DataFormat class. This assumption is verified below.
@@ -267,7 +258,7 @@ public class ImportExportActivityTest
                 assertEquals(true, exportFile.isFile());
 
                 // Clear the database, so the import can be checked
-                clearDatabase();
+                DatabaseTestHelper.clearDatabase(db, activity);
 
                 // Set the export spinner to its start position, so we can check that it does not
                 // affect the import
@@ -340,7 +331,10 @@ public class ImportExportActivityTest
                 }
 
                 // Check that the import worked
-                assertTrue(db.getBudgetNames().contains("budgetName"));
+                DatabaseTestHelper.checkBudgets(db, NUM_ITEMS);
+                DatabaseTestHelper.checkTransactions(db, activity, NUM_ITEMS, format == DataFormat.ZIP);
+
+                DatabaseTestHelper.clearDatabase(db, activity);
             }
 
             selection++;
