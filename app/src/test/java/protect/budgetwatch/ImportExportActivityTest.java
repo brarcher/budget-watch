@@ -5,9 +5,15 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Spinner;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -15,15 +21,39 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
+import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowLog;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Set;
+
+import static org.junit.Assert.assertNotNull;
 import static org.robolectric.Shadows.shadowOf;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 17)
 public class ImportExportActivityTest
 {
+    private Activity activity;
+    private DBHelper db;
+    private File sdcardDir;
+
+    @Before
+    public void setUp()
+    {
+        // Output logs emitted during tests so they may be accessed
+        ShadowLog.stream = System.out;
+
+        activity = Robolectric.setupActivity(ImportExportActivity.class);
+        db = new DBHelper(activity);
+        sdcardDir = Environment.getExternalStorageDirectory();
+    }
+
     private void registerIntentHandler(String handler)
     {
         // Add something that will 'handle' the given intent type
@@ -168,5 +198,146 @@ public class ImportExportActivityTest
                 R.id.importOptionFixedTitle, R.id.importOptionFixedExplanation,
                 R.id.importOptionFixedFileFormatSpinnerLabel, R.id.importFileFormatSpinner,
                 R.id.importOptionFixedButton);
+    }
+
+    @Test
+    public void testExportAndImportButtons() throws IOException
+    {
+        final Spinner exportSpinner = (Spinner)activity.findViewById(R.id.exportFileFormatSpinner);
+
+        int selection = 0;
+        final int NUM_ITEMS = 10;
+
+        for(DataFormat format : DataFormat.values())
+        {
+            for(int importButtonId : new int[]{R.id.importOptionFixedButton,
+                    R.id.importOptionFilesystemButton, R.id.importOptionApplicationButton})
+            {
+                DatabaseTestHelper.addBudgets(db, NUM_ITEMS);
+                DatabaseTestHelper.addTransactions(db, activity, NUM_ITEMS);
+
+                // This assumes that the DataFormat entries are in the same order in the spinner
+                // as they appear in the DataFormat class. This assumption is verified below.
+
+                exportSpinner.setSelection(selection);
+                String selectedName = (String)exportSpinner.getSelectedItem();
+                assertEquals(format.name().toLowerCase(), selectedName.toLowerCase());
+
+                final File exportFile = new File(sdcardDir, "BudgetWatch." + format.name().toLowerCase());
+                exportFile.delete();
+                assertEquals(false, exportFile.isFile());
+
+                final Button exportButton = (Button) activity.findViewById(R.id.exportButton);
+
+                try
+                {
+                    exportButton.performClick();
+                }
+                catch(RuntimeException e)
+                {
+                    // Clicking on the button should finish the export. However, showing the AlertDialog
+                    // will fail due to the following which bubbles up as a RuntimeException:
+                    /*
+                    Caused by: java.lang.IllegalStateException: You need to use a Theme.AppCompat theme (or descendant) with this activity.
+                        at android.support.v7.app.AppCompatDelegateImplV7.createSubDecor(AppCompatDelegateImplV7.java:310)
+                        at android.support.v7.app.AppCompatDelegateImplV7.ensureSubDecor(AppCompatDelegateImplV7.java:279)
+                        at android.support.v7.app.AppCompatDelegateImplV7.setContentView(AppCompatDelegateImplV7.java:253)
+                        at android.support.v7.app.AppCompatDialog.setContentView(AppCompatDialog.java:76)
+                        at android.support.v7.app.AlertController.installContent(AlertController.java:213)
+                        at android.support.v7.app.AlertDialog.onCreate(AlertDialog.java:240)
+                        at android.app.Dialog.dispatchOnCreate(Dialog.java:355)
+                        at android.app.Dialog.show(Dialog.java:260)
+                        at org.robolectric.shadows.ShadowDialog.show(ShadowDialog.java:68)
+                        at android.app.Dialog.show(Dialog.java)
+                        at protect.budgetwatch.ImportExportActivity.onExportComplete(ImportExportActivity.java:363)
+                    ...
+                    */
+                    // As the AlertDialog is not the important part of the test, ignoring the issue.
+                }
+
+                assertEquals(true, exportFile.isFile());
+
+                // Clear the database, so the import can be checked
+                DatabaseTestHelper.clearDatabase(db, activity);
+
+                // Set the export spinner to its start position, so we can check that it does not
+                // affect the import
+                exportSpinner.setSelection(0);
+
+                if(importButtonId == R.id.importOptionFixedButton)
+                {
+                    // Select the data format to import
+                    final Spinner importSpinner = (Spinner)activity.findViewById(R.id.importFileFormatSpinner);
+                    importSpinner.setSelection(selection);
+                }
+
+                final Button importButton = (Button) activity.findViewById(importButtonId);
+
+                try
+                {
+                    importButton.performClick();
+                }
+                catch(RuntimeException e)
+                {
+                    // Same issue as before, problems with displaying an AlertDialog at the end
+                    // of the import
+                }
+
+                if(importButtonId == R.id.importOptionFilesystemButton ||
+                        importButtonId == R.id.importOptionApplicationButton)
+                {
+                    // The import button should have started another activity.
+
+                    ShadowActivity.IntentForResult intentForResult = shadowOf(activity).getNextStartedActivityForResult();
+                    assertNotNull(intentForResult);
+
+                    Intent intent = intentForResult.intent;
+                    assertNotNull(intent);
+
+                    String action = intent.getAction();
+                    assertNotNull(action);
+
+                    Bundle bundle = intent.getExtras();
+                    assertNull(bundle);
+
+                    if(importButtonId == R.id.importOptionFilesystemButton)
+                    {
+                        assertEquals(Intent.ACTION_PICK, action);
+                    }
+
+                    if(importButtonId == R.id.importOptionApplicationButton)
+                    {
+                        assertEquals(Intent.ACTION_GET_CONTENT, action);
+                        Set<String> categories = intent.getCategories();
+                        assertNotNull(categories);
+                        assertTrue(categories.contains(Intent.CATEGORY_OPENABLE));
+                    }
+
+                    // This will return the file location from the activity, starting the import
+                    Intent result = new Intent();
+                    result.setData(Uri.fromFile(exportFile));
+
+                    try
+                    {
+                        shadowOf(activity).receiveResult(intent,
+                                //success ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
+                                Activity.RESULT_OK, result);
+                    }
+                    catch(RuntimeException e)
+                    {
+                        // Same issue as before, problems with displaying an AlertDialog at the end
+                        // of the import
+                    }
+                }
+
+                // Check that the import worked
+                DatabaseTestHelper.checkBudgets(db, NUM_ITEMS);
+                DatabaseTestHelper.checkTransactions(db, activity, NUM_ITEMS, format == DataFormat.ZIP);
+
+                DatabaseTestHelper.clearDatabase(db, activity);
+            }
+
+            selection++;
+        }
     }
 }

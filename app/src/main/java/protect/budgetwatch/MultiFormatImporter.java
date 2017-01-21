@@ -31,6 +31,9 @@ public class MultiFormatImporter
             case CSV:
                 importer = new CsvDatabaseImporter();
                 break;
+            case JSON:
+                importer = new JsonDatabaseImporter();
+                break;
             case ZIP:
                 importer = new ZipDatabaseImporter();
                 break;

@@ -162,7 +162,7 @@ public class TransactionViewActivityTest
         final Button captureButton = (Button) activity.findViewById(buttonId);
         captureButton.performClick();
 
-        ShadowActivity.IntentForResult intentForResult = shadowOf(activity).peekNextStartedActivityForResult();
+        ShadowActivity.IntentForResult intentForResult = shadowOf(activity).getNextStartedActivityForResult();
         assertNotNull(intentForResult);
 
         Intent intent = intentForResult.intent;
