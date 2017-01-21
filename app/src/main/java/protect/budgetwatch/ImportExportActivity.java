@@ -60,6 +60,7 @@ public class ImportExportActivity extends AppCompatActivity
 
         _fileFormatMap = ImmutableMap.<String, DataFormat>builder()
                 .put(getResources().getString(R.string.csv), DataFormat.CSV)
+                .put(getResources().getString(R.string.json), DataFormat.JSON)
                 .put(getResources().getString(R.string.zip), DataFormat.ZIP)
                 .build();
 

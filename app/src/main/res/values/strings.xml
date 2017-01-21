@@ -115,6 +115,7 @@
     <string name="deleteTransactionConfirmation">Please confirm that you want to delete this transaction.</string>
 
     <string name="csv" translatable="false">CSV</string>
+    <string name="json" translatable="false">JSON</string>
     <string name="zip" translatable="false">Zip</string>
 
     <string name="importExportHelp">Backed up data can allow you to move your budgets and transactions to another device.</string>
