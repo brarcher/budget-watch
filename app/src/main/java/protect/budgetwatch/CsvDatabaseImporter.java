@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
  * formatted data.
  *
  * The database's transactions and budgets tables are both expected to
- * apear in the CSV data, with the transactions first. A header is expected
+ * appear in the CSV data, with the transactions first. A header is expected
  * for each table showing the names of the columns. A newline separates
  * the transactions and budgets databases.
  */
