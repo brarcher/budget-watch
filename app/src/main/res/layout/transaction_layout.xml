@@ -27,7 +27,7 @@
         </LinearLayout>
     </LinearLayout>
     <LinearLayout android:orientation="horizontal"
-                  android:padding="5.0dp"
+                  android:paddingTop="5.0dp"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content">
         <ImageView android:id="@+id/receiptIcon"
@@ -50,5 +50,17 @@
                       android:layout_width="wrap_content"
                       android:layout_height="fill_parent"/>
         </LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal"
+                  android:paddingBottom="5.0dp"
+                  android:paddingTop="2.0dp"
+                  android:layout_width="fill_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/noteLayout">
+        <TextView android:id="@+id/note"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1.0"
+                  android:singleLine="true"/>
     </LinearLayout>
 </LinearLayout>
