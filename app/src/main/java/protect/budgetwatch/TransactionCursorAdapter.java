@@ -28,6 +28,8 @@ class TransactionCursorAdapter extends CursorAdapter
         TextView dateField;
         TextView budgetField;
         ImageView receiptIcon;
+        TextView note;
+        View noteLayout;
     }
 
     // The newView method is used to inflate a new view and return it,
@@ -43,6 +45,8 @@ class TransactionCursorAdapter extends CursorAdapter
         holder.dateField = (TextView) view.findViewById(R.id.date);
         holder.budgetField = (TextView) view.findViewById(R.id.budget);
         holder.receiptIcon = (ImageView) view.findViewById(R.id.receiptIcon);
+        holder.note = (TextView) view.findViewById(R.id.note);
+        holder.noteLayout = view.findViewById(R.id.noteLayout);
         view.setTag(holder);
 
         return view;
@@ -72,6 +76,17 @@ class TransactionCursorAdapter extends CursorAdapter
         else
         {
             holder.receiptIcon.setVisibility(View.VISIBLE);
+        }
+
+        if(transaction.note.isEmpty())
+        {
+            holder.noteLayout.setVisibility(View.GONE);
+            holder.note.setText("");
+        }
+        else
+        {
+            holder.noteLayout.setVisibility(View.VISIBLE);
+            holder.note.setText(transaction.note);
         }
     }
 }

@@ -54,36 +54,44 @@ public class TransactionCursorAdapterTest
 
         for(boolean hasReceipt : new boolean [] {false, true})
         {
-            db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, DESCRIPTION, ACCOUNT, BUDGET,
-                    VALUE, NOTE, DATE, hasReceipt ? RECEIPT : "");
-            Cursor cursor = db.getExpenses();
-            cursor.moveToFirst();
-            int transactionId = cursor.getInt(
-                    cursor.getColumnIndexOrThrow(DBHelper.TransactionDbIds.NAME));
+            for(boolean hasNote : new boolean [] {false, true})
+            {
+                db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, DESCRIPTION, ACCOUNT, BUDGET,
+                        VALUE, hasNote ? NOTE : "", DATE, hasReceipt ? RECEIPT : "");
+                Cursor cursor = db.getExpenses();
+                cursor.moveToFirst();
+                int transactionId = cursor.getInt(
+                        cursor.getColumnIndexOrThrow(DBHelper.TransactionDbIds.NAME));
 
-            TransactionCursorAdapter adapter = new TransactionCursorAdapter(activity, cursor);
-            View view = adapter.newView(activity, cursor, null);
-            adapter.bindView(view, activity, cursor);
-            cursor.close();
+                TransactionCursorAdapter adapter = new TransactionCursorAdapter(activity, cursor);
+                View view = adapter.newView(activity, cursor, null);
+                adapter.bindView(view, activity, cursor);
+                cursor.close();
 
-            db.deleteTransaction(transactionId);
+                db.deleteTransaction(transactionId);
 
-            TextView nameField = (TextView) view.findViewById(R.id.name);
-            TextView valueField = (TextView) view.findViewById(R.id.value);
-            TextView dateField = (TextView) view.findViewById(R.id.date);
-            TextView budgetField = (TextView) view.findViewById(R.id.budget);
-            ImageView receiptIcon = (ImageView) view.findViewById(R.id.receiptIcon);
+                TextView nameField = (TextView) view.findViewById(R.id.name);
+                TextView valueField = (TextView) view.findViewById(R.id.value);
+                TextView dateField = (TextView) view.findViewById(R.id.date);
+                TextView budgetField = (TextView) view.findViewById(R.id.budget);
+                ImageView receiptIcon = (ImageView) view.findViewById(R.id.receiptIcon);
+                View noteLayout = view.findViewById(R.id.noteLayout);
+                TextView noteField = (TextView) view.findViewById(R.id.note);
 
-            assertEquals(hasReceipt ? View.VISIBLE : View.GONE, receiptIcon.getVisibility());
-            assertEquals(DESCRIPTION, nameField.getText().toString());
-            assertEquals(BUDGET, budgetField.getText().toString());
+                assertEquals(hasReceipt ? View.VISIBLE : View.GONE, receiptIcon.getVisibility());
+                assertEquals(DESCRIPTION, nameField.getText().toString());
+                assertEquals(BUDGET, budgetField.getText().toString());
 
-            String expectedValue = String.format("%.2f", VALUE);
-            assertEquals(expectedValue, valueField.getText().toString());
+                String expectedValue = String.format("%.2f", VALUE);
+                assertEquals(expectedValue, valueField.getText().toString());
 
-            // As the date field may be converted using the current locale,
-            // simply check that there is something there.
-            assertTrue(dateField.getText().length() > 0);
+                // As the date field may be converted using the current locale,
+                // simply check that there is something there.
+                assertTrue(dateField.getText().length() > 0);
+
+                assertEquals(hasNote ? View.VISIBLE : View.GONE, noteLayout.getVisibility());
+                assertEquals(hasNote ? NOTE : "", noteField.getText());
+            }
         }
     }
 }
