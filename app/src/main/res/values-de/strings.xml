@@ -2,7 +2,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">Budget Watch</string>
-    <string name="icon">icon</string>
+    <string name="icon">Icon</string>
     <string name="budgetsTitle">Budgets</string>
     <string name="addBudgetTitle">Budget hinzufügen</string>
     <string name="viewBudgetTitle">Budget ansehen</string>
@@ -53,16 +53,16 @@
     <!-- A date range, where both arguments are date strings -->
     <string name="dateRangeFormat">%1$s ~ %2$s</string>
 
-    <string name="noBudgets">Sie haben derzeit keine Budgets. Drücken Sie den "+" (plus) Knopf um anzufangen.\n\nBudget Watch lässt Sie Budgets erstellen und dann die monatlichen Ausgaben verfolgen.</string>
-    <string name="noExpenses">Sie haben derzeit keine Ausgabentransaktionen. Drücken Sie den "+" (plus) Knopf um anzufangen.</string>
-    <string name="noRevenues">Sie haben derzeit keine Einnahmentransaktionen. Drücken Sie den "+" (plus) Knopf um anzufangen.</string>
+    <string name="noBudgets">Sie haben derzeit keine Budgets. Drücken Sie den "+" (Plus) Knopf, um anzufangen.\n\nBudget Watch lässt Sie Budgets erstellen und dann die monatlichen Ausgaben verfolgen.</string>
+    <string name="noExpenses">Sie haben derzeit keine Ausgabentransaktionen. Drücken Sie den "+" (Plus) Knopf, um anzufangen.</string>
+    <string name="noRevenues">Sie haben derzeit keine Einnahmentransaktionen. Drücken Sie den "+" (Plus) Knopf, um anzufangen.</string>
 
-    <string name="budgetDateRangeHelp">Select date range to display for budgets</string>
-    <string name="startDate">Start Datum</string>
-    <string name="endDate">Ende Datum</string>
-    <string name="startDateAfterEndDate">Startdatum muas gleich oder vor dem Enddatum sein</string>
+    <string name="budgetDateRangeHelp">Wählen Sie einen Datumsbereich, um Budgets anzeigen zu lassen</string>
+    <string name="startDate">Startdatum</string>
+    <string name="endDate">Enddatum</string>
+    <string name="startDateAfterEndDate">Das Startdatum muss vor dem Enddatum liegen oder identisch sein.</string>
 
-    <string name="cleanupHelp">Datum wählen; alle Quittungen dieses oder vorheriger Daten werden gelöscht</string>
+    <string name="cleanupHelp">Datum wählen. Alle Quittungen bis zu diesem Datum werden gelöscht.</string>
 
     <string name="importExport">Import/Export</string>
     <string name="importName">Import</string>
@@ -81,9 +81,9 @@
     <string name="loading">Lade&#8230;</string>
 
     <string name="pictureCaptureError">Bild konnte nicht mit der Kamera aufgenommen werden</string>
-    <string name="noCameraPermissionError">Quittung kann nicht photographiert werden ohne Erlaubnis für die Kamera</string>
+    <string name="noCameraPermissionError">Die App muss eine Berechtigung für Kamerazugriff erhalten, um Quittungen fotografieren zu können</string>
 
-    <string name="iconDescription">BudgetWatch icon</string>
+    <string name="iconDescription">BudgetWatch Icon</string>
     <string name="addExpenseDescription">Eine Ausgabentransaktion hinzufügen</string>
     <string name="budgetMissing">Kein Budget ausgewählt</string>
     <string name="dateInvalid">Datum ist ungültig</string>
@@ -97,36 +97,36 @@
     <string name="app_license">Lizenziert unter der GPLv3.</string>
     <string name="about_title_fmt">Über <xliff:g id="app_name">%s</xliff:g></string>
     <string name="debug_version_fmt">Version: <xliff:g id="version">%s</xliff:g></string>
-    <string name="app_revision_fmt">Revision Information: <xliff:g id="app_revision_url">%s</xliff:g></string>
-    <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> benutzt die folgenden third-party libraries: <xliff:g id="app_libraries_list">%s</xliff:g></string>
+    <string name="app_revision_fmt">Release-Informationen: <xliff:g id="app_revision_url">%s</xliff:g></string>
+    <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> benutzt die folgenden Dritt-Anbieter-Bibliotheken: <xliff:g id="app_libraries_list">%s</xliff:g></string>
     <string name="share">Teilen</string>
     <string name="totalBudgetTitle">Gesamt</string>
     <string name="settings">Einstellungen</string>
     <string name="receiptQuality">Quittungsqualität</string>
-    <string name="receiptQualitySummary">Wählen Sie die JPEG Qualität für die Quittungsaufnahmen</string>
+    <string name="receiptQualitySummary">Wählen Sie die JPEG-Qualität für die Quittungsaufnahmen</string>
     <string name="encodingReceipt">Quittung verschlüsseln</string>
     <string name="confirm">Bestätigen</string>
     <string name="deleteBudgetTitle">Budget entfernen</string>
-    <string name="deleteBudgetConfirmation">Bitte bestätigen Sie die Löschung dieses Budgets. Alle Transaktionen die mit diesem Budget verbunden sind bleiben bestehen.</string>
+    <string name="deleteBudgetConfirmation">Bitte bestätigen Sie die Löschung dieses Budgets. Alle Transaktionen, die mit diesem Budget verbunden sind, bleiben bestehen.</string>
     <string name="deleteTransactionTitle">Transaktion entfernen</string>
     <string name="deleteTransactionConfirmation">Bitte bestätigen Sie die Löschung dieser Transaktion.</string>
-    <string name="fileFormat">Datei format</string>
+    <string name="fileFormat">Dateiformat</string>
 
-    <string name="importExportHelp">Backup Daten ermöglichen es Ihnen Ihre Bugdets und Transaktionen auf ein anderes Gerät zu verschieben.</string>
+    <string name="importExportHelp">Backup-Daten ermöglichen es Ihnen, Ihre Budgets und Transaktionen auf ein anderes Gerät zu verschieben.</string>
     <string name="importSuccessfulTitle">Import erfolgreich</string>
     <string name="importFailedTitle">Import fehlgeschlagen</string>
     <string name="exportSuccessfulTitle">Export erfolgreich</string>
     <string name="exportFailedTitle">Export fehlgeschlagen</string>
-    <string name="noExternalStoragePermissionError">Importieren oder exportieren ist nicht möglich ohne externe Speichererlaubnis</string>
+    <string name="noExternalStoragePermissionError">Importieren/Exportieren ist nicht möglich, da die App keine Berechtigung für den Speicher hat</string>
     <string name="exportOptionExplanation">Daten werden in das Hauptverzeichnis des externen Speichers geschrieben.</string>
     <string name="importOptionFilesystemTitle">Import von Dateisystem</string>
     <string name="importOptionFilesystemExplanation">Wählen Sie eine bestimmte Datei aus dem Dateisystem.</string>
     <string name="importOptionFilesystemButton">Aus Dateisystem</string>
     <string name="importOptionApplicationTitle">Import aus Dateisystem</string>
-    <string name="importOptionApplicationExplanation">Verwenden Sie eine externe Applikation wie Dropbox, Google Drive, oder Ihren bevorzugten Dateimanager um eine Datei zu öffnen.</string>
-    <string name="importOptionApplicationButton">Verwende externe Applikation</string>
-    <string name="importOptionFixedTitle">Importiere von Exportort</string>
-    <string name="importOptionFixedExplanation">Importiere von dem gleichen Ort im Dateisystem wo auch die exportierten Dateien abgelegt werden.</string>
+    <string name="importOptionApplicationExplanation">Verwenden Sie eine externe Anwendung wie Dropbox, Google Drive, oder Ihren bevorzugten Dateimanager, um eine Datei zu öffnen.</string>
+    <string name="importOptionApplicationButton">Verwende externe Anwendung</string>
+    <string name="importOptionFixedTitle">Importiere vom Exportort</string>
+    <string name="importOptionFixedExplanation">Importiere von dem gleichen Ort im Dateisystem, wo auch die exportierten Dateien abgelegt werden.</string>
     <string name="importOptionFixedButton">Verwende Exportort</string>
     <string name="sendLabel">Senden&#8230;</string>
 </resources>
