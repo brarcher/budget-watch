@@ -129,5 +129,10 @@
     <string name="importOptionFixedExplanation">Importiere von dem gleichen Ort im Dateisystem, wo auch die exportierten Dateien abgelegt werden.</string>
     <string name="importOptionFixedButton">Verwende Exportort</string>
     <string name="sendLabel">Senden&#8230;</string>
+
+    <!-- needs translated--><string name="search">Search</string>
+    <!-- needs translated--><string name="searchHint">Search&#8230;</string>
+    <!-- needs translated--><string name="searchEmptyExpenses">No matching expense transactions.</string>
+    <!-- needs translated--><string name="searchEmptyRevenues">No matching revenue transactions.</string>
 </resources>
 

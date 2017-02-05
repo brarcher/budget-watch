@@ -8,10 +8,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 class TransactionPagerAdapter extends FragmentStatePagerAdapter
 {
     final int numTabs;
+    final String search;
 
-    public TransactionPagerAdapter(FragmentManager fm, int numTabs)
+    public TransactionPagerAdapter(FragmentManager fm, String search, int numTabs)
     {
         super(fm);
+        this.search = search;
         this.numTabs = numTabs;
     }
 
@@ -23,6 +25,11 @@ class TransactionPagerAdapter extends FragmentStatePagerAdapter
         int transactionType = (position == 0) ?
                 DBHelper.TransactionDbIds.EXPENSE : DBHelper.TransactionDbIds.REVENUE;
         arguments.putInt("type", transactionType);
+        if(search != null)
+        {
+            arguments.putString("search", search);
+        }
+
         fragment.setArguments(arguments);
         return fragment;
     }

@@ -135,4 +135,9 @@
     <string name="importOptionFixedExplanation">Import from the same location on the filesystem that is written to on export.</string>
     <string name="importOptionFixedButton">Use export location</string>
     <string name="sendLabel">Send&#8230;</string>
+
+    <string name="search">Search</string>
+    <string name="searchHint">Search&#8230;</string>
+    <string name="searchEmptyExpenses">No matching expense transactions.</string>
+    <string name="searchEmptyRevenues">No matching revenue transactions.</string>
 </resources>

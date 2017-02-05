@@ -1,6 +1,8 @@
 package protect.budgetwatch;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -11,6 +13,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +23,7 @@ import android.widget.DatePicker;
 public class TransactionActivity extends AppCompatActivity
 {
     private TransactionDatabaseChangedReceiver _dbChanged;
+    private static final String TAG = "BudgetWatch";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -37,10 +42,11 @@ public class TransactionActivity extends AppCompatActivity
         _dbChanged = new TransactionDatabaseChangedReceiver();
         this.registerReceiver(_dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
 
-        resetView();
+        String search = getIntent().getStringExtra(SearchManager.QUERY);
+        resetView(search);
     }
 
-    private void resetView()
+    private void resetView(String search)
     {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         tabLayout.removeAllTabs();
@@ -50,7 +56,7 @@ public class TransactionActivity extends AppCompatActivity
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new TransactionPagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
+                (getSupportFragmentManager(), search, tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
 
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -81,9 +87,10 @@ public class TransactionActivity extends AppCompatActivity
     {
         super.onResume();
 
-        if(_dbChanged.hasChanged())
+        if(_dbChanged.hasChanged() || Intent.ACTION_SEARCH.equals(getIntent().getAction()))
         {
-            resetView();
+            String search = getIntent().getStringExtra(SearchManager.QUERY);
+            resetView(search);
             _dbChanged.reset();
         }
     }
@@ -93,6 +100,12 @@ public class TransactionActivity extends AppCompatActivity
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.transaction_menu, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -167,6 +180,19 @@ public class TransactionActivity extends AppCompatActivity
         else
         {
             return DBHelper.TransactionDbIds.REVENUE;
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction()))
+        {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.d(TAG, "Received search: " + query);
+
+            setIntent(intent);
+            // onResume() will be called right after this, so the search will be used
         }
     }
 

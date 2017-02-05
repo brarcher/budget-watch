@@ -24,6 +24,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 17)
@@ -586,20 +587,135 @@ public class DatabaseTest
             }
         }
 
-        Cursor cursor = db.getExpensesForBudget(BUDGET_1);
+        Cursor cursor = db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, BUDGET_1, null);
         assertEquals(NUM_TRANSACTIONS_BUDGET_1, cursor.getCount());
         cursor.close();
 
-        cursor = db.getRevenuesForBudget(BUDGET_1);
+        cursor = db.getTransactions(DBHelper.TransactionDbIds.REVENUE, BUDGET_1, null);
         assertEquals(NUM_TRANSACTIONS_BUDGET_1, cursor.getCount());
         cursor.close();
 
-        cursor = db.getExpensesForBudget(BUDGET_2);
+        cursor = db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, BUDGET_2, null);
         assertEquals(NUM_TRANSACTIONS_BUDGET_2, cursor.getCount());
         cursor.close();
 
-        cursor = db.getRevenuesForBudget(BUDGET_2);
+        cursor = db.getTransactions(DBHelper.TransactionDbIds.REVENUE, BUDGET_2, null);
         assertEquals(NUM_TRANSACTIONS_BUDGET_2, cursor.getCount());
         cursor.close();
+    }
+
+    private void printTransactions(Cursor cursor)
+    {
+        System.out.println("Contents: " + cursor.getCount());
+        if(cursor.moveToFirst())
+        {
+            do
+            {
+                Transaction t = Transaction.toTransaction(cursor);
+                System.out.println("   '" + t.description + "' '" + t.account + "' '" + t.budget + "' '" + t.value + "' '" + t.note);
+            }while(cursor.moveToNext());
+        }
+    }
+
+    @Test
+    public void filterTransactions()
+    {
+        boolean result;
+
+        final String BUDGET_1 = "budget1";
+        final String BUDGET_2 = "budget2";
+
+        for(String budget : new String[]{BUDGET_1, BUDGET_2})
+        {
+            result = db.insertBudget(budget, 100);
+            assertTrue(result);
+        }
+
+        for(int type : new int[]{DBHelper.TransactionDbIds.EXPENSE, DBHelper.TransactionDbIds.REVENUE})
+        {
+            // First entry
+            result = db.insertTransaction(type, "description", "account", BUDGET_1, 100, "note", 0, "");
+            assertTrue(result);
+
+            // Second entry
+            result = db.insertTransaction(type, "destination", "actions", BUDGET_2, 10, "notation", 0, "receipt.jpg");
+            assertTrue(result);
+
+            // Third entry
+            result = db.insertTransaction(type, "nowhere", "abc", BUDGET_1, 222, "words", 0, "description");
+            assertTrue(result);
+        }
+
+        for(int type : new int[]{DBHelper.TransactionDbIds.EXPENSE, DBHelper.TransactionDbIds.REVENUE})
+        {
+            {
+                // Should only pick up First
+                for(String search : new String[]{"description", "account", "100", "note"})
+                {
+                    Cursor cursor = db.getTransactions(type, null, search);
+                    printTransactions(cursor);
+                    assertEquals(1, cursor.getCount());
+                    cursor.moveToFirst();
+                    Transaction transaction = Transaction.toTransaction(cursor);
+                    assertEquals(transaction.description, "description");
+                    cursor.close();
+                }
+            }
+
+            {
+                // Should pick up First, Second
+                for(String search : new String[]{"des", "ac", "10", "not"})
+                {
+                    Cursor cursor = db.getTransactions(type, null, search);
+                    printTransactions(cursor);
+                    assertEquals(2, cursor.getCount());
+
+                    boolean transactionAFound = false;
+                    boolean transactionBFound = false;
+
+                    cursor.moveToFirst();
+                    do
+                    {
+                        Transaction transaction = Transaction.toTransaction(cursor);
+
+                        if(transaction.description.equals("description"))
+                        {
+                            // This should be the first time seeing First
+                            assertFalse(transactionAFound);
+                            transactionAFound = true;
+                        }
+                        else if(transaction.description.equals("destination"))
+                        {
+                            // This should be the first time seeing Second
+                            assertFalse(transactionBFound);
+                            transactionBFound = true;
+                        }
+                        else
+                        {
+                            fail("Unexpected transaction: " + transaction.description);
+                        }
+                    }while(cursor.moveToNext());
+
+                    assertTrue(transactionAFound);
+                    assertTrue(transactionBFound);
+
+                    cursor.close();
+                }
+            }
+
+            {
+                // Should only pick up First
+                for(String search : new String[]{"des", "ac", "10", "not"})
+                {
+                    Cursor cursor = db.getTransactions(type, BUDGET_1, search);
+                    printTransactions(cursor);
+                    assertEquals(1, cursor.getCount());
+                    cursor.moveToFirst();
+                    Transaction transaction = Transaction.toTransaction(cursor);
+                    assertEquals(transaction.description, "description");
+                    cursor.close();
+                }
+            }
+        }
     }
 }
