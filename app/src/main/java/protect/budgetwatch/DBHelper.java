@@ -536,31 +536,69 @@ public class DBHelper extends SQLiteOpenHelper
     }
 
     /**
-     * @return Cursor pointing to all expense transactions
-     * in the database
+     * Returns a cursor pointing to all transaction which are
+     * either expenses or revenues (depends on type) from the
+     * provided budget (if not null) and meet the query (if not null).
+     *
+     * @param type
+     *      the type of transaction to query
+     * @param budget
+     *      if not null, all returned expenses will be from this budget.
+     * @param search
+     *      if not null, all returned expenses will have at least one field
+     *      which contains this query string
      */
-    public Cursor getExpenses()
+    public Cursor getTransactions(int type, String budget, String search)
     {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
-                TransactionDbIds.TYPE + "=" + TransactionDbIds.EXPENSE +
-                " ORDER BY " + TransactionDbIds.DATE + " DESC", null);
+
+        LinkedList<String> args = new LinkedList<>();
+
+        String query = "select * from " + TransactionDbIds.TABLE + " where " +
+                TransactionDbIds.TYPE + "=" + type;
+
+        if(budget != null)
+        {
+            query += " AND " + TransactionDbIds.BUDGET + "=?";
+            args.addLast(budget);
+        }
+
+        if(search != null)
+        {
+            query += " AND ( ";
+
+            String [] items = new String[]{TransactionDbIds.DESCRIPTION, TransactionDbIds.ACCOUNT,
+                    TransactionDbIds.VALUE, TransactionDbIds.NOTE};
+
+            for(int index = 0; index < items.length; index++)
+            {
+                query += "( " + items[index] + " LIKE ? )";
+                if(index < (items.length-1))
+                {
+                    query += " OR ";
+                }
+                args.addLast("%" + search + "%");
+            }
+
+            query += " )";
+        }
+
+        query += " ORDER BY " + TransactionDbIds.DATE + " DESC";
+
+        String [] argArray = new String[args.size()];
+        args.toArray(argArray);
+
+        Cursor res =  db.rawQuery(query, argArray);
         return res;
     }
 
     /**
      * @return Cursor pointing to all expense transactions
-     * in the database which are from the given budget
+     * in the database
      */
-    public Cursor getExpensesForBudget(String budget)
+    public Cursor getExpenses()
     {
-        SQLiteDatabase db = getReadableDatabase();
-        String [] args = new String[]{budget};
-        Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
-                TransactionDbIds.TYPE + "=" + TransactionDbIds.EXPENSE +
-                " AND " + TransactionDbIds.BUDGET + "=?" +
-                " ORDER BY " + TransactionDbIds.DATE + " DESC", args);
-        return res;
+        return getTransactions(TransactionDbIds.EXPENSE, null, null);
     }
 
     /**
@@ -569,26 +607,7 @@ public class DBHelper extends SQLiteOpenHelper
      */
     public Cursor getRevenues()
     {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
-                TransactionDbIds.TYPE + "=" + TransactionDbIds.REVENUE +
-                " ORDER BY " + TransactionDbIds.DATE + " DESC", null);
-        return res;
-    }
-
-    /**
-     * @return Cursor pointing to all revenue transactions
-     * in the database which are from the given budget.
-     */
-    public Cursor getRevenuesForBudget(String budget)
-    {
-        SQLiteDatabase db = getReadableDatabase();
-        String [] args = new String[]{budget};
-        Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
-                TransactionDbIds.TYPE + "=" + TransactionDbIds.REVENUE +
-                " AND " + TransactionDbIds.BUDGET + "=?" +
-                " ORDER BY " + TransactionDbIds.DATE + " DESC", args);
-        return res;
+        return getTransactions(TransactionDbIds.REVENUE, null, null);
     }
 
     /**

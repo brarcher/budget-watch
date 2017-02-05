@@ -103,9 +103,10 @@ public class TransactionActivityTest
         assertTrue(menu != null);
 
         // The purge and add button should be present
-        assertEquals(menu.size(), 2);
+        assertEquals(menu.size(), 3);
 
         assertEquals("Add", menu.findItem(R.id.action_add).getTitle().toString());
+        assertEquals("Search", menu.findItem(R.id.action_search).getTitle().toString());
         assertEquals("Purge Old Receipts", menu.findItem(R.id.action_purge_receipts).getTitle().toString());
     }
 

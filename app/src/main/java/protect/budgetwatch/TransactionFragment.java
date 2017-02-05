@@ -41,33 +41,14 @@ public class TransactionFragment extends Fragment
         final Bundle b = getActivity().getIntent().getExtras();
         final String budgetToDisplay = b != null ? b.getString("budget", null) : null;
 
+        // If a search has been passed in that will further filter what is displayed
+        final String searchToUse = arguments.getString("search", null);
+
         View layout = inflater.inflate(R.layout.list_layout, container, false);
         ListView listView = (ListView) layout.findViewById(R.id.list);
         final TextView helpText = (TextView) layout.findViewById(R.id.helpText);
 
-        Cursor cursor;
-        if(_transactionType == DBHelper.TransactionDbIds.EXPENSE)
-        {
-            if(budgetToDisplay == null)
-            {
-                cursor = _db.getExpenses();
-            }
-            else
-            {
-                cursor = _db.getExpensesForBudget(budgetToDisplay);
-            }
-        }
-        else
-        {
-            if(budgetToDisplay == null)
-            {
-                cursor = _db.getRevenues();
-            }
-            else
-            {
-                cursor = _db.getRevenuesForBudget(budgetToDisplay);
-            }
-        }
+        Cursor cursor = _db.getTransactions(_transactionType, budgetToDisplay, searchToUse);
 
         if(cursor.getCount() > 0)
         {
@@ -81,18 +62,29 @@ public class TransactionFragment extends Fragment
 
             String message;
 
-            if(budgetToDisplay == null)
+            if(searchToUse == null)
             {
-                int stringId = (_transactionType == DBHelper.TransactionDbIds.EXPENSE) ?
-                        R.string.noExpenses : R.string.noRevenues;
-                message = getResources().getString(stringId);
+                if(budgetToDisplay == null)
+                {
+                    int stringId = (_transactionType == DBHelper.TransactionDbIds.EXPENSE) ?
+                            R.string.noExpenses : R.string.noRevenues;
+                    message = getResources().getString(stringId);
+                }
+                else
+                {
+                    int stringId = (_transactionType == DBHelper.TransactionDbIds.EXPENSE) ?
+                            R.string.noExpensesForBudget : R.string.noRevenuesForBudget;
+                    String base = getResources().getString(stringId);
+                    message = String.format(base, budgetToDisplay);
+                }
             }
             else
             {
                 int stringId = (_transactionType == DBHelper.TransactionDbIds.EXPENSE) ?
-                        R.string.noExpensesForBudget : R.string.noRevenuesForBudget;
-                String base = getResources().getString(stringId);
-                message = String.format(base, budgetToDisplay);
+                        R.string.searchEmptyExpenses : R.string.searchEmptyRevenues;
+                message = getResources().getString(stringId);
+
+                getResources().getString(stringId);
             }
 
             helpText.setText(message);
