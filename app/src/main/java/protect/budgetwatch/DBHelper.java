@@ -629,7 +629,7 @@ class DBHelper extends SQLiteOpenHelper
         {
             argList.add(endDate.toString());
         }
-        String [] args = argList.toArray(new String[]{});
+        String [] args = argList.toArray(new String[argList.size()]);
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +
