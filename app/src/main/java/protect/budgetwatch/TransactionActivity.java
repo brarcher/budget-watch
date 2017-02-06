@@ -25,6 +25,8 @@ public class TransactionActivity extends AppCompatActivity
     private TransactionDatabaseChangedReceiver _dbChanged;
     private static final String TAG = "BudgetWatch";
 
+    private boolean _currentlySearching = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -89,7 +91,15 @@ public class TransactionActivity extends AppCompatActivity
 
         if(_dbChanged.hasChanged() || Intent.ACTION_SEARCH.equals(getIntent().getAction()))
         {
-            String search = getIntent().getStringExtra(SearchManager.QUERY);
+            String search = null;
+
+            // Only use the search if the search view is open. When it is canceled
+            // ignore the search.
+            if(_currentlySearching)
+            {
+                search = getIntent().getStringExtra(SearchManager.QUERY);
+            }
+
             resetView(search);
             _dbChanged.reset();
         }
@@ -105,6 +115,30 @@ public class TransactionActivity extends AppCompatActivity
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener()
+        {
+            @Override
+            public boolean onClose()
+            {
+                _currentlySearching = false;
+
+                // Re-populate the transactions
+                onResume();
+
+                // false: allow the default cleanup behavior on the search view on closing.
+                return false;
+            }
+        });
+
+        searchView.setOnSearchClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                _currentlySearching = true;
+            }
+        });
 
         return super.onCreateOptionsMenu(menu);
     }
