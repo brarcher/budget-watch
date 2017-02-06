@@ -586,8 +586,7 @@ class DBHelper extends SQLiteOpenHelper
 
         query += " ORDER BY " + TransactionDbIds.DATE + " DESC";
 
-        String [] argArray = new String[args.size()];
-        args.toArray(argArray);
+        String [] argArray = args.toArray(new String[args.size()]);
 
         Cursor res =  db.rawQuery(query, argArray);
         return res;
