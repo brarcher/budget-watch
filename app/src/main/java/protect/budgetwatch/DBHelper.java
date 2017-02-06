@@ -17,7 +17,8 @@ import java.util.List;
  */
 class DBHelper extends SQLiteOpenHelper
 {
-    public static final String DATABASE_NAME = "BudgetWatch.db";
+    private static final String DATABASE_NAME = "BudgetWatch.db";
+
     public static final int ORIGINAL_DATABASE_VERSION = 1;
     public static final int DATABASE_VERSION = 2;
 
@@ -51,7 +52,7 @@ class DBHelper extends SQLiteOpenHelper
         public static final int REVENUE = 2;
     }
 
-    private Context _context;
+    private final Context _context;
 
     public DBHelper(Context context)
     {

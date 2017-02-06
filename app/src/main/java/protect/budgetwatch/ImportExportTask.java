@@ -15,11 +15,11 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
 {
     private static final String TAG = "BudgetWatch";
 
-    private Activity activity;
-    private boolean doImport;
-    private DataFormat format;
-    private File target;
-    private TaskCompleteListener listener;
+    private final Activity activity;
+    private final boolean doImport;
+    private final DataFormat format;
+    private final File target;
+    private final TaskCompleteListener listener;
 
     private ProgressDialog progress;
 

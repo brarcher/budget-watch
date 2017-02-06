@@ -7,8 +7,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 class TransactionPagerAdapter extends FragmentStatePagerAdapter
 {
-    final int numTabs;
-    final String search;
+    private final int numTabs;
+    private final String search;
 
     public TransactionPagerAdapter(FragmentManager fm, String search, int numTabs)
     {
