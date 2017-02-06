@@ -6,7 +6,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class MultiFormatExporter
+class MultiFormatExporter
 {
     private static final String TAG = "BudgetWatch";
 

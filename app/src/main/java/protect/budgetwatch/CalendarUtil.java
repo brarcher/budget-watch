@@ -2,7 +2,7 @@ package protect.budgetwatch;
 
 import java.util.Calendar;
 
-public class CalendarUtil
+class CalendarUtil
 {
     public static long getStartOfMonthMs(int year, int month)
     {

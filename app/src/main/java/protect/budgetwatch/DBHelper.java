@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Helper class for managing data in the database
  */
-public class DBHelper extends SQLiteOpenHelper
+class DBHelper extends SQLiteOpenHelper
 {
     public static final String DATABASE_NAME = "BudgetWatch.db";
     public static final int ORIGINAL_DATABASE_VERSION = 1;
