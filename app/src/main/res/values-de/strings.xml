@@ -65,11 +65,9 @@
     <string name="cleanupHelp">Datum wählen. Alle Quittungen bis zu diesem Datum werden gelöscht.</string>
 
     <string name="importExport">Import/Export</string>
-    <string name="importName">Import</string>
     <string name="exportName">Export</string>
     <string name="importedFrom">Importiert von: %1$s</string>
     <string name="exportedTo">Exportiert nach: %1$s</string>
-    <string name="fileMissing">Datei fehlt: %1$s</string>
     <string name="importFailed">Import fehlgeschlagen: %1$s</string>
     <string name="exportFailed">Export fehlgeschlagen: %1$s</string>
     <string name="importing">Importiere&#8230;</string>

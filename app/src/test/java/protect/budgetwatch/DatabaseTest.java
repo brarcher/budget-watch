@@ -34,7 +34,7 @@ public class DatabaseTest
     private DBHelper db;
     private long nowMs;
     private long lastYearMs;
-    private int MONTHS_PER_YEAR = 12;
+    private final int MONTHS_PER_YEAR = 12;
 
     @Before
     public void setUp()
@@ -678,21 +678,21 @@ public class DatabaseTest
                     {
                         Transaction transaction = Transaction.toTransaction(cursor);
 
-                        if(transaction.description.equals("description"))
+                        switch (transaction.description)
                         {
-                            // This should be the first time seeing First
-                            assertFalse(transactionAFound);
-                            transactionAFound = true;
-                        }
-                        else if(transaction.description.equals("destination"))
-                        {
-                            // This should be the first time seeing Second
-                            assertFalse(transactionBFound);
-                            transactionBFound = true;
-                        }
-                        else
-                        {
-                            fail("Unexpected transaction: " + transaction.description);
+                            case "description":
+                                // This should be the first time seeing First
+                                assertFalse(transactionAFound);
+                                transactionAFound = true;
+                                break;
+                            case "destination":
+                                // This should be the first time seeing Second
+                                assertFalse(transactionBFound);
+                                transactionBFound = true;
+                                break;
+                            default:
+                                fail("Unexpected transaction: " + transaction.description);
+                                break;
                         }
                     }while(cursor.moveToNext());
 

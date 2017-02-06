@@ -172,23 +172,22 @@ public class CsvDatabaseImporter implements DatabaseImporter
      * session.
      */
     private void importTransaction(Context context, SQLiteDatabase database, DBHelper helper, CSVRecord record)
-            throws IOException, FormatException
+            throws FormatException
     {
         int id = extractInt(DBHelper.TransactionDbIds.NAME, record);
 
         int type;
         String typeStr = extractString(DBHelper.TransactionDbIds.TYPE, record, "");
-        if(typeStr.equals("EXPENSE"))
+        switch (typeStr)
         {
-            type = DBHelper.TransactionDbIds.EXPENSE;
-        }
-        else if(typeStr.equals("REVENUE"))
-        {
-            type = DBHelper.TransactionDbIds.REVENUE;
-        }
-        else
-        {
-            throw new FormatException("Unrecognized type: " + typeStr);
+            case "EXPENSE":
+                type = DBHelper.TransactionDbIds.EXPENSE;
+                break;
+            case "REVENUE":
+                type = DBHelper.TransactionDbIds.REVENUE;
+                break;
+            default:
+                throw new FormatException("Unrecognized type: " + typeStr);
         }
 
         String description = extractString(DBHelper.TransactionDbIds.DESCRIPTION, record, "");
@@ -222,7 +221,7 @@ public class CsvDatabaseImporter implements DatabaseImporter
      * session.
      */
     private void importBudget(SQLiteDatabase database, DBHelper helper, CSVRecord record)
-            throws IOException, FormatException
+            throws FormatException
     {
         String name = extractString(DBHelper.BudgetDbIds.NAME, record, null);
 

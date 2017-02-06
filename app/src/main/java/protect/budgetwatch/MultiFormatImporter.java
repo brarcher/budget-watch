@@ -5,9 +5,8 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
-public class MultiFormatImporter
+class MultiFormatImporter
 {
     private static final String TAG = "BudgetWatch";
 
@@ -46,15 +45,7 @@ public class MultiFormatImporter
                 importer.importData(context, db, input);
                 return true;
             }
-            catch(IOException e)
-            {
-                Log.e(TAG, "Failed to input data", e);
-            }
-            catch(FormatException e)
-            {
-                Log.e(TAG, "Failed to input data", e);
-            }
-            catch(InterruptedException e)
+            catch(IOException | FormatException | InterruptedException e)
             {
                 Log.e(TAG, "Failed to input data", e);
             }

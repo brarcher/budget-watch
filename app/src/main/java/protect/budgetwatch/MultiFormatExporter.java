@@ -6,7 +6,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class MultiFormatExporter
+class MultiFormatExporter
 {
     private static final String TAG = "BudgetWatch";
 
@@ -44,11 +44,7 @@ public class MultiFormatExporter
                 exporter.exportData(context, db, output);
                 return true;
             }
-            catch(IOException e)
-            {
-                Log.e(TAG, "Failed to export data", e);
-            }
-            catch(InterruptedException e)
+            catch(IOException | InterruptedException e)
             {
                 Log.e(TAG, "Failed to export data", e);
             }

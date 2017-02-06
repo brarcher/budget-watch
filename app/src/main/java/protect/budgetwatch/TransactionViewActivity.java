@@ -1,6 +1,7 @@
 package protect.budgetwatch;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -72,6 +74,7 @@ public class TransactionViewActivity extends AppCompatActivity
         _db = new DBHelper(this);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onResume()
     {
@@ -419,7 +422,7 @@ public class TransactionViewActivity extends AppCompatActivity
 
         File imageLocation = getNewImageLocation();
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageLocation));
-        capturedUncommittedReceipt = imageLocation.getAbsolutePath();
+        capturedUncommittedReceipt = (imageLocation != null ? imageLocation.getAbsolutePath() : null);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }
 
@@ -698,7 +701,7 @@ public class TransactionViewActivity extends AppCompatActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
     {
         if(requestCode == PERMISSIONS_REQUEST_CAMERA)
         {

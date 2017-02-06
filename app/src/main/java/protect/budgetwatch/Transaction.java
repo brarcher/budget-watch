@@ -14,7 +14,7 @@ public class Transaction
     public final long dateMs;
     public final String receipt;
 
-    public Transaction(final int id, final int type, final String description, final String account,
+    private Transaction(final int id, final int type, final String description, final String account,
                        final String budget, final double value, final String note, final long dateMs,
                        final String receipt)
     {

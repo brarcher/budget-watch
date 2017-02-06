@@ -25,7 +25,7 @@ public class BudgetAdapterTest
 {
     private long nowMs;
     private long lastYearMs;
-    private int MONTHS_PER_YEAR = 12;
+    private final int MONTHS_PER_YEAR = 12;
 
     @Before
     public void setUp()

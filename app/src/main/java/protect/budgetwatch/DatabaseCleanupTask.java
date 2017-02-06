@@ -10,7 +10,7 @@ import android.util.Log;
 
 import java.io.File;
 
-public class DatabaseCleanupTask  extends AsyncTask<Void, Void, Void>
+class DatabaseCleanupTask  extends AsyncTask<Void, Void, Void>
 {
     private static final String TAG = "BudgetWatch";
 

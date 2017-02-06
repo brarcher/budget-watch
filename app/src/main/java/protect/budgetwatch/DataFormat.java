@@ -8,8 +8,7 @@ public enum DataFormat
     ;
 
     /**
-     * Returns the file extension name for this data format.
-     * @return
+     * @return the file extension name for this data format.
      */
     public String extension()
     {

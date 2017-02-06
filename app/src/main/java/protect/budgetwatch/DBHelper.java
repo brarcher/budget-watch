@@ -15,9 +15,10 @@ import java.util.List;
 /**
  * Helper class for managing data in the database
  */
-public class DBHelper extends SQLiteOpenHelper
+class DBHelper extends SQLiteOpenHelper
 {
-    public static final String DATABASE_NAME = "BudgetWatch.db";
+    private static final String DATABASE_NAME = "BudgetWatch.db";
+
     public static final int ORIGINAL_DATABASE_VERSION = 1;
     public static final int DATABASE_VERSION = 2;
 
@@ -51,7 +52,7 @@ public class DBHelper extends SQLiteOpenHelper
         public static final int REVENUE = 2;
     }
 
-    private Context _context;
+    private final Context _context;
 
     public DBHelper(Context context)
     {
@@ -585,8 +586,7 @@ public class DBHelper extends SQLiteOpenHelper
 
         query += " ORDER BY " + TransactionDbIds.DATE + " DESC";
 
-        String [] argArray = new String[args.size()];
-        args.toArray(argArray);
+        String [] argArray = args.toArray(new String[args.size()]);
 
         Cursor res =  db.rawQuery(query, argArray);
         return res;
@@ -628,7 +628,7 @@ public class DBHelper extends SQLiteOpenHelper
         {
             argList.add(endDate.toString());
         }
-        String [] args = argList.toArray(new String[]{});
+        String [] args = argList.toArray(new String[argList.size()]);
 
         SQLiteDatabase db = getReadableDatabase();
         Cursor res =  db.rawQuery("select * from " + TransactionDbIds.TABLE + " where " +

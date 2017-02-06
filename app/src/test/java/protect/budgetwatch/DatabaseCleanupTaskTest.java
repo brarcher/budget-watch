@@ -26,9 +26,9 @@ public class DatabaseCleanupTaskTest
 {
     private Activity activity;
     private DBHelper db;
-    File imageDir;
-    File missingReceipt;
-    File orphanReceipt;
+    private File imageDir;
+    private File missingReceipt;
+    private File orphanReceipt;
 
     private static final int NUM_TRANSACTIONS = 10;
     private static final String WITH_RECEIPT_NAME = "receipt_exists";
