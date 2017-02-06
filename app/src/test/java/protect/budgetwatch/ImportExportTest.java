@@ -147,7 +147,7 @@ public class ImportExportTest
             assertTrue(dbChanged.hasChanged());
             activity.unregisterReceiver(dbChanged);
 
-            DatabaseTestHelper.checkTransactions(db, activity, NUM_TRANSACTIONS, format == DataFormat.ZIP);;
+            DatabaseTestHelper.checkTransactions(db, activity, NUM_TRANSACTIONS, format == DataFormat.ZIP);
 
             // Clear the database for the next format under test
             DatabaseTestHelper.clearDatabase(db, activity);
