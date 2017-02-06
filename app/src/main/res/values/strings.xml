@@ -74,12 +74,10 @@
     <string name="cleanupHelp">Select date; all receipts on or before the date will be deleted</string>
 
     <string name="importExport">Import/Export</string>
-    <string name="importName">Import</string>
     <string name="exportName">Export</string>
     <string name="importedFrom">Imported from: %1$s</string>
     <string name="fileFormat">File format</string>
     <string name="exportedTo">Exported to: %1$s</string>
-    <string name="fileMissing">File missing: %1$s</string>
     <string name="importFailed">Failed to import: %1$s</string>
     <string name="exportFailed">Failed to export: %1$s</string>
     <string name="importing">Importing&#8230;</string>
