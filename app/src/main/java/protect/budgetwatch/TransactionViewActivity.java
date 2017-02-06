@@ -421,7 +421,7 @@ public class TransactionViewActivity extends AppCompatActivity
 
         File imageLocation = getNewImageLocation();
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageLocation));
-        capturedUncommittedReceipt = imageLocation.getAbsolutePath();
+        capturedUncommittedReceipt = (imageLocation != null ? imageLocation.getAbsolutePath() : null);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }
 
