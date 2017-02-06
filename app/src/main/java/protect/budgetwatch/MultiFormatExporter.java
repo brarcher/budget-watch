@@ -44,11 +44,7 @@ class MultiFormatExporter
                 exporter.exportData(context, db, output);
                 return true;
             }
-            catch(IOException e)
-            {
-                Log.e(TAG, "Failed to export data", e);
-            }
-            catch(InterruptedException e)
+            catch(IOException | InterruptedException e)
             {
                 Log.e(TAG, "Failed to export data", e);
             }

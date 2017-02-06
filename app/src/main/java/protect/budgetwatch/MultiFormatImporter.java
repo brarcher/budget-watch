@@ -45,15 +45,7 @@ class MultiFormatImporter
                 importer.importData(context, db, input);
                 return true;
             }
-            catch(IOException e)
-            {
-                Log.e(TAG, "Failed to input data", e);
-            }
-            catch(FormatException e)
-            {
-                Log.e(TAG, "Failed to input data", e);
-            }
-            catch(InterruptedException e)
+            catch(IOException | FormatException | InterruptedException e)
             {
                 Log.e(TAG, "Failed to input data", e);
             }
