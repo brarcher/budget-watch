@@ -1,6 +1,7 @@
 package protect.budgetwatch;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -72,6 +73,7 @@ public class TransactionViewActivity extends AppCompatActivity
         _db = new DBHelper(this);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onResume()
     {

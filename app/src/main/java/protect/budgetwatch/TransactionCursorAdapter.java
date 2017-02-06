@@ -1,5 +1,6 @@
 package protect.budgetwatch;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.LayoutInflater;
@@ -54,6 +55,7 @@ class TransactionCursorAdapter extends CursorAdapter
 
     // The bindView method is used to bind all data to a given view
     // such as setting the text on a TextView.
+    @SuppressLint("DefaultLocale")
     @Override
     public void bindView(View view, Context context, Cursor cursor)
     {

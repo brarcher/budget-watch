@@ -1,5 +1,6 @@
 package protect.budgetwatch;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class BudgetViewActivity extends AppCompatActivity
         _db = new DBHelper(this);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onResume()
     {
