@@ -172,7 +172,7 @@ public class CsvDatabaseImporter implements DatabaseImporter
      * session.
      */
     private void importTransaction(Context context, SQLiteDatabase database, DBHelper helper, CSVRecord record)
-            throws IOException, FormatException
+            throws FormatException
     {
         int id = extractInt(DBHelper.TransactionDbIds.NAME, record);
 
@@ -222,7 +222,7 @@ public class CsvDatabaseImporter implements DatabaseImporter
      * session.
      */
     private void importBudget(SQLiteDatabase database, DBHelper helper, CSVRecord record)
-            throws IOException, FormatException
+            throws FormatException
     {
         String name = extractString(DBHelper.BudgetDbIds.NAME, record, null);
 

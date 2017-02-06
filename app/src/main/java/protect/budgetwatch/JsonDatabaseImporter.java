@@ -153,7 +153,7 @@ public class JsonDatabaseImporter implements DatabaseImporter
                                    Integer id, String typeStr, String description, String account,
                                    String budget, Double value, String note, Long dateMs,
                                    String receiptFilename)
-            throws IOException, FormatException
+            throws FormatException
     {
         int type;
         if(typeStr.equals("EXPENSE"))
@@ -205,7 +205,7 @@ public class JsonDatabaseImporter implements DatabaseImporter
      * session.
      */
     private void importBudget(SQLiteDatabase database, DBHelper helper, String name, Double value)
-            throws IOException, FormatException
+            throws FormatException
     {
         // Check that both fields exist
         // Ensure that the required data exists
