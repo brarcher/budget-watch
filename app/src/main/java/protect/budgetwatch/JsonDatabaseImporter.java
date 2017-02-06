@@ -48,49 +48,40 @@ public class JsonDatabaseImporter implements DatabaseImporter
                 while(parser.hasNext())
                 {
                     String itemName = parser.nextName();
-                    if(itemName.equals(DBHelper.TransactionDbIds.NAME))
+                    switch (itemName)
                     {
-                        name = parser.nextString();
-                    }
-                    else if(itemName.equals("ID"))
-                    {
-                        id = parser.nextInt();
-                    }
-                    else if(itemName.equals(DBHelper.TransactionDbIds.TYPE))
-                    {
-                        type = parser.nextString();
-                    }
-                    else if(itemName.equals(DBHelper.TransactionDbIds.DESCRIPTION))
-                    {
-                        description = parser.nextString();
-                    }
-                    else if(itemName.equals(DBHelper.TransactionDbIds.ACCOUNT))
-                    {
-                        account = parser.nextString();
-                    }
-                    else if(itemName.equals(DBHelper.TransactionDbIds.BUDGET))
-                    {
-                        budget = parser.nextString();
-                    }
-                    else if(itemName.equals(DBHelper.TransactionDbIds.VALUE))
-                    {
-                        value = parser.nextDouble();
-                    }
-                    else if(itemName.equals(DBHelper.TransactionDbIds.NOTE))
-                    {
-                        note = parser.nextString();
-                    }
-                    else if(itemName.equals(DBHelper.TransactionDbIds.DATE))
-                    {
-                        dateMs = parser.nextLong();
-                    }
-                    else if(itemName.equals(DBHelper.TransactionDbIds.RECEIPT))
-                    {
-                        receiptFilename = parser.nextString();
-                    }
-                    else
-                    {
-                        throw new FormatException("Issue parsing JSON data, unknown field: " + itemName);
+                        case DBHelper.TransactionDbIds.NAME:
+                            name = parser.nextString();
+                            break;
+                        case "ID":
+                            id = parser.nextInt();
+                            break;
+                        case DBHelper.TransactionDbIds.TYPE:
+                            type = parser.nextString();
+                            break;
+                        case DBHelper.TransactionDbIds.DESCRIPTION:
+                            description = parser.nextString();
+                            break;
+                        case DBHelper.TransactionDbIds.ACCOUNT:
+                            account = parser.nextString();
+                            break;
+                        case DBHelper.TransactionDbIds.BUDGET:
+                            budget = parser.nextString();
+                            break;
+                        case DBHelper.TransactionDbIds.VALUE:
+                            value = parser.nextDouble();
+                            break;
+                        case DBHelper.TransactionDbIds.NOTE:
+                            note = parser.nextString();
+                            break;
+                        case DBHelper.TransactionDbIds.DATE:
+                            dateMs = parser.nextLong();
+                            break;
+                        case DBHelper.TransactionDbIds.RECEIPT:
+                            receiptFilename = parser.nextString();
+                            break;
+                        default:
+                            throw new FormatException("Issue parsing JSON data, unknown field: " + itemName);
                     }
                 }
 
@@ -99,18 +90,17 @@ public class JsonDatabaseImporter implements DatabaseImporter
                     throw new FormatException("Issue parsing JSON data, missing type");
                 }
 
-                if(type.equals("BUDGET"))
+                switch (type)
                 {
-                    importBudget(database, db, name, value);
-                }
-                else if(type.equals("EXPENSE") || type.equals("REVENUE"))
-                {
-                    importTransaction(context, database, db, id, type, description, account,
-                            budget, value, note, dateMs, receiptFilename);
-                }
-                else
-                {
-                    throw new FormatException("Issue parsing JSON data, unexpected type: " + type);
+                    case "BUDGET":
+                        importBudget(database, db, name, value);
+                        break;
+                    case "EXPENSE":
+                    case "REVENUE":
+                        importTransaction(context, database, db, id, type, description, account, budget, value, note, dateMs, receiptFilename);
+                        break;
+                    default:
+                        throw new FormatException("Issue parsing JSON data, unexpected type: " + type);
                 }
 
                 parser.endObject();
@@ -156,17 +146,16 @@ public class JsonDatabaseImporter implements DatabaseImporter
             throws FormatException
     {
         int type;
-        if(typeStr.equals("EXPENSE"))
+        switch(typeStr)
         {
-            type = DBHelper.TransactionDbIds.EXPENSE;
-        }
-        else if(typeStr.equals("REVENUE"))
-        {
-            type = DBHelper.TransactionDbIds.REVENUE;
-        }
-        else
-        {
-            throw new FormatException("Unrecognized type: " + typeStr);
+            case "EXPENSE":
+                type = DBHelper.TransactionDbIds.EXPENSE;
+                break;
+            case "REVENUE":
+                type = DBHelper.TransactionDbIds.REVENUE;
+                break;
+            default:
+                throw new FormatException("Unrecognized type: " + typeStr);
         }
 
         // Ensure that the required data exists
