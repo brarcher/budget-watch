@@ -40,7 +40,6 @@ class DatabaseTestHelper
     /**
      * Add the given number of budgets, each with
      * an index in the name.
-     * @param budgetsToAdd
      */
     public static void addBudgets(DBHelper db, int budgetsToAdd)
     {
