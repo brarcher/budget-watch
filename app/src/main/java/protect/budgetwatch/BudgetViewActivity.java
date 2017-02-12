@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public class BudgetViewActivity extends AppCompatActivity
 {
@@ -49,24 +50,29 @@ public class BudgetViewActivity extends AppCompatActivity
         final boolean updateBudget = b != null && b.getBoolean("update", false);
         final boolean viewBudget = b != null && b.getBoolean("view", false);
 
+        final EditText budgetNameEdit = (EditText) findViewById(R.id.budgetNameEdit);
+        final TextView budgetNameView = (TextView) findViewById(R.id.budgetNameView);
+        final EditText valueEdit = (EditText) findViewById(R.id.valueEdit);
+        final TextView valueView = (TextView) findViewById(R.id.valueView);
+
         if(updateBudget || viewBudget)
         {
-            EditText budgetNameField = (EditText) findViewById(R.id.budgetName);
-            budgetNameField.setText(budgetName);
+            (updateBudget ? budgetNameEdit : budgetNameView).setText(budgetName);
 
-            EditText valueField = (EditText) findViewById(R.id.value);
             Budget existingBudget = _db.getBudgetStoredOnly(budgetName);
-            valueField.setText(String.format("%d", existingBudget.max));
+            (updateBudget ? valueEdit : valueView).setText(String.format("%d", existingBudget.max));
 
             if(updateBudget)
             {
-                budgetNameField.setEnabled(false);
                 setTitle(R.string.editBudgetTitle);
+
+                budgetNameView.setVisibility(View.GONE);
+                valueView.setVisibility(View.GONE);
             }
             else
             {
-                budgetNameField.setEnabled(false);
-                valueField.setEnabled(false);
+                budgetNameEdit.setVisibility(View.GONE);
+                valueEdit.setVisibility(View.GONE);
 
                 Button saveButton = (Button) findViewById(R.id.saveButton);
                 Button cancelButton = (Button) findViewById(R.id.cancelButton);
@@ -79,6 +85,9 @@ public class BudgetViewActivity extends AppCompatActivity
         else
         {
             setTitle(R.string.addBudgetTitle);
+
+            budgetNameView.setVisibility(View.GONE);
+            valueView.setVisibility(View.GONE);
         }
 
         Button saveButton = (Button)findViewById(R.id.saveButton);
@@ -87,10 +96,8 @@ public class BudgetViewActivity extends AppCompatActivity
             @Override
             public void onClick(final View v)
             {
-                EditText budgetNameField = (EditText) findViewById(R.id.budgetName);
-                String budgetName = budgetNameField.getText().toString();
-                EditText valueField = (EditText) findViewById(R.id.value);
-                String valueStr = valueField.getText().toString();
+                String budgetName = budgetNameEdit.getText().toString();
+                String valueStr = valueEdit.getText().toString();
 
                 int value;
 
