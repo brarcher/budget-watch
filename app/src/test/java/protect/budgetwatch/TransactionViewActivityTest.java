@@ -108,11 +108,11 @@ public class TransactionViewActivityTest
         }
         db.close();
 
-        final EditText nameField = (EditText) activity.findViewById(R.id.name);
-        final EditText accountField = (EditText) activity.findViewById(R.id.account);
-        final EditText valueField = (EditText) activity.findViewById(R.id.value);
-        final EditText noteField = (EditText) activity.findViewById(R.id.note);
-        final EditText dateField = (EditText) activity.findViewById(R.id.date);
+        final EditText nameField = (EditText) activity.findViewById(R.id.nameEdit);
+        final EditText accountField = (EditText) activity.findViewById(R.id.accountEdit);
+        final EditText valueField = (EditText) activity.findViewById(R.id.valueEdit);
+        final EditText noteField = (EditText) activity.findViewById(R.id.noteEdit);
+        final EditText dateField = (EditText) activity.findViewById(R.id.dateEdit);
 
         final Button saveButton = (Button) activity.findViewById(R.id.saveButton);
 
@@ -258,12 +258,21 @@ public class TransactionViewActivityTest
         final int canUpdateOrViewReceiptVisibility = canUpdateOrViewReceipt ? View.VISIBLE : View.GONE;
         final int cancelSaveButtonVisibility = isLaunchedAsView ? View.GONE : View.VISIBLE;
 
-        checkFieldProperties(activity, R.id.name, View.VISIBLE, name);
-        checkFieldProperties(activity, R.id.account, View.VISIBLE, account);
-        checkFieldProperties(activity, R.id.budgetSpinner, View.VISIBLE, budget);
-        checkFieldProperties(activity, R.id.value, View.VISIBLE, value);
-        checkFieldProperties(activity, R.id.note, View.VISIBLE, note);
-        checkFieldProperties(activity, R.id.date, View.VISIBLE, dateStr);
+        final int editVisibility = isLaunchedAsView ? View.GONE : View.VISIBLE;
+        final int viewVisibility = isLaunchedAsView ? View.VISIBLE : View.GONE;
+
+        checkFieldProperties(activity, R.id.nameEdit, editVisibility, isLaunchedAsView ? "" : name);
+        checkFieldProperties(activity, R.id.nameView, viewVisibility, isLaunchedAsView ? name : "");
+        checkFieldProperties(activity, R.id.accountEdit, editVisibility, isLaunchedAsView ? "" : account);
+        checkFieldProperties(activity, R.id.accountView, viewVisibility, isLaunchedAsView ? account : "");
+        checkFieldProperties(activity, R.id.budgetSpinner, editVisibility, budget);
+        checkFieldProperties(activity, R.id.budgetView, viewVisibility, isLaunchedAsView ? budget : "");
+        checkFieldProperties(activity, R.id.valueEdit, editVisibility, isLaunchedAsView ? "" : value);
+        checkFieldProperties(activity, R.id.valueView, viewVisibility, isLaunchedAsView ? value : "");
+        checkFieldProperties(activity, R.id.noteEdit, editVisibility, isLaunchedAsView ? "" : note);
+        checkFieldProperties(activity, R.id.noteView, viewVisibility, isLaunchedAsView ? note : "");
+        checkFieldProperties(activity, R.id.dateEdit, editVisibility, dateStr);
+        checkFieldProperties(activity, R.id.dateView, viewVisibility, isLaunchedAsView ? dateStr : "");
         checkFieldProperties(activity, R.id.receiptLocation, View.GONE, comittedReceipt);
         checkFieldProperties(activity, R.id.receiptLayout, canUpdateOrViewReceiptVisibility, null);
         checkFieldProperties(activity, R.id.hasReceiptButtonLayout, hasReceiptVisibility, null);
@@ -372,7 +381,7 @@ public class TransactionViewActivityTest
                 budgetSpinner.setSelection(0);
             }
 
-            final EditText valueField = (EditText) activity.findViewById(R.id.value);
+            final EditText valueField = (EditText) activity.findViewById(R.id.valueEdit);
             if(value != null)
             {
                 valueField.setText(value);

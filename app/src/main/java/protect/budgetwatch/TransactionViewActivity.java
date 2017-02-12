@@ -119,8 +119,8 @@ public class TransactionViewActivity extends AppCompatActivity
 
         final Calendar date = new GregorianCalendar();
         final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
-        final EditText dateField = (EditText) findViewById(R.id.date);
-        dateField.setText(dateFormatter.format(date.getTime()));
+        final EditText dateEdit = (EditText) findViewById(R.id.dateEdit);
+        dateEdit.setText(dateFormatter.format(date.getTime()));
 
         final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener()
         {
@@ -128,11 +128,11 @@ public class TransactionViewActivity extends AppCompatActivity
             public void onDateSet(DatePicker view, int year, int month, int day)
             {
                 date.set(year, month, day);
-                dateField.setText(dateFormatter.format(date.getTime()));
+                dateEdit.setText(dateFormatter.format(date.getTime()));
             }
         };
 
-        dateField.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        dateEdit.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
             public void onFocusChange(View v, boolean hasFocus)
@@ -159,10 +159,16 @@ public class TransactionViewActivity extends AppCompatActivity
             budgetSpinner.setAdapter(budgets);
         }
 
-        final EditText nameField = (EditText) findViewById(R.id.name);
-        final EditText accountField = (EditText) findViewById(R.id.account);
-        final EditText valueField = (EditText) findViewById(R.id.value);
-        final EditText noteField = (EditText) findViewById(R.id.note);
+        final EditText nameEdit = (EditText) findViewById(R.id.nameEdit);
+        final TextView nameView = (TextView) findViewById(R.id.nameView);
+        final EditText accountEdit = (EditText) findViewById(R.id.accountEdit);
+        final TextView accountView = (TextView) findViewById(R.id.accountView);
+        final EditText valueEdit = (EditText) findViewById(R.id.valueEdit);
+        final TextView valueView = (TextView) findViewById(R.id.valueView);
+        final EditText noteEdit = (EditText) findViewById(R.id.noteEdit);
+        final TextView noteView = (TextView) findViewById(R.id.noteView);
+        final TextView budgetView = (TextView) findViewById(R.id.budgetView);
+        final TextView dateView = (TextView) findViewById(R.id.dateView);
         final Button cancelButton = (Button)findViewById(R.id.cancelButton);
         final Button saveButton = (Button)findViewById(R.id.saveButton);
         final Button captureButton = (Button)findViewById(R.id.captureButton);
@@ -176,28 +182,30 @@ public class TransactionViewActivity extends AppCompatActivity
         if(updateTransaction || viewTransaction)
         {
             Transaction transaction = _db.getTransaction(transactionId);
-            nameField.setText(transaction.description);
-            accountField.setText(transaction.account);
+            (updateTransaction ? nameEdit : nameView).setText(transaction.description);
+            (updateTransaction ? accountEdit : accountView).setText(transaction.account);
 
             int budgetIndex = budgetNames.indexOf(transaction.budget);
             if(budgetIndex >= 0)
             {
                 budgetSpinner.setSelection(budgetIndex);
             }
+            budgetView.setText(viewTransaction ? transaction.budget : "");
 
-            valueField.setText(String.format("%.2f", transaction.value));
-            noteField.setText(transaction.note);
-            dateField.setText(dateFormatter.format(new Date(transaction.dateMs)));
+            (updateTransaction ? valueEdit : valueView).setText(String.format("%.2f", transaction.value));
+            (updateTransaction ? noteEdit : noteView).setText(transaction.note);
+            (updateTransaction ? dateEdit : dateView).setText(dateFormatter.format(new Date(transaction.dateMs)));
             receiptLocationField.setText(transaction.receipt);
 
             if(viewTransaction)
             {
-                budgetSpinner.setEnabled(false);
-                nameField.setEnabled(false);
-                accountField.setEnabled(false);
-                valueField.setEnabled(false);
-                noteField.setEnabled(false);
-                dateField.setEnabled(false);
+                budgetSpinner.setVisibility(View.GONE);
+                nameEdit.setVisibility(View.GONE);
+                accountEdit.setVisibility(View.GONE);
+                valueEdit.setVisibility(View.GONE);
+                noteEdit.setVisibility(View.GONE);
+                dateEdit.setVisibility(View.GONE);
+
                 cancelButton.setVisibility(Button.GONE);
                 saveButton.setVisibility(Button.GONE);
 
@@ -220,6 +228,13 @@ public class TransactionViewActivity extends AppCompatActivity
             }
             else
             {
+                budgetView.setVisibility(View.GONE);
+                nameView.setVisibility(View.GONE);
+                accountView.setVisibility(View.GONE);
+                valueView.setVisibility(View.GONE);
+                noteView.setVisibility(View.GONE);
+                dateView.setVisibility(View.GONE);
+
                 // If editing a transaction, always list the receipt field
                 receiptLayout.setVisibility(View.VISIBLE);
                 if(transaction.receipt.isEmpty() && capturedUncommittedReceipt == null)
@@ -237,6 +252,13 @@ public class TransactionViewActivity extends AppCompatActivity
         }
         else
         {
+            budgetView.setVisibility(View.GONE);
+            nameView.setVisibility(View.GONE);
+            accountView.setVisibility(View.GONE);
+            valueView.setVisibility(View.GONE);
+            noteView.setVisibility(View.GONE);
+            dateView.setVisibility(View.GONE);
+
             // If adding a transaction, always list the receipt field
             receiptLayout.setVisibility(View.VISIBLE);
             if(capturedUncommittedReceipt == null)
@@ -301,7 +323,7 @@ public class TransactionViewActivity extends AppCompatActivity
             @Override
             public void onClick(final View v)
             {
-                final String name = nameField.getText().toString();
+                final String name = nameEdit.getText().toString();
                 // name field is optional, so it is OK if it is empty
 
                 final String budget = (String)budgetSpinner.getSelectedItem();
@@ -311,10 +333,10 @@ public class TransactionViewActivity extends AppCompatActivity
                     return;
                 }
 
-                final String account = accountField.getText().toString();
+                final String account = accountEdit.getText().toString();
                 // The account field is optional, so it is OK if it is empty
 
-                final String valueStr = valueField.getText().toString();
+                final String valueStr = valueEdit.getText().toString();
                 if (valueStr.isEmpty())
                 {
                     Snackbar.make(v, R.string.valueMissing, Snackbar.LENGTH_LONG).show();
@@ -332,11 +354,10 @@ public class TransactionViewActivity extends AppCompatActivity
                     return;
                 }
 
-                final String note = noteField.getText().toString();
+                final String note = noteEdit.getText().toString();
                 // The note field is optional, so it is OK if it is empty
 
-                EditText dateField = (EditText) findViewById(R.id.date);
-                final String dateStr = dateField.getText().toString();
+                final String dateStr = dateEdit.getText().toString();
                 final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
                 long dateMs;
                 try
