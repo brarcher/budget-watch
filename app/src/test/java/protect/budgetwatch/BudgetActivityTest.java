@@ -92,6 +92,28 @@ public class BudgetActivityTest
     }
 
     @Test
+    public void testClickAdd()
+    {
+        ActivityController activityController = Robolectric.buildActivity(BudgetActivity.class).create();
+        Activity activity = (Activity)activityController.get();
+
+        activityController.start();
+        activityController.resume();
+        activityController.visible();
+
+        shadowOf(activity).clickMenuItem(R.id.action_add);
+
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent startedIntent = shadowActivity.getNextStartedActivity();
+
+        ComponentName name = startedIntent.getComponent();
+        assertNotNull(name);
+        assertEquals("protect.budgetwatch/.BudgetViewActivity", name.flattenToShortString());
+        Bundle bundle = startedIntent.getExtras();
+        assertNull(bundle);
+    }
+
+    @Test
     public void addOneBudget()
     {
         ActivityController activityController = Robolectric.buildActivity(BudgetActivity.class).create();

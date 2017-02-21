@@ -1,6 +1,8 @@
 package protect.budgetwatch;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowLog;
 import org.robolectric.util.ActivityController;
 
@@ -117,5 +120,58 @@ public class TransactionActivityTest
 
         shadowOf(activity).clickMenuItem(android.R.id.home);
         assertTrue(shadowOf(activity).isFinishing());
+    }
+
+    private void checkClickAddWhileOnTap(Integer tab, int expectedType)
+    {
+        ActivityController activityController = Robolectric.buildActivity(TransactionActivity.class).create();
+        Activity activity = (Activity)activityController.get();
+
+        activityController.start();
+        activityController.resume();
+        activityController.visible();
+
+        if(tab != null)
+        {
+            final ViewPager viewPager = (ViewPager) activity.findViewById(R.id.pager);
+            viewPager.setCurrentItem(tab);
+        }
+
+        shadowOf(activity).clickMenuItem(R.id.action_add);
+
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent startedIntent = shadowActivity.getNextStartedActivity();
+
+        ComponentName name = startedIntent.getComponent();
+        assertNotNull(name);
+        assertEquals("protect.budgetwatch/.TransactionViewActivity", name.flattenToShortString());
+        Bundle bundle = startedIntent.getExtras();
+        assertNotNull(bundle);
+
+        // Fields which should not be present
+        assertEquals(-1, bundle.getInt("id", -1));
+        assertEquals(false, bundle.getBoolean("update", false));
+        assertEquals(false, bundle.getBoolean("view", false));
+
+        // Check the field which is expected
+        assertEquals(expectedType, bundle.getInt("type", -1));
+    }
+
+    @Test
+    public void testClickAddDefaultTab()
+    {
+        checkClickAddWhileOnTap(null, DBHelper.TransactionDbIds.EXPENSE);
+    }
+
+    @Test
+    public void testClickAddExpense()
+    {
+        checkClickAddWhileOnTap(0, DBHelper.TransactionDbIds.EXPENSE);
+    }
+
+    @Test
+    public void testClickAddRevenue()
+    {
+        checkClickAddWhileOnTap(1, DBHelper.TransactionDbIds.REVENUE);
     }
 }
