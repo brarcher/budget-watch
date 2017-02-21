@@ -3,6 +3,7 @@ package protect.budgetwatch;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ListView;
@@ -13,8 +14,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowListView;
 import org.robolectric.shadows.ShadowLog;
 import org.robolectric.util.ActivityController;
 
@@ -24,7 +27,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 17)
 public class BudgetActivityTest
 {
@@ -86,6 +89,28 @@ public class BudgetActivityTest
 
         shadowOf(activity).clickMenuItem(android.R.id.home);
         assertTrue(shadowOf(activity).isFinishing());
+    }
+
+    @Test
+    public void testClickAdd()
+    {
+        ActivityController activityController = Robolectric.buildActivity(BudgetActivity.class).create();
+        Activity activity = (Activity)activityController.get();
+
+        activityController.start();
+        activityController.resume();
+        activityController.visible();
+
+        shadowOf(activity).clickMenuItem(R.id.action_add);
+
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent startedIntent = shadowActivity.getNextStartedActivity();
+
+        ComponentName name = startedIntent.getComponent();
+        assertNotNull(name);
+        assertEquals("protect.budgetwatch/.BudgetViewActivity", name.flattenToShortString());
+        Bundle bundle = startedIntent.getExtras();
+        assertNull(bundle);
     }
 
     @Test
@@ -178,5 +203,34 @@ public class BudgetActivityTest
 
         checkTotalItem(mainActivity, current, max);
         db.close();
+    }
+
+    @Test
+    public void clickOnBudget()
+    {
+        ActivityController activityController = Robolectric.buildActivity(BudgetActivity.class).create();
+        Activity activity = (Activity)activityController.get();
+
+        DBHelper db = new DBHelper(activity);
+        db.insertBudget("name", 100);
+        db.close();
+
+        activityController.start();
+        activityController.resume();
+
+        ListView list = (ListView)activity.findViewById(R.id.list);
+
+        ShadowListView shadowList = shadowOf(list);
+        shadowList.populateItems();
+        shadowList.performItemClick(0);
+
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent startedIntent = shadowActivity.getNextStartedActivity();
+
+        ComponentName name = startedIntent.getComponent();
+        assertEquals("protect.budgetwatch/.TransactionActivity", name.flattenToShortString());
+        Bundle bundle = startedIntent.getExtras();
+        String budget = bundle.getString("budget");
+        assertEquals("name", budget);
     }
 }

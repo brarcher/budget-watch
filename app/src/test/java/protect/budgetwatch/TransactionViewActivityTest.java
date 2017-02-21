@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.RobolectricPackageManager;
@@ -40,10 +40,11 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 17)
 public class TransactionViewActivityTest
 {
@@ -70,8 +71,7 @@ public class TransactionViewActivityTest
     private void registerMediaStoreIntentHandler()
     {
         // Add something that will 'handle' the media capture intent
-        RobolectricPackageManager packageManager = (RobolectricPackageManager) shadowOf(
-                RuntimeEnvironment.application).getPackageManager();
+        RobolectricPackageManager packageManager = (RobolectricPackageManager)RuntimeEnvironment.application.getPackageManager();
 
         ResolveInfo info = new ResolveInfo();
         info.isDefault = true;
@@ -736,6 +736,29 @@ public class TransactionViewActivityTest
         MenuItem item = menu.findItem(R.id.action_edit);
         assertNotNull(item);
         assertEquals("Edit", item.getTitle().toString());
+    }
+
+    @Test
+    public void startAsViewClickEdit() throws Exception
+    {
+        ActivityController activityController = setupActivity("budget", "", true, false);
+        Activity activity = (Activity)activityController.get();
+
+        shadowOf(activity).clickMenuItem(R.id.action_edit);
+
+        ShadowActivity shadowActivity = shadowOf(activity);
+        Intent startedIntent = shadowActivity.getNextStartedActivity();
+
+        ComponentName name = startedIntent.getComponent();
+        assertNotNull(name);
+        assertEquals("protect.budgetwatch/.TransactionViewActivity", name.flattenToShortString());
+        Bundle bundle = startedIntent.getExtras();
+        assertNotNull(bundle);
+
+        assertEquals(DBHelper.TransactionDbIds.EXPENSE, bundle.getInt("type", -1));
+        assertEquals(1, bundle.getInt("id", -1));
+        assertEquals(true, bundle.getBoolean("update", false));
+        assertEquals(false, bundle.getBoolean("view", false));
     }
 
     @Test
