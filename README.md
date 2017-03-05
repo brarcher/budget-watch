@@ -34,5 +34,9 @@ Windows:
 
 # Thanks
 
-App icon originals from [Icons4Android](http://www.icons4android.com/) and [Icons8](https://icons8.com)
-and formatted using [Android Asset Studio](https://romannurik.github.io/AndroidAssetStudio/index.html).
+App icons from [The Noun Project](https://thenounproject.com) and
+[Icons8](https://icons8.com), specifically:
+- [Purse](https://thenounproject.com/term/purse/26896/) by
+[Dima Lagunov](https://thenounproject.com/lagunov.dmitriy/)
+- [Ticket Bill](https://thenounproject.com/term/ticket-bill/634398/)
+by [naim](https://thenounproject.com/naim.solis/)
