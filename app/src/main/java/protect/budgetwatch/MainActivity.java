@@ -176,12 +176,27 @@ public class MainActivity extends AppCompatActivity
             "Commons CSV", "https://commons.apache.org/proper/commons-csv/"
         );
 
+        final Map<String, String> USED_ASSETS = ImmutableMap.of
+        (
+            "Piggy Bank by Icons8", "https://thenounproject.com/term/piggy-bank/61478/",
+            "Purse by Dima Lagunov", "https://thenounproject.com/term/purse/26896/",
+            "Ticket Bill by naim", "https://thenounproject.com/term/ticket-bill/634398/",
+            "Purchase Order by Icons8", "https://icons8.com/web-app/for/all/purchase-order"
+        );
+
         StringBuilder libs = new StringBuilder().append("<ul>");
         for (Map.Entry<String, String> entry : USED_LIBRARIES.entrySet())
         {
             libs.append("<li><a href=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append("</a></li>");
         }
         libs.append("</ul>");
+
+        StringBuilder resources = new StringBuilder().append("<ul>");
+        for (Map.Entry<String, String> entry : USED_ASSETS.entrySet())
+        {
+            resources.append("<li><a href=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append("</a></li>");
+        }
+        resources.append("</ul>");
 
         String appName = getString(R.string.app_name);
         int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -228,7 +243,10 @@ public class MainActivity extends AppCompatActivity
             "</p><hr/><p>" +
             getString(R.string.app_license) +
             "</p><hr/><p>" +
-            String.format(getString(R.string.app_libraries), appName, libs.toString());
+            String.format(getString(R.string.app_libraries), appName, libs.toString()) +
+            "</p><hr/><p>" +
+            String.format(getString(R.string.app_resources), appName, resources.toString());
+
 
         wv.loadDataWithBaseURL("file:///android_res/drawable/", html, "text/html", "utf-8", null);
         new AlertDialog.Builder(this)
