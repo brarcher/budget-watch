@@ -22,9 +22,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.common.collect.ImmutableMap;
+
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -167,15 +171,15 @@ public class MainActivity extends AppCompatActivity
 
     private void displayAboutDialog()
     {
-        final String[][] USED_LIBRARIES = new String[][]
-        {
-            new String[] {"Commons CSV", "https://commons.apache.org/proper/commons-csv/"},
-        };
+        final Map<String, String> USED_LIBRARIES = ImmutableMap.of
+        (
+            "Commons CSV", "https://commons.apache.org/proper/commons-csv/"
+        );
 
         StringBuilder libs = new StringBuilder().append("<ul>");
-        for (String[] library : USED_LIBRARIES)
+        for (Map.Entry<String, String> entry : USED_LIBRARIES.entrySet())
         {
-            libs.append("<li><a href=\"").append(library[1]).append("\">").append(library[0]).append("</a></li>");
+            libs.append("<li><a href=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append("</a></li>");
         }
         libs.append("</ul>");
 
