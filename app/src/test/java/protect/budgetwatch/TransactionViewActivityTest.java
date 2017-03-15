@@ -275,6 +275,7 @@ public class TransactionViewActivityTest
         checkFieldProperties(activity, R.id.dateView, viewVisibility, isLaunchedAsView ? dateStr : "");
         checkFieldProperties(activity, R.id.receiptLocation, View.GONE, comittedReceipt);
         checkFieldProperties(activity, R.id.receiptLayout, canUpdateOrViewReceiptVisibility, null);
+        checkFieldProperties(activity, R.id.endingDivider, canUpdateOrViewReceiptVisibility, null);
         checkFieldProperties(activity, R.id.hasReceiptButtonLayout, hasReceiptVisibility, null);
         checkFieldProperties(activity, R.id.noReceiptButtonLayout, noReceiptVisibility, null);
         checkFieldProperties(activity, R.id.captureButton, View.VISIBLE, null);
