@@ -175,6 +175,7 @@ public class TransactionViewActivity extends AppCompatActivity
         final Button viewButton = (Button)findViewById(R.id.viewButton);
         final Button updateButton = (Button)findViewById(R.id.updateButton);
         final View receiptLayout = findViewById(R.id.receiptLayout);
+        final View endingDivider = findViewById(R.id.endingDivider);
         final TextView receiptLocationField = (TextView) findViewById(R.id.receiptLocation);
         final View noReceiptButtonLayout = findViewById(R.id.noReceiptButtonLayout);
         final View hasReceiptButtonLayout = findViewById(R.id.hasReceiptButtonLayout);
@@ -219,11 +220,13 @@ public class TransactionViewActivity extends AppCompatActivity
                 if(transaction.receipt.isEmpty() == false)
                 {
                     receiptLayout.setVisibility(View.VISIBLE);
+                    endingDivider.setVisibility(View.VISIBLE);
                     hasReceiptButtonLayout.setVisibility(View.VISIBLE);
                 }
                 else
                 {
                     receiptLayout.setVisibility(View.GONE);
+                    endingDivider.setVisibility(View.GONE);
                 }
             }
             else
@@ -237,6 +240,7 @@ public class TransactionViewActivity extends AppCompatActivity
 
                 // If editing a transaction, always list the receipt field
                 receiptLayout.setVisibility(View.VISIBLE);
+                endingDivider.setVisibility(View.VISIBLE);
                 if(transaction.receipt.isEmpty() && capturedUncommittedReceipt == null)
                 {
                     noReceiptButtonLayout.setVisibility(View.VISIBLE);
@@ -261,6 +265,7 @@ public class TransactionViewActivity extends AppCompatActivity
 
             // If adding a transaction, always list the receipt field
             receiptLayout.setVisibility(View.VISIBLE);
+            endingDivider.setVisibility(View.VISIBLE);
             if(capturedUncommittedReceipt == null)
             {
                 noReceiptButtonLayout.setVisibility(View.VISIBLE);
