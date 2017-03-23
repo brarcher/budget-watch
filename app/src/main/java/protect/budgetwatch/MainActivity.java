@@ -173,7 +173,8 @@ public class MainActivity extends AppCompatActivity
     {
         final Map<String, String> USED_LIBRARIES = ImmutableMap.of
         (
-            "Commons CSV", "https://commons.apache.org/proper/commons-csv/"
+            "Commons CSV", "https://commons.apache.org/proper/commons-csv/",
+            "Guava", "https://github.com/google/guava"
         );
 
         final Map<String, String> USED_ASSETS = ImmutableMap.of
