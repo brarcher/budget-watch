@@ -3,6 +3,7 @@
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
+                                                 android:background="@color/inputContrastBackground"
                                                  android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
@@ -21,234 +22,446 @@
 
     <ScrollView android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/inputContrastBackground"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <LinearLayout android:orientation="vertical"
-                      android:padding="5.0dip"
-                      android:layout_width="fill_parent"
-                      android:layout_height="wrap_content">
-            <LinearLayout android:orientation="horizontal"
-                          android:padding="5.0dip"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content">
-                <TextView android:textSize="@dimen/text_size_medium"
-                          android:textStyle="bold"
-                          android:layout_gravity="center_vertical"
-                          android:paddingStart="20.0dip"
-                          android:paddingEnd="20.0dip"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:labelFor="@+id/name"
-                          android:text="@string/name" />
-                <EditText android:id="@+id/nameEdit"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:inputType="text"
-                          android:textSize="@dimen/text_size_medium"/>
-                <TextView android:id="@+id/nameView"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:paddingTop="10dip"
-                          android:paddingBottom="10dip"
-                          android:textIsSelectable="true"
-                          android:textSize="@dimen/text_size_medium"/>
-            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:layout_width="fill_parent"
+                         android:layout_height="wrap_content"
+                         android:stretchColumns="1"
+                         android:background="@color/inputContrastBackground">
+
+                <!-- Name -->
+                <View
+                    android:layout_height="@dimen/inputBorderThickness"
+                    android:layout_width="match_parent"
+                    android:background="@color/inputBorder" />
+                <TableRow
+                    android:background="@color/inputBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <View
+                        android:gravity="start"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_column="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="@string/name"
+                            android:labelFor="@+id/name"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+
+                        <EditText
+                            android:id="@+id/nameEdit"
+                            android:inputType="text"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize" />
+                        <TextView
+                            android:id="@+id/nameView"
+                            android:textIsSelectable="true"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+                    </LinearLayout>
+
+                    <View
+                        android:gravity="end"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                </TableRow>
+
+                <!-- Budget -->
+
+                <View
+                    android:layout_height="@dimen/inputBorderThickness"
+                    android:background="@color/inputBorder"
+                    android:layout_width="match_parent"/>
+                <TableRow
+                    android:background="@color/inputBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <View
+                        android:gravity="start"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_column="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="@string/budget"
+                            android:labelFor="@+id/budgetSpinner"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+
+                        <Spinner
+                            android:id="@+id/budgetSpinner"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:paddingLeft="@dimen/inputPadding"
+                            android:paddingStart="@dimen/inputPadding"
+                            android:paddingRight="@dimen/inputPadding"
+                            android:paddingEnd="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"
+                            android:drawSelectorOnTop="true" />
+
+                        <TextView
+                            android:id="@+id/budgetView"
+                            android:textIsSelectable="true"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+                    </LinearLayout>
+
+                    <View
+                        android:gravity="end"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                </TableRow>
+
+                <!-- Account -->
+
+                <View
+                    android:layout_height="@dimen/inputBorderThickness"
+                    android:background="@color/inputBorder"
+                    android:layout_width="match_parent"/>
+                <TableRow
+                    android:background="@color/inputBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <View
+                        android:gravity="start"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_column="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:labelFor="@+id/account"
+                            android:text="@string/account"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+
+                        <EditText
+                            android:id="@+id/accountEdit"
+                            android:inputType="text"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize" />
+                        <TextView
+                            android:id="@+id/accountView"
+                            android:textIsSelectable="true"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+                    </LinearLayout>
+                    <View
+                        android:gravity="end"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                </TableRow>
+
+                <!-- Value -->
+                <View
+                    android:layout_height="@dimen/inputBorderThickness"
+                    android:background="@color/inputBorder"
+                    android:layout_width="match_parent"/>
+                <TableRow
+                    android:background="@color/inputBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <View
+                        android:gravity="start"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_column="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:labelFor="@+id/value"
+                            android:text="@string/value"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+
+                        <EditText
+                            android:id="@+id/valueEdit"
+                            android:inputType="numberDecimal"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize" />
+                        <TextView
+                            android:id="@+id/valueView"
+                            android:textIsSelectable="true"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+                    </LinearLayout>
+                    <View
+                        android:gravity="end"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                </TableRow>
+
+                <!-- Note -->
+                <View
+                    android:layout_height="@dimen/inputBorderThickness"
+                    android:background="@color/inputBorder"
+                    android:layout_width="match_parent"/>
+                <TableRow
+                    android:background="@color/inputBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <View
+                        android:gravity="start"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_column="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:labelFor="@+id/note"
+                            android:text="@string/note"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+
+                        <EditText
+                            android:id="@+id/noteEdit"
+                            android:inputType="text"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize" />
+                        <TextView
+                            android:id="@+id/noteView"
+                            android:textIsSelectable="true"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+                    </LinearLayout>
+                    <View
+                        android:gravity="end"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                </TableRow>
+
+                <!-- Date -->
+                <View
+                    android:layout_height="@dimen/inputBorderThickness"
+                    android:background="@color/inputBorder"
+                    android:layout_width="match_parent"/>
+                <TableRow
+                    android:background="@color/inputBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <View
+                        android:gravity="start"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_column="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:labelFor="@+id/date"
+                            android:text="@string/date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+
+                        <EditText
+                            android:id="@+id/dateEdit"
+                            android:inputType="date"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize" />
+                        <TextView
+                            android:id="@+id/dateView"
+                            android:textIsSelectable="true"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+                    </LinearLayout>
+                    <View
+                        android:gravity="end"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                </TableRow>
+
+                <View
+                    android:layout_height="@dimen/inputBorderThickness"
+                    android:background="@color/inputBorder"
+                    android:layout_width="match_parent"/>
+
+                <!-- Capture button(s) -->
+
+                <TextView
+                    android:id="@+id/receiptLocation"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <TableRow
+                    android:background="@color/inputBackground"
+                    android:id="@+id/receiptLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <View
+                        android:gravity="start"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_column="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="@string/receipt"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:padding="@dimen/inputPadding"
+                            android:textSize="@dimen/inputSize"/>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="true"
+                            android:gravity="end"
+                            android:padding="@dimen/inputButtonPadding"
+                            android:visibility="gone"
+                            android:id="@+id/noReceiptButtonLayout">
+                            <Button android:id="@+id/captureButton"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/capture"
+                                    android:layout_weight="1.0"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="true"
+                            android:gravity="end"
+                            android:padding="@dimen/inputButtonPadding"
+                            android:visibility="gone"
+                            android:id="@+id/hasReceiptButtonLayout">
+                            <Button android:id="@+id/viewButton"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/view"
+                                    android:layout_weight="1.0"/>
+                            <Button android:id="@+id/updateButton"
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/update"
+                                    android:layout_weight="1.0"
+                                    android:visibility="gone"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                    <View
+                        android:gravity="end"
+                        android:layout_height="match_parent"
+                        android:layout_width="@dimen/inputBorderThickness"
+                        android:background="@color/inputBorder" />
+                </TableRow>
+
+
+                <View
+                    android:id="@+id/endingDivider"
+                    android:layout_height="@dimen/inputBorderThickness"
+                    android:background="@color/inputBorder"
+                    android:layout_width="match_parent"/>
+
+                <!-- Ending spacer -->
+
+                <TableRow
+                    android:background="@color/inputContrastBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Space
+                        android:layout_width="match_parent"
+                        android:layout_height="10dip"/>
+                </TableRow>
+
+            </TableLayout>
+
+            <!-- Save/Cancel buttons -->
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:padding="5.0dip"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:textSize="@dimen/text_size_medium"
-                    android:textStyle="bold"
-                    android:layout_gravity="center_vertical"
-                    android:paddingStart="20.0dip"
-                    android:paddingEnd="20.0dip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:labelFor="@+id/budgetSpinner"
-                    android:text="@string/budget" />
-                <Spinner
-                    android:id="@+id/budgetSpinner"
+                android:layout_height="wrap_content"
+                android:baselineAligned="true"
+                android:background="@color/inputContrastBackground">
+                <Button
+                    android:id="@+id/cancelButton"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size_medium"
-                    android:drawSelectorOnTop="true" />
-                <TextView android:id="@+id/budgetView"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:paddingTop="10dip"
-                          android:paddingBottom="10dip"
-                          android:textIsSelectable="true"
-                          android:textSize="@dimen/text_size_medium"/>
+                    android:text="@string/cancel"
+                    android:layout_weight="1.0" />
+                <Button
+                    android:id="@+id/saveButton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/save"
+                    android:layout_weight="1.0" />
             </LinearLayout>
-            <LinearLayout android:orientation="horizontal"
-                          android:padding="5.0dip"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content">
-                <TextView android:textSize="@dimen/text_size_medium"
-                          android:textStyle="bold"
-                          android:layout_gravity="center_vertical"
-                          android:paddingStart="20.0dip"
-                          android:paddingEnd="20.0dip"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:labelFor="@+id/account"
-                          android:text="@string/account" />
-                <EditText android:id="@+id/accountEdit"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:inputType="text"
-                          android:textSize="@dimen/text_size_medium"/>
-                <TextView android:id="@+id/accountView"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:paddingTop="10dip"
-                          android:paddingBottom="10dip"
-                          android:textIsSelectable="true"
-                          android:textSize="@dimen/text_size_medium"/>
-            </LinearLayout>
-            <LinearLayout android:orientation="horizontal"
-                          android:padding="5.0dip"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content">
-                <TextView android:textSize="@dimen/text_size_medium"
-                          android:textStyle="bold"
-                          android:layout_gravity="center_vertical"
-                          android:paddingStart="20.0dip"
-                          android:paddingEnd="20.0dip"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:labelFor="@+id/value"
-                          android:text="@string/value" />
-                <EditText android:id="@+id/valueEdit"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:inputType="numberDecimal"
-                          android:textSize="@dimen/text_size_medium"/>
-                <TextView android:id="@+id/valueView"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:paddingTop="10dip"
-                          android:paddingBottom="10dip"
-                          android:textIsSelectable="true"
-                          android:textSize="@dimen/text_size_medium"/>
-            </LinearLayout>
-            <LinearLayout android:orientation="horizontal"
-                          android:padding="5.0dip"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content">
-                <TextView android:textSize="@dimen/text_size_medium"
-                          android:textStyle="bold"
-                          android:layout_gravity="center_vertical"
-                          android:paddingStart="20.0dip"
-                          android:paddingEnd="20.0dip"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:labelFor="@+id/note"
-                          android:text="@string/note" />
-                <EditText android:id="@+id/noteEdit"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:inputType="text"
-                          android:textSize="@dimen/text_size_medium"/>
-                <TextView android:id="@+id/noteView"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:paddingTop="10dip"
-                          android:paddingBottom="10dip"
-                          android:textIsSelectable="true"
-                          android:textSize="@dimen/text_size_medium"/>
-            </LinearLayout>
-            <LinearLayout android:orientation="horizontal"
-                          android:padding="5.0dip"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content">
-                <TextView android:textSize="@dimen/text_size_medium"
-                          android:textStyle="bold"
-                          android:layout_gravity="center_vertical"
-                          android:paddingStart="20.0dip"
-                          android:paddingEnd="20.0dip"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:labelFor="@+id/date"
-                          android:text="@string/date" />
-                <EditText android:id="@+id/dateEdit"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:inputType="date"
-                          android:textSize="@dimen/text_size_medium"/>
-                <TextView android:id="@+id/dateView"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:paddingTop="10dip"
-                          android:paddingBottom="10dip"
-                          android:textIsSelectable="true"
-                          android:textSize="@dimen/text_size_medium"/>
-            </LinearLayout>
-            <LinearLayout android:orientation="horizontal"
-                          android:padding="5.0dip"
-                          android:id="@+id/receiptLayout"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content">
-                <TextView android:textSize="@dimen/text_size_medium"
-                          android:textStyle="bold"
-                          android:layout_gravity="center_vertical"
-                          android:paddingStart="20.0dip"
-                          android:paddingEnd="20.0dip"
-                          android:layout_width="wrap_content"
-                          android:layout_height="wrap_content"
-                          android:text="@string/receipt" />
-                <TextView android:id="@+id/receiptLocation"
-                          android:layout_height="0dp"
-                          android:layout_width="0dp"
-                          android:visibility="gone" />
-                <LinearLayout android:orientation="horizontal"
-                              android:layout_width="fill_parent"
-                              android:layout_height="wrap_content"
-                              android:baselineAligned="true"
-                              android:visibility="gone"
-                              android:id="@+id/noReceiptButtonLayout">
-                    <Button android:id="@+id/captureButton"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/capture"
-                            android:layout_weight="1.0"/>
-                </LinearLayout>
-                <LinearLayout android:orientation="horizontal"
-                              android:layout_width="fill_parent"
-                              android:layout_height="wrap_content"
-                              android:baselineAligned="true"
-                              android:visibility="gone"
-                              android:id="@+id/hasReceiptButtonLayout">
-                    <Button android:id="@+id/viewButton"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/view"
-                            android:layout_weight="1.0"/>
-                    <Button android:id="@+id/updateButton"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/update"
-                            android:visibility="gone"
-                            android:layout_weight="1.0"/>
-                </LinearLayout>
-            </LinearLayout>
-            <LinearLayout android:orientation="horizontal"
-                          android:padding="5.0dip"
-                          android:layout_width="fill_parent"
-                          android:layout_height="wrap_content"
-                          android:baselineAligned="true">
-                <Button android:id="@+id/cancelButton"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/cancel"
-                        android:layout_weight="1.0" />
-                <Button android:id="@+id/saveButton"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/save"
-                        android:layout_weight="1.0" />
-            </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
