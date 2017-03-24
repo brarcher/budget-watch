@@ -46,6 +46,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 public class TransactionViewActivity extends AppCompatActivity
@@ -193,7 +194,7 @@ public class TransactionViewActivity extends AppCompatActivity
             }
             budgetView.setText(viewTransaction ? transaction.budget : "");
 
-            (updateTransaction ? valueEdit : valueView).setText(String.format("%.2f", transaction.value));
+            (updateTransaction ? valueEdit : valueView).setText(String.format(Locale.US, "%.2f", transaction.value));
             (updateTransaction ? noteEdit : noteView).setText(transaction.note);
             (updateTransaction ? dateEdit : dateView).setText(dateFormatter.format(new Date(transaction.dateMs)));
             receiptLocationField.setText(transaction.receipt);

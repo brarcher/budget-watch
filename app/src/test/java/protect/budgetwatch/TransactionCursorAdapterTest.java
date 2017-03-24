@@ -15,6 +15,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
+import java.util.Locale;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -82,7 +84,7 @@ public class TransactionCursorAdapterTest
                 assertEquals(DESCRIPTION, nameField.getText().toString());
                 assertEquals(BUDGET, budgetField.getText().toString());
 
-                String expectedValue = String.format("%.2f", VALUE);
+                String expectedValue = String.format(Locale.US, "%.2f", VALUE);
                 assertEquals(expectedValue, valueField.getText().toString());
 
                 // As the date field may be converted using the current locale,
