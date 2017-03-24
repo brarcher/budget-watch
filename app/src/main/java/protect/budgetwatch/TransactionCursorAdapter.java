@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 class TransactionCursorAdapter extends CursorAdapter
 {
@@ -55,7 +56,6 @@ class TransactionCursorAdapter extends CursorAdapter
 
     // The bindView method is used to bind all data to a given view
     // such as setting the text on a TextView.
-    @SuppressLint("DefaultLocale")
     @Override
     public void bindView(View view, Context context, Cursor cursor)
     {
@@ -66,7 +66,7 @@ class TransactionCursorAdapter extends CursorAdapter
 
         // Populate fields with extracted properties
         holder.nameField.setText(transaction.description);
-        holder.valueField.setText(String.format("%.2f", transaction.value));
+        holder.valueField.setText(String.format(Locale.US, "%.2f", transaction.value));
         holder.budgetField.setText(transaction.budget);
 
         holder.dateField.setText(DATE_FORMATTER.format(transaction.dateMs));

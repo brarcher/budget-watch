@@ -466,7 +466,7 @@ class DBHelper extends SQLiteOpenHelper
     {
         SQLiteDatabase db = getReadableDatabase();
         Cursor data = db.rawQuery("select * from " + TransactionDbIds.TABLE +
-                " where " + TransactionDbIds.NAME + "=?", new String[]{String.format("%d", id)});
+                " where " + TransactionDbIds.NAME + "=?", new String[]{Integer.toString(id)});
 
         Transaction transaction = null;
 

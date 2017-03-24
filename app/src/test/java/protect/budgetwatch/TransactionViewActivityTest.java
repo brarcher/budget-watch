@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.common.collect.ImmutableList;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -325,7 +328,7 @@ public class TransactionViewActivityTest
             {
                 result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
                         "account", budget,
-                        100, "note", nowMs, receipt);
+                        100.10, "note", nowMs, receipt);
                 assertTrue(result);
             }
         }
@@ -558,11 +561,32 @@ public class TransactionViewActivityTest
     public void startAsEditNoReceiptCheckDisplay() throws IOException
     {
         ActivityController activityController = setupActivity("budget", "", false, true);
+        Activity activity = (Activity)activityController.get();
+        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
+                "", false, false);
+    }
 
+    @Test
+    public void startAsEditNoReceiptCheckValueWithLocale() throws IOException
+    {
+        ActivityController activityController = setupActivity("budget", "", false, true);
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString,
-                "", false, false);
+        for(String locale : ImmutableList.of(
+                "en",  // 100.10
+                "nl")) // 100,10
+        {
+            System.out.println("Using locale: " + locale);
+            Locale.setDefault(new Locale(locale));
+
+            activityController.pause();
+            activityController.restart();
+            activityController.resume();
+
+            EditText value = (EditText)activity.findViewById(R.id.valueEdit);
+
+            assertEquals("100.10", value.getText().toString());
+        }
     }
 
     @Test
@@ -572,7 +596,7 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString, "receipt", false, false);
+        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString, "receipt", false, false);
     }
 
     @Test
@@ -581,7 +605,7 @@ public class TransactionViewActivityTest
         ActivityController activityController = setupActivity("budget", "receipt", false, true);
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString,
+        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
                 "receipt", false, false);
 
         // Add something that will 'handle' the media capture intent
@@ -590,7 +614,7 @@ public class TransactionViewActivityTest
         // Complete image capture successfully
         Uri imageLocation = captureImageWithResult(activity, R.id.updateButton, true, ORIGINAL_JPEG_QUALITY);
 
-        checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString,
+        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
                 "receipt", true, false);
 
         // Save and check the expense
@@ -612,7 +636,7 @@ public class TransactionViewActivityTest
         ActivityController activityController = setupActivity("budget", "receipt", false, true);
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString,
+        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
                 "receipt", false, false);
 
         // Add something that will 'handle' the media capture intent
@@ -621,7 +645,7 @@ public class TransactionViewActivityTest
         // Complete image capture successfully
         Uri imageLocation = captureImageWithResult(activity, R.id.updateButton, true, ORIGINAL_JPEG_QUALITY);
 
-        checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString,
+        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
                 "receipt", true, false);
 
         // Cancel the expense update
@@ -643,7 +667,7 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString, "", false, true);
+        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString, "", false, true);
     }
 
     @Test
@@ -653,7 +677,7 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.00", "note", nowString, "receipt", false, true);
+        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString, "receipt", false, true);
     }
 
     @Test
