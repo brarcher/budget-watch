@@ -156,12 +156,12 @@ public class BudgetViewActivity extends AppCompatActivity
 
         if(viewBudget)
         {
-            getMenuInflater().inflate(R.menu.edit_menu, menu);
+            getMenuInflater().inflate(R.menu.view_menu, menu);
         }
 
         if(editBudget)
         {
-            getMenuInflater().inflate(R.menu.delete_menu, menu);
+            getMenuInflater().inflate(R.menu.edit_menu, menu);
         }
 
         return super.onCreateOptionsMenu(menu);
