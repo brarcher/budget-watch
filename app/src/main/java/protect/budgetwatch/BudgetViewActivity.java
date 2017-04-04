@@ -105,43 +105,7 @@ public class BudgetViewActivity extends AppCompatActivity
             @Override
             public void onClick(final View v)
             {
-                String budgetName = _budgetNameEdit.getText().toString();
-                String valueStr = _valueEdit.getText().toString();
-
-                int value;
-
-                try
-                {
-                    value = Integer.parseInt(valueStr);
-                }
-                catch (NumberFormatException e)
-                {
-                    value = Integer.MIN_VALUE;
-                }
-
-                if (budgetName.length() > 0 && value >= 0)
-                {
-                    if(_updateBudget == false)
-                    {
-                        _db.insertBudget(budgetName, value);
-                    }
-                    else
-                    {
-                        _db.updateBudget(budgetName, value);
-                    }
-
-                    finish();
-                }
-                else
-                {
-                    int messageId = R.string.budgetTypeMissing;
-                    if (budgetName.isEmpty() == false)
-                    {
-                        messageId = R.string.budgetValueMissing;
-                    }
-
-                    Snackbar.make(v, messageId, Snackbar.LENGTH_LONG).show();
-                }
+                doSave();
             }
         });
 
@@ -154,6 +118,47 @@ public class BudgetViewActivity extends AppCompatActivity
                 finish();
             }
         });
+    }
+
+    private void doSave()
+    {
+        String budgetName = _budgetNameEdit.getText().toString();
+        String valueStr = _valueEdit.getText().toString();
+
+        int value;
+
+        try
+        {
+            value = Integer.parseInt(valueStr);
+        }
+        catch (NumberFormatException e)
+        {
+            value = Integer.MIN_VALUE;
+        }
+
+        if (budgetName.length() > 0 && value >= 0)
+        {
+            if(_updateBudget == false)
+            {
+                _db.insertBudget(budgetName, value);
+            }
+            else
+            {
+                _db.updateBudget(budgetName, value);
+            }
+
+            finish();
+        }
+        else
+        {
+            int messageId = R.string.budgetTypeMissing;
+            if (budgetName.isEmpty() == false)
+            {
+                messageId = R.string.budgetValueMissing;
+            }
+
+            Snackbar.make(_valueEdit, messageId, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override

@@ -358,81 +358,7 @@ public class TransactionViewActivity extends AppCompatActivity
             @Override
             public void onClick(final View v)
             {
-                final String name = _nameEdit.getText().toString();
-                // name field is optional, so it is OK if it is empty
-
-                final String budget = (String)_budgetSpinner.getSelectedItem();
-                if (budget == null)
-                {
-                    Snackbar.make(v, R.string.budgetMissing, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                final String account = _accountEdit.getText().toString();
-                // The account field is optional, so it is OK if it is empty
-
-                final String valueStr = _valueEdit.getText().toString();
-                if (valueStr.isEmpty())
-                {
-                    Snackbar.make(v, R.string.valueMissing, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                double value;
-                try
-                {
-                    value = Double.parseDouble(valueStr);
-                }
-                catch (NumberFormatException e)
-                {
-                    Snackbar.make(v, R.string.valueInvalid, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                final String note = _noteEdit.getText().toString();
-                // The note field is optional, so it is OK if it is empty
-
-                final String dateStr = _dateEdit.getText().toString();
-                final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
-                long dateMs;
-                try
-                {
-                    dateMs = dateFormatter.parse(dateStr).getTime();
-                }
-                catch (ParseException e)
-                {
-                    Snackbar.make(v, R.string.dateInvalid, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                String receipt = _receiptLocationField.getText().toString();
-                if(capturedUncommittedReceipt != null)
-                {
-                    // Delete the old receipt, it is no longer needed
-                    File oldReceipt = new File(receipt);
-                    if(oldReceipt.delete() == false)
-                    {
-                        Log.e(TAG, "Unable to delete old receipt file: " + capturedUncommittedReceipt);
-                    }
-
-                    // Remember the new receipt to save
-                    receipt = capturedUncommittedReceipt;
-                    capturedUncommittedReceipt = null;
-                }
-
-                if(_updateTransaction)
-                {
-                    _db.updateTransaction(_transactionId, _type, name, account,
-                            budget, value, note, dateMs, receipt);
-
-                }
-                else
-                {
-                    _db.insertTransaction(_type, name, account, budget,
-                            value, note, dateMs, receipt);
-                }
-
-                finish();
+                doSave();
             }
         });
 
@@ -444,6 +370,85 @@ public class TransactionViewActivity extends AppCompatActivity
                 finish();
             }
         });
+    }
+
+    private void doSave()
+    {
+        final String name = _nameEdit.getText().toString();
+        // name field is optional, so it is OK if it is empty
+
+        final String budget = (String)_budgetSpinner.getSelectedItem();
+        if (budget == null)
+        {
+            Snackbar.make(_budgetSpinner, R.string.budgetMissing, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        final String account = _accountEdit.getText().toString();
+        // The account field is optional, so it is OK if it is empty
+
+        final String valueStr = _valueEdit.getText().toString();
+        if (valueStr.isEmpty())
+        {
+            Snackbar.make(_valueEdit, R.string.valueMissing, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        double value;
+        try
+        {
+            value = Double.parseDouble(valueStr);
+        }
+        catch (NumberFormatException e)
+        {
+            Snackbar.make(_valueEdit, R.string.valueInvalid, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        final String note = _noteEdit.getText().toString();
+        // The note field is optional, so it is OK if it is empty
+
+        final String dateStr = _dateEdit.getText().toString();
+        final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
+        long dateMs;
+        try
+        {
+            dateMs = dateFormatter.parse(dateStr).getTime();
+        }
+        catch (ParseException e)
+        {
+            Snackbar.make(_dateEdit, R.string.dateInvalid, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        String receipt = _receiptLocationField.getText().toString();
+        if(capturedUncommittedReceipt != null)
+        {
+            // Delete the old receipt, it is no longer needed
+            File oldReceipt = new File(receipt);
+            if(oldReceipt.delete() == false)
+            {
+                Log.e(TAG, "Unable to delete old receipt file: " + capturedUncommittedReceipt);
+            }
+
+            // Remember the new receipt to save
+            receipt = capturedUncommittedReceipt;
+            capturedUncommittedReceipt = null;
+        }
+
+        if(_updateTransaction)
+        {
+            _db.updateTransaction(_transactionId, _type, name, account,
+                    budget, value, note, dateMs, receipt);
+
+        }
+        else
+        {
+            _db.insertTransaction(_type, name, account, budget,
+                    value, note, dateMs, receipt);
+        }
+
+        finish();
     }
 
     private void captureReceipt()
@@ -575,6 +580,11 @@ public class TransactionViewActivity extends AppCompatActivity
             dialog.show();
 
             return true;
+        }
+
+        if(id == R.id.action_save)
+        {
+
         }
 
         if(id == android.R.id.home)
