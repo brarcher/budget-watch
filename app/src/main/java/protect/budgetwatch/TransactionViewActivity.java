@@ -502,53 +502,56 @@ public class TransactionViewActivity extends AppCompatActivity
         final int transactionId = b.getInt("id");
         final int type = b.getInt("type");
 
-        switch(id)
+        if(id == R.id.action_edit)
         {
-            case R.id.action_edit:
-                finish();
+            finish();
 
-                Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", transactionId);
-                bundle.putInt("type", type);
-                bundle.putBoolean("update", true);
-                i.putExtras(bundle);
-                startActivity(i);
-                return true;
+            Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("id", transactionId);
+            bundle.putInt("type", type);
+            bundle.putBoolean("update", true);
+            i.putExtras(bundle);
+            startActivity(i);
+            return true;
+        }
 
-            case R.id.action_delete:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.deleteTransactionTitle);
-                builder.setMessage(R.string.deleteTransactionConfirmation);
-                builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+        if(id == R.id.action_delete)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.deleteTransactionTitle);
+            builder.setMessage(R.string.deleteTransactionConfirmation);
+            builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
                 {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        Log.e(TAG, "Deleting transaction: " + transactionId);
+                    Log.e(TAG, "Deleting transaction: " + transactionId);
 
-                        _db.deleteTransaction(transactionId);
-                        finish();
+                    _db.deleteTransaction(transactionId);
+                    finish();
 
-                        dialog.dismiss();
-                    }
-                });
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
                 {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-                return true;
+            return true;
+        }
 
-            case android.R.id.home:
-                finish();
-                return true;
+        if(id == android.R.id.home)
+        {
+            finish();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
