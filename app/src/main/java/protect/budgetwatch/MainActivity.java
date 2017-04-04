@@ -182,7 +182,8 @@ public class MainActivity extends AppCompatActivity
             "Piggy Bank by Icons8", "https://thenounproject.com/term/piggy-bank/61478/",
             "Purse by Dima Lagunov", "https://thenounproject.com/term/purse/26896/",
             "Ticket Bill by naim", "https://thenounproject.com/term/ticket-bill/634398/",
-            "Purchase Order by Icons8", "https://icons8.com/web-app/for/all/purchase-order"
+            "Purchase Order by Icons8", "https://icons8.com/web-app/for/all/purchase-order",
+            "Save by Bernar Novalyi", "https://thenounproject.com/term/save/716011"
         );
 
         StringBuilder libs = new StringBuilder().append("<ul>");

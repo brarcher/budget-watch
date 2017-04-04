@@ -110,8 +110,6 @@ public class BudgetViewActivityTest
         checkFieldProperties(activity, R.id.budgetNameView, viewVisibility, mode == ViewMode.VIEW_CARD ? budget : "");
         checkFieldProperties(activity, R.id.valueEdit, editVisibility, mode == ViewMode.VIEW_CARD ? "" : value);
         checkFieldProperties(activity, R.id.valueView, viewVisibility, mode == ViewMode.VIEW_CARD ? value : "");
-        checkFieldProperties(activity, R.id.saveButton, editVisibility, null);
-        checkFieldProperties(activity, R.id.cancelButton, editVisibility, null);
     }
 
     private void checkFieldProperties(final Activity activity, final int id, final int visibility,
@@ -146,8 +144,6 @@ public class BudgetViewActivityTest
         DBHelper db = new DBHelper(activity);
         assertEquals(0, db.getBudgetCount());
 
-        final Button saveButton = (Button) activity.findViewById(R.id.saveButton);
-
         for(String[] test : Arrays.asList(
                 new String[]{"", ""},
                 new String[]{"", "100"},
@@ -165,25 +161,11 @@ public class BudgetViewActivityTest
             valueField.setText(value);
 
             // Perform the actual test, no transaction should be created
-            saveButton.performClick();
+            shadowOf(activity).clickMenuItem(R.id.action_save);
             assertEquals(0, db.getBudgetCount());
         }
 
         db.close();
-    }
-
-    @Test
-    public void startAsAddCancel()
-    {
-        ActivityController activityController = setupActivity(null, 0, false, false);
-
-        Activity activity = (Activity)activityController.get();
-
-        final Button cancelButton = (Button) activity.findViewById(R.id.cancelButton);
-
-        assertEquals(false, activity.isFinishing());
-        cancelButton.performClick();
-        assertEquals(true, activity.isFinishing());
     }
 
     /**
@@ -208,13 +190,11 @@ public class BudgetViewActivityTest
         final EditText budgetField = (EditText) activity.findViewById(R.id.budgetNameEdit);
         final EditText valueField = (EditText) activity.findViewById(R.id.valueEdit);
 
-        final Button saveButton = (Button) activity.findViewById(R.id.saveButton);
-
         budgetField.setText(budgetName);
         valueField.setText(Integer.toString(value));
 
         assertEquals(false, activity.isFinishing());
-        saveButton.performClick();
+        shadowOf(activity).clickMenuItem(R.id.action_save);
         assertEquals(true, activity.isFinishing());
 
         assertEquals(1, db.getBudgetCount());
@@ -270,7 +250,7 @@ public class BudgetViewActivityTest
     }
 
     @Test
-    public void startAsAddNoButtonsInActionBar() throws Exception
+    public void startAsAddCheckActionBar() throws Exception
     {
         ActivityController activityController = setupActivity(null, 0, false, false);
         Activity activity = (Activity)activityController.get();
@@ -278,8 +258,11 @@ public class BudgetViewActivityTest
         final Menu menu = shadowOf(activity).getOptionsMenu();
         assertTrue(menu != null);
 
-        // There should be no buttons
-        assertEquals(menu.size(), 0);
+        assertEquals(menu.size(), 1);
+
+        MenuItem item = menu.findItem(R.id.action_save);
+        assertNotNull(item);
+        assertEquals("Save", item.getTitle().toString());
     }
 
     @Test
@@ -291,11 +274,15 @@ public class BudgetViewActivityTest
         final Menu menu = shadowOf(activity).getOptionsMenu();
         assertTrue(menu != null);
 
-        assertEquals(menu.size(), 1);
+        assertEquals(menu.size(), 2);
 
         MenuItem item = menu.findItem(R.id.action_delete);
         assertNotNull(item);
         assertEquals("Delete", item.getTitle().toString());
+
+        item = menu.findItem(R.id.action_save);
+        assertNotNull(item);
+        assertEquals("Save", item.getTitle().toString());
     }
 
     @Test

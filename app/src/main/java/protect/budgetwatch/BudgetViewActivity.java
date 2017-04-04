@@ -82,12 +82,6 @@ public class BudgetViewActivity extends AppCompatActivity
             {
                 _budgetNameEdit.setVisibility(View.GONE);
                 _valueEdit.setVisibility(View.GONE);
-
-                Button saveButton = (Button) findViewById(R.id.saveButton);
-                Button cancelButton = (Button) findViewById(R.id.cancelButton);
-                saveButton.setVisibility(Button.GONE);
-                cancelButton.setVisibility(Button.GONE);
-
                 setTitle(R.string.viewBudgetTitle);
             }
         }
@@ -98,26 +92,6 @@ public class BudgetViewActivity extends AppCompatActivity
             _budgetNameView.setVisibility(View.GONE);
             _valueView.setVisibility(View.GONE);
         }
-
-        Button saveButton = (Button)findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View v)
-            {
-                doSave();
-            }
-        });
-
-        Button cancelButton = (Button)findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                finish();
-            }
-        });
     }
 
     private void doSave()
@@ -172,10 +146,13 @@ public class BudgetViewActivity extends AppCompatActivity
         {
             getMenuInflater().inflate(R.menu.view_menu, menu);
         }
-
-        if(editBudget)
+        else if(editBudget)
         {
             getMenuInflater().inflate(R.menu.edit_menu, menu);
+        }
+        else
+        {
+            getMenuInflater().inflate(R.menu.add_menu, menu);
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -231,6 +208,12 @@ public class BudgetViewActivity extends AppCompatActivity
             AlertDialog dialog = builder.create();
             dialog.show();
 
+            return true;
+        }
+
+        if(id == R.id.action_save)
+        {
+            doSave();
             return true;
         }
 

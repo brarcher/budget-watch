@@ -68,8 +68,6 @@ public class TransactionViewActivity extends AppCompatActivity
     private TextView _noteView;
     private TextView _budgetView;
     private TextView _dateView;
-    private Button _cancelButton;
-    private Button _saveButton;
     private Button _captureButton;
     private Button _viewButton;
     private Button _updateButton;
@@ -112,8 +110,6 @@ public class TransactionViewActivity extends AppCompatActivity
         _noteView = (TextView) findViewById(R.id.noteView);
         _budgetView = (TextView) findViewById(R.id.budgetView);
         _dateView = (TextView) findViewById(R.id.dateView);
-        _cancelButton = (Button)findViewById(R.id.cancelButton);
-        _saveButton = (Button)findViewById(R.id.saveButton);
         _captureButton = (Button)findViewById(R.id.captureButton);
         _viewButton = (Button)findViewById(R.id.viewButton);
         _updateButton = (Button)findViewById(R.id.updateButton);
@@ -237,9 +233,6 @@ public class TransactionViewActivity extends AppCompatActivity
                 _noteEdit.setVisibility(View.GONE);
                 _dateEdit.setVisibility(View.GONE);
 
-                _cancelButton.setVisibility(Button.GONE);
-                _saveButton.setVisibility(Button.GONE);
-
                 // The no receipt layout need never be displayed
                 // when only viewing a transaction, as one should
                 // not be able to capture a receipt
@@ -350,24 +343,6 @@ public class TransactionViewActivity extends AppCompatActivity
                 b.putString("receipt", receipt);
                 i.putExtras(b);
                 startActivity(i);
-            }
-        });
-
-        _saveButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(final View v)
-            {
-                doSave();
-            }
-        });
-
-        _cancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                finish();
             }
         });
     }
@@ -518,10 +493,13 @@ public class TransactionViewActivity extends AppCompatActivity
         {
             getMenuInflater().inflate(R.menu.view_menu, menu);
         }
-
-        if(editBudget)
+        else if(editBudget)
         {
             getMenuInflater().inflate(R.menu.edit_menu, menu);
+        }
+        else
+        {
+            getMenuInflater().inflate(R.menu.add_menu, menu);
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -584,7 +562,8 @@ public class TransactionViewActivity extends AppCompatActivity
 
         if(id == R.id.action_save)
         {
-
+            doSave();
+            return true;
         }
 
         if(id == android.R.id.home)

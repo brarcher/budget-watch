@@ -117,8 +117,6 @@ public class TransactionViewActivityTest
         final EditText noteField = (EditText) activity.findViewById(R.id.noteEdit);
         final EditText dateField = (EditText) activity.findViewById(R.id.dateEdit);
 
-        final Button saveButton = (Button) activity.findViewById(R.id.saveButton);
-
         nameField.setText(name);
         accountField.setText(account);
         valueField.setText(Double.toString(value));
@@ -127,7 +125,7 @@ public class TransactionViewActivityTest
         dateField.setText(dateStr);
 
         assertEquals(false, activity.isFinishing());
-        saveButton.performClick();
+        shadowOf(activity).clickMenuItem(R.id.action_save);
         assertEquals(true, activity.isFinishing());
 
         assertEquals(1, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
@@ -259,7 +257,6 @@ public class TransactionViewActivityTest
         final int noReceiptVisibility = (hasReceipt||isLaunchedAsView) ? View.GONE : View.VISIBLE;
         final int canUpdateReceiptVisibility = canUpdateReceipt ? View.VISIBLE : View.GONE;
         final int canUpdateOrViewReceiptVisibility = canUpdateOrViewReceipt ? View.VISIBLE : View.GONE;
-        final int cancelSaveButtonVisibility = isLaunchedAsView ? View.GONE : View.VISIBLE;
 
         final int editVisibility = isLaunchedAsView ? View.GONE : View.VISIBLE;
         final int viewVisibility = isLaunchedAsView ? View.VISIBLE : View.GONE;
@@ -284,8 +281,6 @@ public class TransactionViewActivityTest
         checkFieldProperties(activity, R.id.captureButton, View.VISIBLE, null);
         checkFieldProperties(activity, R.id.updateButton, canUpdateReceiptVisibility, null);
         checkFieldProperties(activity, R.id.viewButton, View.VISIBLE, null);
-        checkFieldProperties(activity, R.id.saveButton, cancelSaveButtonVisibility, null);
-        checkFieldProperties(activity, R.id.cancelButton, cancelSaveButtonVisibility, null);
     }
 
     private ActivityController setupActivity(final String budget, final String receipt,
@@ -360,8 +355,6 @@ public class TransactionViewActivityTest
         DBHelper db = new DBHelper(activity);
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
 
-        final Button saveButton = (Button) activity.findViewById(R.id.saveButton);
-
         for(String[] test : Arrays.asList(
                 new String[]{null, null},
                 new String[]{null, "100"},
@@ -396,7 +389,7 @@ public class TransactionViewActivityTest
             }
 
             // Perform the actual test, no transaction should be created
-            saveButton.performClick();
+            shadowOf(activity).clickMenuItem(R.id.action_save);
             assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
 
             if(budget != null)
@@ -411,20 +404,6 @@ public class TransactionViewActivityTest
         }
 
         db.close();
-    }
-
-    @Test
-    public void startAsAddCancel()
-    {
-        ActivityController activityController = setupActivity("budget", null, false, false);
-
-        Activity activity = (Activity)activityController.get();
-
-        final Button cancelButton = (Button) activity.findViewById(R.id.cancelButton);
-
-        assertEquals(false, activity.isFinishing());
-        cancelButton.performClick();
-        assertEquals(true, activity.isFinishing());
     }
 
     @Test
@@ -547,9 +526,8 @@ public class TransactionViewActivityTest
         assertTrue(imageFile.isFile());
 
         // Cancel the expense creation
-        final Button cancelButton = (Button) activity.findViewById(R.id.cancelButton);
         assertEquals(false, activity.isFinishing());
-        cancelButton.performClick();
+        shadowOf(activity).clickMenuItem(android.R.id.home);
         assertEquals(true, activity.isFinishing());
         activityController.destroy();
 
@@ -649,9 +627,8 @@ public class TransactionViewActivityTest
                 "receipt", true, false);
 
         // Cancel the expense update
-        final Button cancelButton = (Button) activity.findViewById(R.id.cancelButton);
         assertEquals(false, activity.isFinishing());
-        cancelButton.performClick();
+        shadowOf(activity).clickMenuItem(android.R.id.home);
         assertEquals(true, activity.isFinishing());
         activityController.destroy();
 
@@ -681,7 +658,7 @@ public class TransactionViewActivityTest
     }
 
     @Test
-    public void startAsAddNoButtonsInActionBar() throws Exception
+    public void startAsAddCheckActionBar() throws Exception
     {
         ActivityController activityController = setupActivity("budget", null, false, false);
         Activity activity = (Activity)activityController.get();
@@ -689,8 +666,11 @@ public class TransactionViewActivityTest
         final Menu menu = shadowOf(activity).getOptionsMenu();
         assertTrue(menu != null);
 
-        // There should be no buttons
-        assertEquals(menu.size(), 0);
+        assertEquals(menu.size(), 1);
+
+        MenuItem item = menu.findItem(R.id.action_save);
+        assertNotNull(item);
+        assertEquals("Save", item.getTitle().toString());
     }
 
     @Test
@@ -702,11 +682,15 @@ public class TransactionViewActivityTest
         final Menu menu = shadowOf(activity).getOptionsMenu();
         assertTrue(menu != null);
 
-        assertEquals(menu.size(), 1);
+        assertEquals(menu.size(), 2);
 
         MenuItem item = menu.findItem(R.id.action_delete);
         assertNotNull(item);
         assertEquals("Delete", item.getTitle().toString());
+
+        item = menu.findItem(R.id.action_save);
+        assertNotNull(item);
+        assertEquals("Save", item.getTitle().toString());
     }
 
     @Test
