@@ -22,6 +22,15 @@ public class BudgetViewActivity extends AppCompatActivity
     private static final String TAG = "BudgetWatch";
     private DBHelper _db;
 
+    private EditText _budgetNameEdit;
+    private TextView _budgetNameView;
+    private EditText _valueEdit;
+    private TextView _valueView;
+
+    private String _budgetName;
+    private boolean _updateBudget;
+    private boolean _viewBudget;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -37,6 +46,16 @@ public class BudgetViewActivity extends AppCompatActivity
         }
 
         _db = new DBHelper(this);
+
+        _budgetNameEdit = (EditText) findViewById(R.id.budgetNameEdit);
+        _budgetNameView = (TextView) findViewById(R.id.budgetNameView);
+        _valueEdit = (EditText) findViewById(R.id.valueEdit);
+        _valueView = (TextView) findViewById(R.id.valueView);
+
+        final Bundle b = getIntent().getExtras();
+        _budgetName = b != null ? b.getString("id") : null;
+        _updateBudget = b != null && b.getBoolean("update", false);
+        _viewBudget = b != null && b.getBoolean("view", false);
     }
 
     @SuppressLint("DefaultLocale")
@@ -45,34 +64,24 @@ public class BudgetViewActivity extends AppCompatActivity
     {
         super.onResume();
 
-        final Bundle b = getIntent().getExtras();
-        final String budgetName = b != null ? b.getString("id") : null;
-        final boolean updateBudget = b != null && b.getBoolean("update", false);
-        final boolean viewBudget = b != null && b.getBoolean("view", false);
-
-        final EditText budgetNameEdit = (EditText) findViewById(R.id.budgetNameEdit);
-        final TextView budgetNameView = (TextView) findViewById(R.id.budgetNameView);
-        final EditText valueEdit = (EditText) findViewById(R.id.valueEdit);
-        final TextView valueView = (TextView) findViewById(R.id.valueView);
-
-        if(updateBudget || viewBudget)
+        if(_updateBudget || _viewBudget)
         {
-            (updateBudget ? budgetNameEdit : budgetNameView).setText(budgetName);
+            (_updateBudget ? _budgetNameEdit : _budgetNameView).setText(_budgetName);
 
-            Budget existingBudget = _db.getBudgetStoredOnly(budgetName);
-            (updateBudget ? valueEdit : valueView).setText(String.format("%d", existingBudget.max));
+            Budget existingBudget = _db.getBudgetStoredOnly(_budgetName);
+            (_updateBudget ? _valueEdit : _valueView).setText(String.format("%d", existingBudget.max));
 
-            if(updateBudget)
+            if(_updateBudget)
             {
                 setTitle(R.string.editBudgetTitle);
 
-                budgetNameView.setVisibility(View.GONE);
-                valueView.setVisibility(View.GONE);
+                _budgetNameView.setVisibility(View.GONE);
+                _valueView.setVisibility(View.GONE);
             }
             else
             {
-                budgetNameEdit.setVisibility(View.GONE);
-                valueEdit.setVisibility(View.GONE);
+                _budgetNameEdit.setVisibility(View.GONE);
+                _valueEdit.setVisibility(View.GONE);
 
                 Button saveButton = (Button) findViewById(R.id.saveButton);
                 Button cancelButton = (Button) findViewById(R.id.cancelButton);
@@ -86,8 +95,8 @@ public class BudgetViewActivity extends AppCompatActivity
         {
             setTitle(R.string.addBudgetTitle);
 
-            budgetNameView.setVisibility(View.GONE);
-            valueView.setVisibility(View.GONE);
+            _budgetNameView.setVisibility(View.GONE);
+            _valueView.setVisibility(View.GONE);
         }
 
         Button saveButton = (Button)findViewById(R.id.saveButton);
@@ -96,8 +105,8 @@ public class BudgetViewActivity extends AppCompatActivity
             @Override
             public void onClick(final View v)
             {
-                String budgetName = budgetNameEdit.getText().toString();
-                String valueStr = valueEdit.getText().toString();
+                String budgetName = _budgetNameEdit.getText().toString();
+                String valueStr = _valueEdit.getText().toString();
 
                 int value;
 
@@ -112,7 +121,7 @@ public class BudgetViewActivity extends AppCompatActivity
 
                 if (budgetName.length() > 0 && value >= 0)
                 {
-                    if(updateBudget == false)
+                    if(_updateBudget == false)
                     {
                         _db.insertBudget(budgetName, value);
                     }
