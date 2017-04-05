@@ -58,6 +58,32 @@ public class TransactionViewActivity extends AppCompatActivity
     private String capturedUncommittedReceipt = null;
     private DBHelper _db;
 
+    private EditText _nameEdit;
+    private TextView _nameView;
+    private EditText _accountEdit;
+    private TextView _accountView;
+    private EditText _valueEdit;
+    private TextView _valueView;
+    private EditText _noteEdit;
+    private TextView _noteView;
+    private TextView _budgetView;
+    private TextView _dateView;
+    private Button _captureButton;
+    private Button _viewButton;
+    private Button _updateButton;
+    private View _receiptLayout;
+    private View _endingDivider;
+    private TextView _receiptLocationField;
+    private View _noReceiptButtonLayout;
+    private View _hasReceiptButtonLayout;
+    private EditText _dateEdit;
+    private Spinner _budgetSpinner;
+
+    private int _transactionId;
+    private int _type;
+    private boolean _updateTransaction;
+    private boolean _viewTransaction;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -73,6 +99,33 @@ public class TransactionViewActivity extends AppCompatActivity
         }
 
         _db = new DBHelper(this);
+
+        _nameEdit = (EditText) findViewById(R.id.nameEdit);
+        _nameView = (TextView) findViewById(R.id.nameView);
+        _accountEdit = (EditText) findViewById(R.id.accountEdit);
+        _accountView = (TextView) findViewById(R.id.accountView);
+        _valueEdit = (EditText) findViewById(R.id.valueEdit);
+        _valueView = (TextView) findViewById(R.id.valueView);
+        _noteEdit = (EditText) findViewById(R.id.noteEdit);
+        _noteView = (TextView) findViewById(R.id.noteView);
+        _budgetView = (TextView) findViewById(R.id.budgetView);
+        _dateView = (TextView) findViewById(R.id.dateView);
+        _captureButton = (Button)findViewById(R.id.captureButton);
+        _viewButton = (Button)findViewById(R.id.viewButton);
+        _updateButton = (Button)findViewById(R.id.updateButton);
+        _receiptLayout = findViewById(R.id.receiptLayout);
+        _endingDivider = findViewById(R.id.endingDivider);
+        _receiptLocationField = (TextView) findViewById(R.id.receiptLocation);
+        _noReceiptButtonLayout = findViewById(R.id.noReceiptButtonLayout);
+        _hasReceiptButtonLayout = findViewById(R.id.hasReceiptButtonLayout);
+        _dateEdit = (EditText) findViewById(R.id.dateEdit);
+        _budgetSpinner = (Spinner) findViewById(R.id.budgetSpinner);
+
+        final Bundle b = getIntent().getExtras();
+        _transactionId = b.getInt("id");
+        _type = b.getInt("type");
+        _updateTransaction = b.getBoolean("update", false);
+        _viewTransaction = b.getBoolean("view", false);
     }
 
     @SuppressLint("DefaultLocale")
@@ -81,19 +134,13 @@ public class TransactionViewActivity extends AppCompatActivity
     {
         super.onResume();
 
-        final Bundle b = getIntent().getExtras();
-        final int transactionId = b.getInt("id");
-        final int type = b.getInt("type");
-        final boolean updateTransaction = b.getBoolean("update", false);
-        final boolean viewTransaction = b.getBoolean("view", false);
-
-        if(type == DBHelper.TransactionDbIds.EXPENSE)
+        if(_type == DBHelper.TransactionDbIds.EXPENSE)
         {
-            if (updateTransaction)
+            if (_updateTransaction)
             {
                 setTitle(R.string.editExpenseTransactionTitle);
             }
-            else if (viewTransaction)
+            else if (_viewTransaction)
             {
                 setTitle(R.string.viewExpenseTransactionTitle);
             }
@@ -102,13 +149,13 @@ public class TransactionViewActivity extends AppCompatActivity
                 setTitle(R.string.addExpenseTransactionTitle);
             }
         }
-        else if(type == DBHelper.TransactionDbIds.REVENUE)
+        else if(_type == DBHelper.TransactionDbIds.REVENUE)
         {
-            if(updateTransaction)
+            if(_updateTransaction)
             {
                 setTitle(R.string.editRevenueTransactionTitle);
             }
-            else if(viewTransaction)
+            else if(_viewTransaction)
             {
                 setTitle(R.string.viewRevenueTransactionTitle);
             }
@@ -120,8 +167,8 @@ public class TransactionViewActivity extends AppCompatActivity
 
         final Calendar date = new GregorianCalendar();
         final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
-        final EditText dateEdit = (EditText) findViewById(R.id.dateEdit);
-        dateEdit.setText(dateFormatter.format(date.getTime()));
+
+        _dateEdit.setText(dateFormatter.format(date.getTime()));
 
         final DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener()
         {
@@ -129,11 +176,11 @@ public class TransactionViewActivity extends AppCompatActivity
             public void onDateSet(DatePicker view, int year, int month, int day)
             {
                 date.set(year, month, day);
-                dateEdit.setText(dateFormatter.format(date.getTime()));
+                _dateEdit.setText(dateFormatter.format(date.getTime()));
             }
         };
 
-        dateEdit.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        _dateEdit.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
             @Override
             public void onFocusChange(View v, boolean hasFocus)
@@ -150,133 +197,108 @@ public class TransactionViewActivity extends AppCompatActivity
             }
         });
 
-        final Spinner budgetSpinner = (Spinner) findViewById(R.id.budgetSpinner);
         List<String> budgetNames = _db.getBudgetNames();
 
         // Add budget items to spinner if it has not been initialized yet
-        if(budgetSpinner.getCount() == 0)
+        if(_budgetSpinner.getCount() == 0)
         {
             ArrayAdapter<String> budgets = new ArrayAdapter<>(this, R.layout.spinner_textview, budgetNames);
-            budgetSpinner.setAdapter(budgets);
+            _budgetSpinner.setAdapter(budgets);
         }
 
-        final EditText nameEdit = (EditText) findViewById(R.id.nameEdit);
-        final TextView nameView = (TextView) findViewById(R.id.nameView);
-        final EditText accountEdit = (EditText) findViewById(R.id.accountEdit);
-        final TextView accountView = (TextView) findViewById(R.id.accountView);
-        final EditText valueEdit = (EditText) findViewById(R.id.valueEdit);
-        final TextView valueView = (TextView) findViewById(R.id.valueView);
-        final EditText noteEdit = (EditText) findViewById(R.id.noteEdit);
-        final TextView noteView = (TextView) findViewById(R.id.noteView);
-        final TextView budgetView = (TextView) findViewById(R.id.budgetView);
-        final TextView dateView = (TextView) findViewById(R.id.dateView);
-        final Button cancelButton = (Button)findViewById(R.id.cancelButton);
-        final Button saveButton = (Button)findViewById(R.id.saveButton);
-        final Button captureButton = (Button)findViewById(R.id.captureButton);
-        final Button viewButton = (Button)findViewById(R.id.viewButton);
-        final Button updateButton = (Button)findViewById(R.id.updateButton);
-        final View receiptLayout = findViewById(R.id.receiptLayout);
-        final View endingDivider = findViewById(R.id.endingDivider);
-        final TextView receiptLocationField = (TextView) findViewById(R.id.receiptLocation);
-        final View noReceiptButtonLayout = findViewById(R.id.noReceiptButtonLayout);
-        final View hasReceiptButtonLayout = findViewById(R.id.hasReceiptButtonLayout);
-
-        if(updateTransaction || viewTransaction)
+        if(_updateTransaction || _viewTransaction)
         {
-            Transaction transaction = _db.getTransaction(transactionId);
-            (updateTransaction ? nameEdit : nameView).setText(transaction.description);
-            (updateTransaction ? accountEdit : accountView).setText(transaction.account);
+            Transaction transaction = _db.getTransaction(_transactionId);
+            (_updateTransaction ? _nameEdit : _nameView).setText(transaction.description);
+            (_updateTransaction ? _accountEdit : _accountView).setText(transaction.account);
 
             int budgetIndex = budgetNames.indexOf(transaction.budget);
             if(budgetIndex >= 0)
             {
-                budgetSpinner.setSelection(budgetIndex);
+                _budgetSpinner.setSelection(budgetIndex);
             }
-            budgetView.setText(viewTransaction ? transaction.budget : "");
+            _budgetView.setText(_viewTransaction ? transaction.budget : "");
 
-            (updateTransaction ? valueEdit : valueView).setText(String.format(Locale.US, "%.2f", transaction.value));
-            (updateTransaction ? noteEdit : noteView).setText(transaction.note);
-            (updateTransaction ? dateEdit : dateView).setText(dateFormatter.format(new Date(transaction.dateMs)));
-            receiptLocationField.setText(transaction.receipt);
+            (_updateTransaction ? _valueEdit : _valueView).setText(String.format(Locale.US, "%.2f", transaction.value));
+            (_updateTransaction ? _noteEdit : _noteView).setText(transaction.note);
+            (_updateTransaction ? _dateEdit : _dateView).setText(dateFormatter.format(new Date(transaction.dateMs)));
+            _receiptLocationField.setText(transaction.receipt);
 
-            if(viewTransaction)
+            if(_viewTransaction)
             {
-                budgetSpinner.setVisibility(View.GONE);
-                nameEdit.setVisibility(View.GONE);
-                accountEdit.setVisibility(View.GONE);
-                valueEdit.setVisibility(View.GONE);
-                noteEdit.setVisibility(View.GONE);
-                dateEdit.setVisibility(View.GONE);
-
-                cancelButton.setVisibility(Button.GONE);
-                saveButton.setVisibility(Button.GONE);
+                _budgetSpinner.setVisibility(View.GONE);
+                _nameEdit.setVisibility(View.GONE);
+                _accountEdit.setVisibility(View.GONE);
+                _valueEdit.setVisibility(View.GONE);
+                _noteEdit.setVisibility(View.GONE);
+                _dateEdit.setVisibility(View.GONE);
 
                 // The no receipt layout need never be displayed
                 // when only viewing a transaction, as one should
                 // not be able to capture a receipt
-                noReceiptButtonLayout.setVisibility(View.GONE);
+                _noReceiptButtonLayout.setVisibility(View.GONE);
 
                 // If viewing a transaction, only display the receipt
                 // field if a receipt is captured
                 if(transaction.receipt.isEmpty() == false)
                 {
-                    receiptLayout.setVisibility(View.VISIBLE);
-                    endingDivider.setVisibility(View.VISIBLE);
-                    hasReceiptButtonLayout.setVisibility(View.VISIBLE);
+                    _receiptLayout.setVisibility(View.VISIBLE);
+                    _endingDivider.setVisibility(View.VISIBLE);
+                    _hasReceiptButtonLayout.setVisibility(View.VISIBLE);
                 }
                 else
                 {
-                    receiptLayout.setVisibility(View.GONE);
-                    endingDivider.setVisibility(View.GONE);
+                    _receiptLayout.setVisibility(View.GONE);
+                    _endingDivider.setVisibility(View.GONE);
                 }
             }
             else
             {
-                budgetView.setVisibility(View.GONE);
-                nameView.setVisibility(View.GONE);
-                accountView.setVisibility(View.GONE);
-                valueView.setVisibility(View.GONE);
-                noteView.setVisibility(View.GONE);
-                dateView.setVisibility(View.GONE);
+                _budgetView.setVisibility(View.GONE);
+                _nameView.setVisibility(View.GONE);
+                _accountView.setVisibility(View.GONE);
+                _valueView.setVisibility(View.GONE);
+                _noteView.setVisibility(View.GONE);
+                _dateView.setVisibility(View.GONE);
 
                 // If editing a transaction, always list the receipt field
-                receiptLayout.setVisibility(View.VISIBLE);
-                endingDivider.setVisibility(View.VISIBLE);
+                _receiptLayout.setVisibility(View.VISIBLE);
+                _endingDivider.setVisibility(View.VISIBLE);
                 if(transaction.receipt.isEmpty() && capturedUncommittedReceipt == null)
                 {
-                    noReceiptButtonLayout.setVisibility(View.VISIBLE);
-                    hasReceiptButtonLayout.setVisibility(View.GONE);
+                    _noReceiptButtonLayout.setVisibility(View.VISIBLE);
+                    _hasReceiptButtonLayout.setVisibility(View.GONE);
                 }
                 else
                 {
-                    noReceiptButtonLayout.setVisibility(View.GONE);
-                    hasReceiptButtonLayout.setVisibility(View.VISIBLE);
-                    updateButton.setVisibility(View.VISIBLE);
+                    _noReceiptButtonLayout.setVisibility(View.GONE);
+                    _hasReceiptButtonLayout.setVisibility(View.VISIBLE);
+                    _updateButton.setVisibility(View.VISIBLE);
                 }
             }
         }
         else
         {
-            budgetView.setVisibility(View.GONE);
-            nameView.setVisibility(View.GONE);
-            accountView.setVisibility(View.GONE);
-            valueView.setVisibility(View.GONE);
-            noteView.setVisibility(View.GONE);
-            dateView.setVisibility(View.GONE);
+            _budgetView.setVisibility(View.GONE);
+            _nameView.setVisibility(View.GONE);
+            _accountView.setVisibility(View.GONE);
+            _valueView.setVisibility(View.GONE);
+            _noteView.setVisibility(View.GONE);
+            _dateView.setVisibility(View.GONE);
 
             // If adding a transaction, always list the receipt field
-            receiptLayout.setVisibility(View.VISIBLE);
-            endingDivider.setVisibility(View.VISIBLE);
+            _receiptLayout.setVisibility(View.VISIBLE);
+            _endingDivider.setVisibility(View.VISIBLE);
             if(capturedUncommittedReceipt == null)
             {
-                noReceiptButtonLayout.setVisibility(View.VISIBLE);
-                hasReceiptButtonLayout.setVisibility(View.GONE);
+                _noReceiptButtonLayout.setVisibility(View.VISIBLE);
+                _hasReceiptButtonLayout.setVisibility(View.GONE);
             }
             else
             {
-                noReceiptButtonLayout.setVisibility(View.GONE);
-                hasReceiptButtonLayout.setVisibility(View.VISIBLE);
-                updateButton.setVisibility(View.VISIBLE);
+                _noReceiptButtonLayout.setVisibility(View.GONE);
+                _hasReceiptButtonLayout.setVisibility(View.VISIBLE);
+                _updateButton.setVisibility(View.VISIBLE);
             }
         }
 
@@ -299,10 +321,10 @@ public class TransactionViewActivity extends AppCompatActivity
             }
         };
 
-        captureButton.setOnClickListener(captureCallback);
-        updateButton.setOnClickListener(captureCallback);
+        _captureButton.setOnClickListener(captureCallback);
+        _updateButton.setOnClickListener(captureCallback);
 
-        viewButton.setOnClickListener(new View.OnClickListener()
+        _viewButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -323,98 +345,85 @@ public class TransactionViewActivity extends AppCompatActivity
                 startActivity(i);
             }
         });
+    }
 
-        saveButton.setOnClickListener(new View.OnClickListener()
+    private void doSave()
+    {
+        final String name = _nameEdit.getText().toString();
+        // name field is optional, so it is OK if it is empty
+
+        final String budget = (String)_budgetSpinner.getSelectedItem();
+        if (budget == null)
         {
-            @Override
-            public void onClick(final View v)
-            {
-                final String name = nameEdit.getText().toString();
-                // name field is optional, so it is OK if it is empty
+            Snackbar.make(_budgetSpinner, R.string.budgetMissing, Snackbar.LENGTH_LONG).show();
+            return;
+        }
 
-                final String budget = (String)budgetSpinner.getSelectedItem();
-                if (budget == null)
-                {
-                    Snackbar.make(v, R.string.budgetMissing, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
+        final String account = _accountEdit.getText().toString();
+        // The account field is optional, so it is OK if it is empty
 
-                final String account = accountEdit.getText().toString();
-                // The account field is optional, so it is OK if it is empty
-
-                final String valueStr = valueEdit.getText().toString();
-                if (valueStr.isEmpty())
-                {
-                    Snackbar.make(v, R.string.valueMissing, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                double value;
-                try
-                {
-                    value = Double.parseDouble(valueStr);
-                }
-                catch (NumberFormatException e)
-                {
-                    Snackbar.make(v, R.string.valueInvalid, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                final String note = noteEdit.getText().toString();
-                // The note field is optional, so it is OK if it is empty
-
-                final String dateStr = dateEdit.getText().toString();
-                final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
-                long dateMs;
-                try
-                {
-                    dateMs = dateFormatter.parse(dateStr).getTime();
-                }
-                catch (ParseException e)
-                {
-                    Snackbar.make(v, R.string.dateInvalid, Snackbar.LENGTH_LONG).show();
-                    return;
-                }
-
-                String receipt = receiptLocationField.getText().toString();
-                if(capturedUncommittedReceipt != null)
-                {
-                    // Delete the old receipt, it is no longer needed
-                    File oldReceipt = new File(receipt);
-                    if(oldReceipt.delete() == false)
-                    {
-                        Log.e(TAG, "Unable to delete old receipt file: " + capturedUncommittedReceipt);
-                    }
-
-                    // Remember the new receipt to save
-                    receipt = capturedUncommittedReceipt;
-                    capturedUncommittedReceipt = null;
-                }
-
-                if(updateTransaction)
-                {
-                    _db.updateTransaction(transactionId, type, name, account,
-                            budget, value, note, dateMs, receipt);
-
-                }
-                else
-                {
-                    _db.insertTransaction(type, name, account, budget,
-                            value, note, dateMs, receipt);
-                }
-
-                finish();
-            }
-        });
-
-        cancelButton.setOnClickListener(new View.OnClickListener()
+        final String valueStr = _valueEdit.getText().toString();
+        if (valueStr.isEmpty())
         {
-            @Override
-            public void onClick(View v)
+            Snackbar.make(_valueEdit, R.string.valueMissing, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        double value;
+        try
+        {
+            value = Double.parseDouble(valueStr);
+        }
+        catch (NumberFormatException e)
+        {
+            Snackbar.make(_valueEdit, R.string.valueInvalid, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        final String note = _noteEdit.getText().toString();
+        // The note field is optional, so it is OK if it is empty
+
+        final String dateStr = _dateEdit.getText().toString();
+        final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
+        long dateMs;
+        try
+        {
+            dateMs = dateFormatter.parse(dateStr).getTime();
+        }
+        catch (ParseException e)
+        {
+            Snackbar.make(_dateEdit, R.string.dateInvalid, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        String receipt = _receiptLocationField.getText().toString();
+        if(capturedUncommittedReceipt != null)
+        {
+            // Delete the old receipt, it is no longer needed
+            File oldReceipt = new File(receipt);
+            if(oldReceipt.delete() == false)
             {
-                finish();
+                Log.e(TAG, "Unable to delete old receipt file: " + capturedUncommittedReceipt);
             }
-        });
+
+            // Remember the new receipt to save
+            receipt = capturedUncommittedReceipt;
+            capturedUncommittedReceipt = null;
+        }
+
+        if(_updateTransaction)
+        {
+            _db.updateTransaction(_transactionId, _type, name, account,
+                    budget, value, note, dateMs, receipt);
+
+        }
+        else
+        {
+            _db.insertTransaction(_type, name, account, budget,
+                    value, note, dateMs, receipt);
+        }
+
+        finish();
     }
 
     private void captureReceipt()
@@ -482,12 +491,15 @@ public class TransactionViewActivity extends AppCompatActivity
 
         if(viewBudget)
         {
+            getMenuInflater().inflate(R.menu.view_menu, menu);
+        }
+        else if(editBudget)
+        {
             getMenuInflater().inflate(R.menu.edit_menu, menu);
         }
-
-        if(editBudget)
+        else
         {
-            getMenuInflater().inflate(R.menu.delete_menu, menu);
+            getMenuInflater().inflate(R.menu.add_menu, menu);
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -502,53 +514,62 @@ public class TransactionViewActivity extends AppCompatActivity
         final int transactionId = b.getInt("id");
         final int type = b.getInt("type");
 
-        switch(id)
+        if(id == R.id.action_edit)
         {
-            case R.id.action_edit:
-                finish();
+            finish();
 
-                Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("id", transactionId);
-                bundle.putInt("type", type);
-                bundle.putBoolean("update", true);
-                i.putExtras(bundle);
-                startActivity(i);
-                return true;
+            Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putInt("id", transactionId);
+            bundle.putInt("type", type);
+            bundle.putBoolean("update", true);
+            i.putExtras(bundle);
+            startActivity(i);
+            return true;
+        }
 
-            case R.id.action_delete:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.deleteTransactionTitle);
-                builder.setMessage(R.string.deleteTransactionConfirmation);
-                builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+        if(id == R.id.action_delete)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.deleteTransactionTitle);
+            builder.setMessage(R.string.deleteTransactionConfirmation);
+            builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
                 {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        Log.e(TAG, "Deleting transaction: " + transactionId);
+                    Log.e(TAG, "Deleting transaction: " + transactionId);
 
-                        _db.deleteTransaction(transactionId);
-                        finish();
+                    _db.deleteTransaction(transactionId);
+                    finish();
 
-                        dialog.dismiss();
-                    }
-                });
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
                 {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-                return true;
+            return true;
+        }
 
-            case android.R.id.home:
-                finish();
-                return true;
+        if(id == R.id.action_save)
+        {
+            doSave();
+            return true;
+        }
+
+        if(id == android.R.id.home)
+        {
+            finish();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

@@ -145,28 +145,6 @@
                         android:layout_height="10dip"/>
                 </TableRow>
             </TableLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:padding="5.0dip"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:baselineAligned="true"
-                android:background="@color/inputContrastBackground">
-                <Button
-                    android:id="@+id/cancelButton"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cancel"
-                    android:layout_weight="1.0" />
-                <Button
-                    android:id="@+id/saveButton"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/save"
-                    android:layout_weight="1.0" />
-            </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 

@@ -129,7 +129,7 @@ public class TransactionFragment extends Fragment
         if (v.getId()==R.id.list)
         {
             MenuInflater inflater = getActivity().getMenuInflater();
-            inflater.inflate(R.menu.edit_menu, menu);
+            inflater.inflate(R.menu.view_menu, menu);
         }
     }
 

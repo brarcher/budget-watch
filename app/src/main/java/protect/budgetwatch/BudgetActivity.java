@@ -153,7 +153,7 @@ public class BudgetActivity extends AppCompatActivity
         if (v.getId()==R.id.list)
         {
             MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.edit_menu, menu);
+            inflater.inflate(R.menu.view_menu, menu);
         }
     }
 

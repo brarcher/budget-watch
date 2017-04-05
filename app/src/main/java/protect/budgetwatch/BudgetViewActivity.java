@@ -22,6 +22,15 @@ public class BudgetViewActivity extends AppCompatActivity
     private static final String TAG = "BudgetWatch";
     private DBHelper _db;
 
+    private EditText _budgetNameEdit;
+    private TextView _budgetNameView;
+    private EditText _valueEdit;
+    private TextView _valueView;
+
+    private String _budgetName;
+    private boolean _updateBudget;
+    private boolean _viewBudget;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -37,6 +46,16 @@ public class BudgetViewActivity extends AppCompatActivity
         }
 
         _db = new DBHelper(this);
+
+        _budgetNameEdit = (EditText) findViewById(R.id.budgetNameEdit);
+        _budgetNameView = (TextView) findViewById(R.id.budgetNameView);
+        _valueEdit = (EditText) findViewById(R.id.valueEdit);
+        _valueView = (TextView) findViewById(R.id.valueView);
+
+        final Bundle b = getIntent().getExtras();
+        _budgetName = b != null ? b.getString("id") : null;
+        _updateBudget = b != null && b.getBoolean("update", false);
+        _viewBudget = b != null && b.getBoolean("view", false);
     }
 
     @SuppressLint("DefaultLocale")
@@ -45,40 +64,24 @@ public class BudgetViewActivity extends AppCompatActivity
     {
         super.onResume();
 
-        final Bundle b = getIntent().getExtras();
-        final String budgetName = b != null ? b.getString("id") : null;
-        final boolean updateBudget = b != null && b.getBoolean("update", false);
-        final boolean viewBudget = b != null && b.getBoolean("view", false);
-
-        final EditText budgetNameEdit = (EditText) findViewById(R.id.budgetNameEdit);
-        final TextView budgetNameView = (TextView) findViewById(R.id.budgetNameView);
-        final EditText valueEdit = (EditText) findViewById(R.id.valueEdit);
-        final TextView valueView = (TextView) findViewById(R.id.valueView);
-
-        if(updateBudget || viewBudget)
+        if(_updateBudget || _viewBudget)
         {
-            (updateBudget ? budgetNameEdit : budgetNameView).setText(budgetName);
+            (_updateBudget ? _budgetNameEdit : _budgetNameView).setText(_budgetName);
 
-            Budget existingBudget = _db.getBudgetStoredOnly(budgetName);
-            (updateBudget ? valueEdit : valueView).setText(String.format("%d", existingBudget.max));
+            Budget existingBudget = _db.getBudgetStoredOnly(_budgetName);
+            (_updateBudget ? _valueEdit : _valueView).setText(String.format("%d", existingBudget.max));
 
-            if(updateBudget)
+            if(_updateBudget)
             {
                 setTitle(R.string.editBudgetTitle);
 
-                budgetNameView.setVisibility(View.GONE);
-                valueView.setVisibility(View.GONE);
+                _budgetNameView.setVisibility(View.GONE);
+                _valueView.setVisibility(View.GONE);
             }
             else
             {
-                budgetNameEdit.setVisibility(View.GONE);
-                valueEdit.setVisibility(View.GONE);
-
-                Button saveButton = (Button) findViewById(R.id.saveButton);
-                Button cancelButton = (Button) findViewById(R.id.cancelButton);
-                saveButton.setVisibility(Button.GONE);
-                cancelButton.setVisibility(Button.GONE);
-
+                _budgetNameEdit.setVisibility(View.GONE);
+                _valueEdit.setVisibility(View.GONE);
                 setTitle(R.string.viewBudgetTitle);
             }
         }
@@ -86,65 +89,50 @@ public class BudgetViewActivity extends AppCompatActivity
         {
             setTitle(R.string.addBudgetTitle);
 
-            budgetNameView.setVisibility(View.GONE);
-            valueView.setVisibility(View.GONE);
+            _budgetNameView.setVisibility(View.GONE);
+            _valueView.setVisibility(View.GONE);
+        }
+    }
+
+    private void doSave()
+    {
+        String budgetName = _budgetNameEdit.getText().toString();
+        String valueStr = _valueEdit.getText().toString();
+
+        int value;
+
+        try
+        {
+            value = Integer.parseInt(valueStr);
+        }
+        catch (NumberFormatException e)
+        {
+            value = Integer.MIN_VALUE;
         }
 
-        Button saveButton = (Button)findViewById(R.id.saveButton);
-        saveButton.setOnClickListener(new View.OnClickListener()
+        if (budgetName.length() > 0 && value >= 0)
         {
-            @Override
-            public void onClick(final View v)
+            if(_updateBudget == false)
             {
-                String budgetName = budgetNameEdit.getText().toString();
-                String valueStr = valueEdit.getText().toString();
-
-                int value;
-
-                try
-                {
-                    value = Integer.parseInt(valueStr);
-                }
-                catch (NumberFormatException e)
-                {
-                    value = Integer.MIN_VALUE;
-                }
-
-                if (budgetName.length() > 0 && value >= 0)
-                {
-                    if(updateBudget == false)
-                    {
-                        _db.insertBudget(budgetName, value);
-                    }
-                    else
-                    {
-                        _db.updateBudget(budgetName, value);
-                    }
-
-                    finish();
-                }
-                else
-                {
-                    int messageId = R.string.budgetTypeMissing;
-                    if (budgetName.isEmpty() == false)
-                    {
-                        messageId = R.string.budgetValueMissing;
-                    }
-
-                    Snackbar.make(v, messageId, Snackbar.LENGTH_LONG).show();
-                }
+                _db.insertBudget(budgetName, value);
             }
-        });
+            else
+            {
+                _db.updateBudget(budgetName, value);
+            }
 
-        Button cancelButton = (Button)findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(new View.OnClickListener()
+            finish();
+        }
+        else
         {
-            @Override
-            public void onClick(View v)
+            int messageId = R.string.budgetTypeMissing;
+            if (budgetName.isEmpty() == false)
             {
-                finish();
+                messageId = R.string.budgetValueMissing;
             }
-        });
+
+            Snackbar.make(_valueEdit, messageId, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -156,12 +144,15 @@ public class BudgetViewActivity extends AppCompatActivity
 
         if(viewBudget)
         {
+            getMenuInflater().inflate(R.menu.view_menu, menu);
+        }
+        else if(editBudget)
+        {
             getMenuInflater().inflate(R.menu.edit_menu, menu);
         }
-
-        if(editBudget)
+        else
         {
-            getMenuInflater().inflate(R.menu.delete_menu, menu);
+            getMenuInflater().inflate(R.menu.add_menu, menu);
         }
 
         return super.onCreateOptionsMenu(menu);
@@ -175,52 +166,61 @@ public class BudgetViewActivity extends AppCompatActivity
         final Bundle b = getIntent().getExtras();
         final String budgetName = b != null ? b.getString("id") : null;
 
-        switch(id)
+        if(id == R.id.action_edit)
         {
-            case R.id.action_edit:
-                finish();
+            finish();
 
-                Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("id", budgetName);
-                bundle.putBoolean("update", true);
-                i.putExtras(bundle);
-                startActivity(i);
-                return true;
+            Intent i = new Intent(getApplicationContext(), BudgetViewActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("id", budgetName);
+            bundle.putBoolean("update", true);
+            i.putExtras(bundle);
+            startActivity(i);
+            return true;
+        }
 
-            case R.id.action_delete:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(R.string.deleteBudgetTitle);
-                builder.setMessage(R.string.deleteBudgetConfirmation);
-                builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+        if(id == R.id.action_delete)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.deleteBudgetTitle);
+            builder.setMessage(R.string.deleteBudgetConfirmation);
+            builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
                 {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        Log.e(TAG, "Deleting budget: " + budgetName);
+                    Log.e(TAG, "Deleting budget: " + budgetName);
 
-                        _db.deleteBudget(budgetName);
+                    _db.deleteBudget(budgetName);
 
-                        finish();
-                        dialog.dismiss();
-                    }
-                });
-                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                    finish();
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
                 {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
-                return true;
+            return true;
+        }
 
-            case android.R.id.home:
-                finish();
-                return true;
+        if(id == R.id.action_save)
+        {
+            doSave();
+            return true;
+        }
+
+        if(id == android.R.id.home)
+        {
+            finish();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
