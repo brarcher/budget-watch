@@ -15,6 +15,10 @@ android:
 
 script: ./gradlew build lint findbugs test
 
+before_install:
+  - pip install codecov
+after_success:
+  - codecov
 after_failure:
 - cat app/build/reports/lint-results*
 - cat app/build/reports/findbugs/findbugs.html
