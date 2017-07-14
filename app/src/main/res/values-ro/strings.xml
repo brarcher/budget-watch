@@ -97,13 +97,13 @@
     <string name="addExpenseDescription">Adaugă o tranzacție de cheltuieli</string>
 
     <string name="about">Despre</string>
-    <string name="app_copyright_fmt">Copyright 2016-&lt;xliff:g &gt;%d&lt;/xliff:g&gt; Branden Archer</string>
+    <string name="app_copyright_fmt">Copyright 2016-<xliff:g >%d</xliff:g> Branden Archer</string>
     <string name="app_license">Sub licența GPLv3.</string>
-    <string name="about_title_fmt">Despre &lt;xliff:g id=\"app_name\" &gt;%s&lt;/xliff:g&gt;</string>
-    <string name="debug_version_fmt">Versiune: &lt;xliff:g id=\"version\" &gt;%s&lt;/xliff:g&gt;</string>
-    <string name="app_revision_fmt">Informații de revizuire: &lt;xliff:g id=\"app_revision_url\" &gt;%s&lt;/xliff:g&gt;</string>
-    <string name="app_libraries">&lt;xliff:g id=\"app_name\" &gt;%s&lt;/xliff:g&gt; folosește următoarele biblioteci terțe: &lt;xliff:g id=\"app_libraries_list\" &gt;%s&lt;/xliff:g&gt;</string>
-    <string name="app_resources">&lt;xliff:g id=\"app_name\" &gt;%s&lt;/xliff:g&gt; folosește următoarele resurse terțe&lt;xliff:g id=\"app_resources_list\" &gt;%s&lt;/xliff:g&gt;</string>
+    <string name="about_title_fmt">Despre <xliff:g id="app_name" >%s</xliff:g></string>
+    <string name="debug_version_fmt">Versiune: <xliff:g id="version" >%s</xliff:g></string>
+    <string name="app_revision_fmt">Informații de revizuire: <xliff:g id="app_revision_url" >%s</xliff:g></string>
+    <string name="app_libraries"><xliff:g id="app_name" >%s</xliff:g> folosește următoarele biblioteci terțe: <xliff:g id="app_libraries_list" >%s</xliff:g></string>
+    <string name="app_resources"><xliff:g id="app_name" >%s</xliff:g> folosește următoarele resurse terțe<xliff:g id="app_resources_list" >%s</xliff:g></string>
 
     <string name="settings">Setări</string>
     <string name="receiptQuality">Calitate bon fiscal</string>
