@@ -1,0 +1,141 @@
+<resources
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Budget Watch</string>
+    <string name="icon">pictogramă</string>
+    <string name="budgetsTitle">Bugete</string>
+    <string name="addBudgetTitle">Adaugă buget</string>
+    <string name="viewBudgetTitle">Vizualizează buget</string>
+    <string name="editBudgetTitle">Editează buget</string>
+    <string name="budgetDescription">Creează și administrează bugete</string>
+    <string name="transactionsTitle">Tranzacții</string>
+    <string name="transactionsDescription">Introduceți tranzacții și venituri</string>
+    <string name="addExpenseTransactionTitle">Adaugă cheltuială</string>
+    <string name="editExpenseTransactionTitle">Editează cheltuială</string>
+    <string name="viewExpenseTransactionTitle">Vizualizează cheltuială</string>
+    <string name="addRevenueTransactionTitle">Adaugă venituri</string>
+    <string name="editRevenueTransactionTitle">Editează venit</string>
+    <string name="viewRevenueTransactionTitle">Vizualizează venit</string>
+    <string name="importExportTitle">Importă/Exportă</string>
+    <string name="totalBudgetTitle">Total</string>
+
+    <string name="add">Adaugă</string>
+    <string name="selectDates">Selectează data</string>
+    <string name="type">Tip</string>
+    <string name="value">Valoare</string>
+    <string name="name">Nume</string>
+    <string name="budget">Buget</string>
+    <string name="account">Cont</string>
+    <string name="note">Notiță</string>
+    <string name="date">Data</string>
+    <string name="save">Salvează</string>
+    <string name="cancel">Anulează</string>
+    <string name="set">Setează</string>
+    <string name="receipt">Bon fiscal</string>
+    <string name="capture">Capturează</string>
+    <string name="view">Vizualizează</string>
+    <string name="update">Actualizează</string>
+    <string name="clean">Șterge</string>
+    <string name="ok">OK</string>
+    <string name="share">Distribuie</string>
+    <string name="confirm">Confirmă</string>
+
+    <string name="Grocery">Cumpărături</string>
+    <string name="one_hundred">100</string>
+    <string name="fraction">%1$d/%2$d</string>
+
+    <string name="budgetTypeMissing">Tipul de buget lipsește</string>
+    <string name="budgetValueMissing">Valoarea bugetului lipsește</string>
+    <string name="budgetMissing">Niciun buget selectat</string>
+    <string name="valueMissing">Valoarea este goală</string>
+    <string name="valueInvalid">Valoare invalidă</string>
+    <string name="dateInvalid">Dată invalidă</string>
+
+    <string name="expensesTitle">Costuri</string>
+    <string name="revenuesTitle">Venituri</string>
+
+    <string name="edit">Editează</string>
+    <string name="delete">Șterge</string>
+
+    <!-- A date range, where both arguments are date strings -->
+    <string name="dateRangeFormat">%1$s ~ %2$s</string>
+
+    <string name="noBudgets">Nu aveți niciun buget în acest moment. Apăsați butonul \"+\" (plus) de sus pentru a începe. \n
+  \n
+  Budget Watch vă permite să creați bugete, apoi să urmăriți cheltuielile în timpul lunii.</string>
+    <string name="noExpenses">Nu aveți nicio tranzacție de cheltuieli în prezent. Apăsați butonul \"+\" (plus) de sus pentru a începe.</string>
+    <string name="noExpensesForBudget">Nu aveți nicio tranzacție de cheltuieli pentru bugetul \"%1$s"</string>
+    <string name="noRevenues">Nu aveți nicio tranzacție de venituri în prezent. Apăsați butonul \"+\" (plus) de sus pentru a începe.</string>
+    <string name="noRevenuesForBudget">Nu aveți nicio tranzacție de venituri pentru bugetul \"%1$s"</string>
+
+    <string name="budgetDateRangeHelp">Selectează perioada de timp pentru afișarea bugetelor</string>
+    <string name="startDate">Data de start</string>
+    <string name="endDate">Dată de final</string>
+    <string name="startDateAfterEndDate">Data de start trebuie să fie înainte de data de final</string>
+
+    <string name="cleanupHelp">Selectează data; toate chitanțele din sau dinainte de acea dată vor fi șterse</string>
+
+    <string name="importExport">Importă/Exportă</string>
+    <string name="exportName">Exportă</string>
+    <string name="importedFrom">Importat din: %1$s</string>
+    <string name="fileFormat">Format fișier</string>
+    <string name="exportedTo">Exportat către: %1$s</string>
+    <string name="importFailed">Nu s-a putut importa: %1$s</string>
+    <string name="exportFailed">Nu s-a putut exporta: %1$s</string>
+    <string name="importing">Se importă...</string>
+    <string name="exporting">Se exportă...</string>
+
+    <string name="purgeOldReceipts">Șterge bonurile fiscale vechi</string>
+    <string name="cleaning">Se șterge...</string>
+
+    <string name="loading">Se încarcă...</string>
+
+    <string name="pictureCaptureError">Nu se poate captura imagine cu camera</string>
+    <string name="noCameraPermissionError">Nu se poate captura bonul fiscal fără permisiunea de cameră</string>
+
+    <string name="iconDescription">Pictograma BudgetWatch</string>
+    <string name="addExpenseDescription">Adaugă o tranzacție de cheltuieli</string>
+
+    <string name="about">Despre</string>
+    <string name="app_copyright_fmt">Copyright 2016-<xliff:g >%d</xliff:g> Branden Archer</string>
+    <string name="app_license">Sub licența GPLv3.</string>
+    <string name="about_title_fmt">Despre <xliff:g id="app_name" >%s</xliff:g></string>
+    <string name="debug_version_fmt">Versiune: <xliff:g id="version" >%s</xliff:g></string>
+    <string name="app_revision_fmt">Informații de revizuire: <xliff:g id="app_revision_url" >%s</xliff:g></string>
+    <string name="app_libraries"><xliff:g id="app_name" >%s</xliff:g> folosește următoarele biblioteci terțe: <xliff:g id="app_libraries_list" >%s</xliff:g></string>
+    <string name="app_resources"><xliff:g id="app_name" >%s</xliff:g> folosește următoarele resurse terțe<xliff:g id="app_resources_list" >%s</xliff:g></string>
+
+    <string name="settings">Setări</string>
+    <string name="receiptQuality">Calitate bon fiscal</string>
+    <string name="receiptQualitySummary">Selectează calitatea JPEG folosită la capturarea imaginilor cu bonurile fiscale</string>
+    <string name="encodingReceipt">Se codifică bonul fiscal</string>
+
+    <string name="deleteBudgetTitle">Elimină buget</string>
+    <string name="deleteBudgetConfirmation">Vă rugăm confirmați ștergerea acestui buget. Toate tranzacțiile asociate cu acest buget vor fi păstrate.</string>
+    <string name="deleteTransactionTitle">Elimină tranzacție</string>
+    <string name="deleteTransactionConfirmation">Vă rugăm confirmați ștergerea acestei tranzacții.</string>
+
+
+    <string name="importExportHelp">Datele care au back-up vă pot permite să vă mutați bugetele și tranzacțiile pe alt dispozitiv.</string>
+    <string name="importSuccessfulTitle">Import finalizat cu succes</string>
+    <string name="importFailedTitle">Import eșuat</string>
+    <string name="exportSuccessfulTitle">Export cu succes</string>
+    <string name="exportFailedTitle">Exportul a eșuat</string>
+    <string name="noExternalStoragePermissionError">Nu se pot importa sau exporta carduri fără permisiunea de stocare externă</string>
+    <string name="exportOptionExplanation">Datele sunt scrise în directorul de deasupra în memoria externă</string>
+    <string name="importOptionFilesystemTitle">Importă din sistemul de fișiere</string>
+    <string name="importOptionFilesystemExplanation">Alege un fișier specific din sistemul de fișiere.</string>
+    <string name="importOptionFilesystemButton">Din sistemul de fișiere</string>
+    <string name="importOptionApplicationTitle">Importă din sistemul de fișiere</string>
+    <string name="importOptionApplicationExplanation">Folosiți o aplicație externă precum Dropbox, Google Drive sau managerul dvs. de fișiere favorit pentru a deschide un fișier.</string>
+    <string name="importOptionApplicationButton">Folosește aplicație externă</string>
+    <string name="importOptionFixedTitle">Importă din locația de export</string>
+    <string name="importOptionFixedExplanation">Importă din aceeași locație din sistemul de fișiere scrisă la un export.</string>
+    <string name="importOptionFixedButton">Folosește locația de export</string>
+    <string name="sendLabel">Trimite...</string>
+
+    <string name="search">Caută</string>
+    <string name="searchHint">Caută...</string>
+    <string name="searchEmptyExpenses">Nu s-au găsit tranzacții de cheltuieli potrivite căutării</string>
+    <string name="searchEmptyRevenues">Nu s-au găsit tranzacții de venituri potrivite căutării</string>
+</resources>
