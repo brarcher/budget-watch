@@ -30,6 +30,7 @@ android {
       disable "IconDipSize"
       disable "AlwaysShowAction"
       disable "InflateParams"
+      disable "MissingTranslation"
    }
 
    // This is for Robolectric support for SDK 23
