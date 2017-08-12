@@ -40,6 +40,10 @@ Windows:
 ./gradlew.bat build
 ```
 
+# Translating
+
+If you are interested in translating this application to another language, create a pull request with changes or find the project listing on  [Transifex](https://www.transifex.com/na-243/budget-watch).
+
 # Thanks
 
 App icons from [The Noun Project](https://thenounproject.com) and
