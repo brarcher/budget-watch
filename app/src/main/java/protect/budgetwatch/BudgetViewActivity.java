@@ -110,29 +110,28 @@ public class BudgetViewActivity extends AppCompatActivity
             value = Integer.MIN_VALUE;
         }
 
-        if (budgetName.length() > 0 && value >= 0)
+        if(value < 0)
         {
-            if(_updateBudget == false)
-            {
-                _db.insertBudget(budgetName, value);
-            }
-            else
-            {
-                _db.updateBudget(budgetName, value);
-            }
+            Snackbar.make(_valueEdit, R.string.budgetValueMissing, Snackbar.LENGTH_LONG).show();
+            return;
+        }
 
-            finish();
+        if(budgetName.length() == 0)
+        {
+            Snackbar.make(_valueEdit, R.string.budgetTypeMissing, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        if(_updateBudget == false)
+        {
+            _db.insertBudget(budgetName, value);
         }
         else
         {
-            int messageId = R.string.budgetTypeMissing;
-            if (budgetName.isEmpty() == false)
-            {
-                messageId = R.string.budgetValueMissing;
-            }
-
-            Snackbar.make(_valueEdit, messageId, Snackbar.LENGTH_LONG).show();
+            _db.updateBudget(budgetName, value);
         }
+
+        finish();
     }
 
     @Override

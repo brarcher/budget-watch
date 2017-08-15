@@ -119,10 +119,12 @@ public class BudgetActivity extends AppCompatActivity
             }
         });
 
-        setupTotalEntry(budgets);
+        Budget blankBudget = _db.getBlankBudget(budgetStartMs, budgetEndMs);
+
+        setupTotalEntry(budgets, blankBudget);
     }
 
-    private void setupTotalEntry(final List<Budget> budgets)
+    private void setupTotalEntry(final List<Budget> budgets, final Budget blankBudget)
     {
         final TextView budgetName = (TextView)findViewById(R.id.budgetName);
         final TextView budgetValue = (TextView)findViewById(R.id.budgetValue);
@@ -138,6 +140,8 @@ public class BudgetActivity extends AppCompatActivity
             max += budget.max;
             current += budget.current;
         }
+
+        current += blankBudget.current;
 
         budgetBar.setMax(max);
         budgetBar.setProgress(current);

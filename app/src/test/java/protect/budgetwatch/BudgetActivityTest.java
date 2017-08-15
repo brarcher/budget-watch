@@ -202,6 +202,22 @@ public class BudgetActivityTest
         activityController.resume();
 
         checkTotalItem(mainActivity, current, max);
+
+        // Add a few blank budget transactions
+
+        for(int index = 0; index < 10; index++)
+        {
+            db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description", "account", "", expenseValue, "note", nowMs, "receipt");
+            db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "description", "account", "", revenueValue, "note", nowMs, "receipt");
+
+            current = current + expenseValue - revenueValue;
+        }
+
+        activityController.pause();
+        activityController.resume();
+
+        checkTotalItem(mainActivity, current, max);
+
         db.close();
     }
 

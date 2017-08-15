@@ -45,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -197,7 +198,13 @@ public class TransactionViewActivity extends AppCompatActivity
             }
         });
 
-        List<String> budgetNames = _db.getBudgetNames();
+        List<String> actualBudgetNames = _db.getBudgetNames();
+        LinkedList<String> budgetNames = new LinkedList<>(actualBudgetNames);
+
+        // A user is not allowed to create a blank budget. However, here
+        // an empty budget is injected, so that a user can create a
+        // transaction that has no budget.
+        budgetNames.addFirst("");
 
         // Add budget items to spinner if it has not been initialized yet
         if(_budgetSpinner.getCount() == 0)

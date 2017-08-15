@@ -39,7 +39,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -116,6 +120,7 @@ public class TransactionViewActivityTest
         final EditText valueField = (EditText) activity.findViewById(R.id.valueEdit);
         final EditText noteField = (EditText) activity.findViewById(R.id.noteEdit);
         final EditText dateField = (EditText) activity.findViewById(R.id.dateEdit);
+        final Spinner budgetSpinner = (Spinner) activity.findViewById(R.id.budgetSpinner);
 
         nameField.setText(name);
         accountField.setText(account);
@@ -123,6 +128,20 @@ public class TransactionViewActivityTest
         noteField.setText(note);
 
         dateField.setText(dateStr);
+
+        // Select the correct budget from the spinner, as there is a blank
+        // item in the first position.
+        for(int index = 0; index < budgetSpinner.getCount(); index++)
+        {
+            String item = budgetSpinner.getItemAtPosition(index).toString();
+            if(item.equals(budget))
+            {
+                budgetSpinner.setSelection(index);
+                break;
+            }
+        }
+
+        assertEquals(budget, budgetSpinner.getSelectedItem().toString());
 
         assertEquals(false, activity.isFinishing());
         shadowOf(activity).clickMenuItem(R.id.action_save);
@@ -243,11 +262,34 @@ public class TransactionViewActivityTest
         }
     }
 
+    private void checkSpinnerValues(final Activity activity, final int id,
+                              List<String> expectedValues)
+    {
+        final View view = activity.findViewById(id);
+        assertNotNull(view);
+        assertTrue(view instanceof Spinner);
+
+        Spinner spinner = (Spinner)view;
+
+        Set<String> expectedSet = new HashSet<>();
+        expectedSet.addAll(expectedValues);
+
+        LinkedList<String> actualValues = new LinkedList<>();
+        for(int index = 0; index < spinner.getCount(); index++)
+        {
+            actualValues.add(spinner.getItemAtPosition(index).toString());
+        }
+
+        Set<String> actualSet = new HashSet<>(actualValues);
+
+        assertEquals(expectedSet, actualSet);
+    }
+
     private void checkAllFields(final Activity activity,
                                 final String name, final String account, final String budget,
-                                final String value, final String note, final String dateStr,
-                                final String comittedReceipt, boolean hasUncommitedReceipt,
-                                final boolean isLaunchedAsView)
+                                final String budgetSpinnerValue, final String value, final String note,
+                                final String dateStr, final String comittedReceipt,
+                                boolean hasUncommitedReceipt, final boolean isLaunchedAsView)
     {
         final boolean hasReceipt = (comittedReceipt.length() > 0) || hasUncommitedReceipt;
         final boolean canUpdateReceipt = hasReceipt && !isLaunchedAsView;
@@ -265,7 +307,8 @@ public class TransactionViewActivityTest
         checkFieldProperties(activity, R.id.nameView, viewVisibility, isLaunchedAsView ? name : "");
         checkFieldProperties(activity, R.id.accountEdit, editVisibility, isLaunchedAsView ? "" : account);
         checkFieldProperties(activity, R.id.accountView, viewVisibility, isLaunchedAsView ? account : "");
-        checkFieldProperties(activity, R.id.budgetSpinner, editVisibility, budget);
+        checkFieldProperties(activity, R.id.budgetSpinner, editVisibility, budgetSpinnerValue);
+        checkSpinnerValues(activity, R.id.budgetSpinner, Arrays.asList("", budget));
         checkFieldProperties(activity, R.id.budgetView, viewVisibility, isLaunchedAsView ? budget : "");
         checkFieldProperties(activity, R.id.valueEdit, editVisibility, isLaunchedAsView ? "" : value);
         checkFieldProperties(activity, R.id.valueView, viewVisibility, isLaunchedAsView ? value : "");
@@ -343,7 +386,7 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "", "", "budget","", "", nowString, "", false, false);
+        checkAllFields(activity, "", "", "budget","", "", "", nowString, "", false, false);
     }
 
     @Test
@@ -356,27 +399,25 @@ public class TransactionViewActivityTest
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
 
         for(String[] test : Arrays.asList(
-                new String[]{null, null},
-                new String[]{null, "100"},
-                new String[]{"budget", null},
-                new String[]{"budget", "NotANumber"}
+                new String[]{null},
+                new String[]{"NotANumber"}
         ))
         {
-            String budget = test[0];
-            String value = test[1];
+            String value = test[0];
+            String budget = "budget";
 
             boolean result;
 
             final Spinner budgetSpinner = (Spinner) activity.findViewById(R.id.budgetSpinner);
-            if(budget != null)
-            {
-                // Add a budget and reload, so the budget spinner has an item
-                result = db.insertBudget(budget, 100);
-                assertTrue(result);
-                assertEquals(1, db.getBudgetCount());
-                activityController.resume();
-                budgetSpinner.setSelection(0);
-            }
+
+            // Add a budget and reload, so the budget spinner has an item
+            result = db.insertBudget(budget, 100);
+            assertTrue(result);
+            assertEquals(1, db.getBudgetCount());
+            activityController.resume();
+            // Note, a "" is the first budget option. The test will need to select
+            // the most recently added option.
+            budgetSpinner.setSelection(budgetSpinner.getCount()-1);
 
             final EditText valueField = (EditText) activity.findViewById(R.id.valueEdit);
             if(value != null)
@@ -392,16 +433,46 @@ public class TransactionViewActivityTest
             shadowOf(activity).clickMenuItem(R.id.action_save);
             assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
 
-            if(budget != null)
-            {
-                // Remove a budget and reload, so the budget spinner will have no item
-                result = db.deleteBudget(budget);
-                assertTrue(result);
-                assertEquals(0, db.getBudgetCount());
-                activityController.resume();
-                budgetSpinner.setSelection(0);
-            }
+            // Remove a budget and reload, so the budget spinner will have no item
+            result = db.deleteBudget(budget);
+            assertTrue(result);
+            assertEquals(0, db.getBudgetCount());
+            activityController.resume();
+            budgetSpinner.setSelection(0);
         }
+
+        db.close();
+    }
+
+    @Test
+    public void noBudgetSelectedBlankBudgetUsed()
+    {
+        ActivityController activityController = setupActivity(null, null, false, false);
+
+        Activity activity = (Activity)activityController.get();
+        DBHelper db = new DBHelper(activity);
+        assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+
+        final String valueStr = "0";
+        final int valueInt = Integer.parseInt(valueStr);
+
+        assertEquals(0, db.getBudgetCount());
+        final Spinner budgetSpinner = (Spinner) activity.findViewById(R.id.budgetSpinner);
+        assertEquals(1, budgetSpinner.getCount());
+        assertEquals("", budgetSpinner.getSelectedItem().toString());
+
+        final EditText valueField = (EditText) activity.findViewById(R.id.valueEdit);
+        valueField.setText(valueStr);
+
+        // Perform the actual test, no transaction should be created
+        shadowOf(activity).clickMenuItem(R.id.action_save);
+        assertEquals(1, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
+
+        Transaction transaction = db.getTransaction(DatabaseTestHelper.FIRST_ID);
+        assertNotNull(transaction);
+
+        assertEquals("", transaction.budget);
+        assertTrue(valueInt == (int)transaction.value);
 
         db.close();
     }
@@ -428,12 +499,12 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "", "", "budget", "", "", nowString, "", false, false);
+        checkAllFields(activity, "", "", "budget", "", "", "", nowString, "", false, false);
 
         // Complete image capture successfully
         Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, true, ORIGINAL_JPEG_QUALITY);
 
-        checkAllFields(activity, "", "", "budget","", "", nowString, "", true, false);
+        checkAllFields(activity, "", "", "budget","", "", "", nowString, "", true, false);
 
         // Save and check the expense
         saveExpenseWithArguments(activity, "name", "account", "budget", 100, "note",
@@ -458,12 +529,12 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "", "", "budget", "", "", nowString, "", false, false);
+        checkAllFields(activity, "", "", "budget", "", "", "", nowString, "", false, false);
 
         // Complete image capture successfully
         Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, true, LOWER_JPEG_QUALITY);
 
-        checkAllFields(activity, "", "", "budget","", "", nowString, "", true, false);
+        checkAllFields(activity, "", "", "budget","", "", "", nowString, "", true, false);
 
         // Save and check the expense
         saveExpenseWithArguments(activity, "name", "account", "budget", 100, "note",
@@ -488,12 +559,12 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "", "", "budget","", "", nowString, "", false, false);
+        checkAllFields(activity, "", "", "budget","", "", "", nowString, "", false, false);
 
         // Complete image capture in failure
         Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, false, ORIGINAL_JPEG_QUALITY);
 
-        checkAllFields(activity, "", "", "budget", "", "", nowString, "", false, false);
+        checkAllFields(activity, "", "", "budget", "", "", "", nowString, "", false, false);
 
         // Save and check the gift card
         saveExpenseWithArguments(activity, "name", "account", "budget", 100, "note",
@@ -514,12 +585,12 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "", "", "budget", "", "", nowString, "", false, false);
+        checkAllFields(activity, "", "", "budget", "", "", "", nowString, "", false, false);
 
         // Complete image capture successfully
         Uri imageLocation = captureImageWithResult(activity, R.id.captureButton, true, ORIGINAL_JPEG_QUALITY);
 
-        checkAllFields(activity, "", "", "budget", "", "", nowString, "", true, false);
+        checkAllFields(activity, "", "", "budget", "", "", "", nowString, "", true, false);
 
         // Ensure that the file still exists
         File imageFile = new File(imageLocation.getPath());
@@ -540,7 +611,7 @@ public class TransactionViewActivityTest
     {
         ActivityController activityController = setupActivity("budget", "", false, true);
         Activity activity = (Activity)activityController.get();
-        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
+        checkAllFields(activity, "description", "account", "budget", "budget", "100.10", "note", nowString,
                 "", false, false);
     }
 
@@ -574,7 +645,7 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString, "receipt", false, false);
+        checkAllFields(activity, "description", "account", "budget", "budget", "100.10", "note", nowString, "receipt", false, false);
     }
 
     @Test
@@ -583,7 +654,7 @@ public class TransactionViewActivityTest
         ActivityController activityController = setupActivity("budget", "receipt", false, true);
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
+        checkAllFields(activity, "description", "account", "budget", "budget", "100.10", "note", nowString,
                 "receipt", false, false);
 
         // Add something that will 'handle' the media capture intent
@@ -592,7 +663,7 @@ public class TransactionViewActivityTest
         // Complete image capture successfully
         Uri imageLocation = captureImageWithResult(activity, R.id.updateButton, true, ORIGINAL_JPEG_QUALITY);
 
-        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
+        checkAllFields(activity, "description", "account", "budget", "budget", "100.10", "note", nowString,
                 "receipt", true, false);
 
         // Save and check the expense
@@ -614,7 +685,7 @@ public class TransactionViewActivityTest
         ActivityController activityController = setupActivity("budget", "receipt", false, true);
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
+        checkAllFields(activity, "description", "account", "budget", "budget", "100.10", "note", nowString,
                 "receipt", false, false);
 
         // Add something that will 'handle' the media capture intent
@@ -623,7 +694,7 @@ public class TransactionViewActivityTest
         // Complete image capture successfully
         Uri imageLocation = captureImageWithResult(activity, R.id.updateButton, true, ORIGINAL_JPEG_QUALITY);
 
-        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString,
+        checkAllFields(activity, "description", "account", "budget", "budget", "100.10", "note", nowString,
                 "receipt", true, false);
 
         // Cancel the expense update
@@ -644,7 +715,7 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString, "", false, true);
+        checkAllFields(activity, "description", "account", "budget", "budget", "100.10", "note", nowString, "", false, true);
     }
 
     @Test
@@ -654,7 +725,7 @@ public class TransactionViewActivityTest
 
         Activity activity = (Activity)activityController.get();
 
-        checkAllFields(activity, "description", "account", "budget", "100.10", "note", nowString, "receipt", false, true);
+        checkAllFields(activity, "description", "account", "budget", "budget", "100.10", "note", nowString, "receipt", false, true);
     }
 
     @Test
