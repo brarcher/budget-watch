@@ -97,11 +97,14 @@ public class DatabaseTest
         {
             result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "", "", "budget", index, "", nowMs, "");
             assertTrue(result);
+            // Transaction with empty budget
+            result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "", "", "", index, "", nowMs, "");
+            assertTrue(result);
             expectedCurrent += index;
         }
 
         Cursor expenses = db.getExpenses();
-        assertEquals(NUM_EXPENSES, expenses.getCount());
+        assertEquals(NUM_EXPENSES*2, expenses.getCount());
         expenses.close();
 
         Budget budget = db.getBudgetStoredOnly("budget");
@@ -116,17 +119,25 @@ public class DatabaseTest
         assertEquals(100*(MONTHS_PER_YEAR+1), budgets.get(0).max);
         assertEquals(expectedCurrent, budgets.get(0).current);
 
+        Budget blankBudget = db.getBlankBudget(lastYearMs, nowMs);
+        assertEquals("", blankBudget.name);
+        assertEquals(0, blankBudget.max);
+        assertEquals(expectedCurrent, blankBudget.current);
+
         final int NUM_REVENUES = 20;
 
         for(int index = 0; index < NUM_REVENUES; index++)
         {
             result = db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "", "", "budget", index, "", nowMs, "");
             assertTrue(result);
+            // Transaction with empty budget
+            result = db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "", "", "", index, "", nowMs, "");
+            assertTrue(result);
             expectedCurrent -= index;
         }
 
         Cursor revenues = db.getRevenues();
-        assertEquals(NUM_REVENUES, revenues.getCount());
+        assertEquals(NUM_REVENUES*2, revenues.getCount());
         revenues.close();
 
         budget = db.getBudgetStoredOnly("budget");
@@ -141,6 +152,11 @@ public class DatabaseTest
         assertEquals(100*(MONTHS_PER_YEAR+1), budgets.get(0).max);
         assertEquals(expectedCurrent, budgets.get(0).current);
 
+        blankBudget = db.getBlankBudget(lastYearMs, nowMs);
+        assertEquals("", blankBudget.name);
+        assertEquals(0, blankBudget.max);
+        assertEquals(expectedCurrent, blankBudget.current);
+
         result = db.deleteBudget("budget");
         assertTrue(result);
         assertEquals(db.getBudgetNames().size(), 0);
@@ -148,11 +164,11 @@ public class DatabaseTest
 
         // Deleting the budget does not delete the transactions
         expenses = db.getExpenses();
-        assertEquals(NUM_EXPENSES, expenses.getCount());
+        assertEquals(NUM_EXPENSES*2, expenses.getCount());
         expenses.close();
 
         revenues = db.getRevenues();
-        assertEquals(NUM_REVENUES, revenues.getCount());
+        assertEquals(NUM_REVENUES*2, revenues.getCount());
         revenues.close();
     }
 
@@ -717,5 +733,38 @@ public class DatabaseTest
                 }
             }
         }
+    }
+
+    @Test
+    public void testFetchingTransactionsWithBlankBudget()
+    {
+        final int budgetValue = 1234;
+        final int expenseValue = 123;
+        final int revenueValue = 12;
+
+        for(int index = 0; index < 10; index++)
+        {
+            final String budgetName = "budget" + index;
+            db.insertBudget("budget" + index, budgetValue);
+
+            db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description", "account", budgetName, expenseValue, "note", nowMs, "receipt");
+            db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "description", "account", budgetName, revenueValue, "note", nowMs, "receipt");
+        }
+
+        // Add a few blank budget transactions
+        int value = 0;
+
+        for(int index = 0; index < 3; index++)
+        {
+            db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description", "account", "", expenseValue, "note", nowMs, "receipt");
+            db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "description", "account", "", revenueValue, "note", nowMs, "receipt");
+
+            value = value + expenseValue - revenueValue;
+        }
+
+        Budget blankBudget = db.getBlankBudget(nowMs, nowMs);
+        assertEquals("", blankBudget.name);
+        assertEquals(0, blankBudget.max);
+        assertEquals(value, blankBudget.current);
     }
 }

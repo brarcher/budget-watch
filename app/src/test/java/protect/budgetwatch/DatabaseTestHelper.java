@@ -26,6 +26,8 @@ import static org.junit.Assert.assertTrue;
  */
 class DatabaseTestHelper
 {
+    public static final int FIRST_ID = 1;
+
     private static final int MONTHS_PER_YEAR = 12;
     private static final long lastYearMs;
 

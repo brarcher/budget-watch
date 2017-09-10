@@ -303,6 +303,70 @@ class DBHelper extends SQLiteOpenHelper
     }
 
     /**
+     * Get Budget object representing transactions which
+     * have no budget, e.g. the budget is blank. The 'current' field
+     * will be filled out from all transactions between the provided
+     * dates, and the 'max' field is left at 0.
+     *
+     * @param startDateMs
+     *      first date in milliseconds for transactions to compute
+     *      into the 'current' field.
+     * @param endDateMs
+     *      last date in milliseconds for transactions to compute
+     *      into the 'current' field.
+     * @return Budget object
+     */
+    public Budget getBlankBudget(long startDateMs, long endDateMs)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        final String TOTAL_EXPENSE_COL = "total_expense";
+        final String TOTAL_REVENUE_COL = "total_revenue";
+
+        final String TRANS_VALUE = TransactionDbIds.TABLE + "." + TransactionDbIds.VALUE;
+        final String TRANS_TYPE = TransactionDbIds.TABLE + "." + TransactionDbIds.TYPE;
+        final String TRANS_DATE = TransactionDbIds.TABLE + "." + TransactionDbIds.DATE;
+        final String TRANS_BUDGET = TransactionDbIds.TABLE + "." + TransactionDbIds.BUDGET;
+
+        Cursor data = db.rawQuery("select " +
+                        "(select total(" + TRANS_VALUE + ") from " + TransactionDbIds.TABLE + " where " +
+                        TRANS_BUDGET + " = '' and " +
+                        TRANS_TYPE + " = ? and " +
+                        TRANS_DATE + " >= ? and " +
+                        TRANS_DATE + " <= ?) " +
+                        "as " + TOTAL_EXPENSE_COL + ", " +
+                        "(select total(" + TRANS_VALUE + ") from " + TransactionDbIds.TABLE + " where " +
+                        TRANS_BUDGET + " = '' and " +
+                        TRANS_TYPE + " = ? and " +
+                        TRANS_DATE + " >= ? and " +
+                        TRANS_DATE + " <= ?) " +
+                        "as " + TOTAL_REVENUE_COL,
+                new String[]
+                        {
+                                Integer.toString(TransactionDbIds.EXPENSE),
+                                Long.toString(startDateMs),
+                                Long.toString(endDateMs),
+                                Integer.toString(TransactionDbIds.REVENUE),
+                                Long.toString(startDateMs),
+                                Long.toString(endDateMs)
+                        });
+
+        int total = 0;
+
+        if(data.moveToFirst())
+        {
+            int expenses = data.getInt(data.getColumnIndexOrThrow(TOTAL_EXPENSE_COL));
+            int revenues = data.getInt(data.getColumnIndexOrThrow(TOTAL_REVENUE_COL));
+            total = expenses - revenues;
+        }
+
+        data.close();
+        db.close();
+
+        return new Budget("", 0, total);
+    }
+
+    /**
      * @return list of all budget names in the database
      */
     public List<String> getBudgetNames()
