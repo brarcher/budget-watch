@@ -15,3 +15,19 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn javax.annotation.*
+-dontwarn javax.annotation.concurrent.*
+-dontwarn sun.misc.Unsafe
+
+# For Guava:
+-dontwarn com.google.common.base.**
+-keep class com.google.common.base.** {*;}
+-dontwarn com.google.errorprone.annotations.**
+-keep class com.google.errorprone.annotations.** {*;}
+-dontwarn com.google.j2objc.annotations.**
+-keep class com.google.j2objc.annotations.** { *; }
+-dontwarn java.lang.ClassValue
+-keep class java.lang.ClassValue { *; }
+-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+-keep class org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement { *; }
