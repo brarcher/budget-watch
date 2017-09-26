@@ -32,9 +32,6 @@ android {
       disable "InflateParams"
       disable "MissingTranslation"
    }
-
-   // This is for Robolectric support for SDK 23
-   useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -44,7 +41,7 @@ dependencies {
     compile 'org.apache.commons:commons-csv:1.2'
     compile group: 'com.google.guava', name: 'guava', version: '20.0'
     testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.2.2"
+    testCompile "org.robolectric:robolectric:3.4.2"
 }
 
 task findbugs(type: FindBugs, dependsOn: 'assembleDebug') {
