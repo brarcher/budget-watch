@@ -123,49 +123,6 @@ public class TransactionFragment extends Fragment
     }
 
     @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
-    {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        if (v.getId()==R.id.list)
-        {
-            MenuInflater inflater = getActivity().getMenuInflater();
-            inflater.inflate(R.menu.view_menu, menu);
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item)
-    {
-        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-        ListView listView = (ListView) getActivity().findViewById(R.id.list);
-
-        if(info != null)
-        {
-            Cursor selected = (Cursor) listView.getItemAtPosition(info.position);
-
-            if (selected != null)
-            {
-                Transaction transaction = Transaction.toTransaction(selected);
-
-                if (item.getItemId() == R.id.action_edit)
-                {
-                    Intent i = new Intent(getActivity(), TransactionViewActivity.class);
-                    final Bundle b = new Bundle();
-                    b.putInt("id", transaction.id);
-                    b.putInt("type", _transactionType);
-                    b.putBoolean("update", true);
-                    i.putExtras(b);
-                    startActivity(i);
-
-                    return true;
-                }
-            }
-        }
-
-        return super.onContextItemSelected(item);
-    }
-
-    @Override
     public void onDestroyView()
     {
         _db.close();
