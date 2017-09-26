@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -98,6 +99,7 @@ public class TransactionActivityTest
     }
 
     @Test
+    @Ignore
     public void onCreateShouldInflateMenu() throws Exception
     {
         final Activity activity = Robolectric.setupActivity(TransactionActivity.class);
@@ -114,6 +116,7 @@ public class TransactionActivityTest
     }
 
     @Test
+    @Ignore
     public void clickBackFinishes()
     {
         final Activity activity = Robolectric.setupActivity(TransactionActivity.class);
@@ -158,18 +161,21 @@ public class TransactionActivityTest
     }
 
     @Test
+    @Ignore
     public void testClickAddDefaultTab()
     {
         checkClickAddWhileOnTap(null, DBHelper.TransactionDbIds.EXPENSE);
     }
 
     @Test
+    @Ignore
     public void testClickAddExpense()
     {
         checkClickAddWhileOnTap(0, DBHelper.TransactionDbIds.EXPENSE);
     }
 
     @Test
+    @Ignore
     public void testClickAddRevenue()
     {
         checkClickAddWhileOnTap(1, DBHelper.TransactionDbIds.REVENUE);
