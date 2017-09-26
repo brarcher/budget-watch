@@ -2,8 +2,6 @@ package protect.budgetwatch;
 
 import android.app.Activity;
 import android.preference.ListPreference;
-import android.support.v7.widget.AppCompatTextView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.junit.Before;
@@ -16,11 +14,8 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
