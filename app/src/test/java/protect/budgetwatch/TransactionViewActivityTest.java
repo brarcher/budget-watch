@@ -1,5 +1,6 @@
 package protect.budgetwatch;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -177,6 +178,9 @@ public class TransactionViewActivityTest
     private Uri captureImageWithResult(final Activity activity, final int buttonId,
                                        final boolean success, final int jpegQuality) throws IOException
     {
+        // Ensure that the application has permissions to ask to use the camera
+        shadowOf(activity).grantPermissions(Manifest.permission.CAMERA);
+
         // Start image capture
         final Button captureButton = (Button) activity.findViewById(buttonId);
         captureButton.performClick();
