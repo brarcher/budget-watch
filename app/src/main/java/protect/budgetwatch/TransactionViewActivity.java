@@ -56,6 +56,9 @@ public class TransactionViewActivity extends AppCompatActivity
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int PERMISSIONS_REQUEST_CAMERA = 2;
 
+    static final String ACTION_NEW_EXPENSE = "ActionAddExpense";
+    static final String ACTION_NEW_REVENUE = "ActionAddRevenue";
+
     private String capturedUncommittedReceipt = null;
     private DBHelper _db;
 
@@ -123,10 +126,40 @@ public class TransactionViewActivity extends AppCompatActivity
         _budgetSpinner = (Spinner) findViewById(R.id.budgetSpinner);
 
         final Bundle b = getIntent().getExtras();
-        _transactionId = b.getInt("id");
-        _type = b.getInt("type");
-        _updateTransaction = b.getBoolean("update", false);
-        _viewTransaction = b.getBoolean("view", false);
+        String action = getIntent().getAction();
+        if(b != null)
+        {
+            _transactionId = b.getInt("id");
+            _type = b.getInt("type");
+            _updateTransaction = b.getBoolean("update", false);
+            _viewTransaction = b.getBoolean("view", false);
+        }
+        else if(action != null)
+        {
+            _updateTransaction = false;
+            _viewTransaction = false;
+
+            if(action.equals(ACTION_NEW_EXPENSE))
+            {
+                _type = DBHelper.TransactionDbIds.EXPENSE;
+            }
+            else if(action.equals(ACTION_NEW_REVENUE))
+            {
+                _type = DBHelper.TransactionDbIds.REVENUE;
+            }
+            else
+            {
+                Log.d(TAG, "Unsupported action '" + action + "', bailing");
+                finish();
+                return;
+            }
+        }
+        else
+        {
+            Log.d(TAG, "Launched TransactionViewActivity without arguments, bailing");
+            finish();
+            return;
+        }
     }
 
     @SuppressLint("DefaultLocale")
@@ -517,6 +550,18 @@ public class TransactionViewActivity extends AppCompatActivity
     {
         int id = item.getItemId();
 
+        if(id == R.id.action_save)
+        {
+            doSave();
+            return true;
+        }
+
+        if(id == android.R.id.home)
+        {
+            finish();
+            return true;
+        }
+
         final Bundle b = getIntent().getExtras();
         final int transactionId = b.getInt("id");
         final int type = b.getInt("type");
@@ -564,18 +609,6 @@ public class TransactionViewActivity extends AppCompatActivity
             AlertDialog dialog = builder.create();
             dialog.show();
 
-            return true;
-        }
-
-        if(id == R.id.action_save)
-        {
-            doSave();
-            return true;
-        }
-
-        if(id == android.R.id.home)
-        {
-            finish();
             return true;
         }
 

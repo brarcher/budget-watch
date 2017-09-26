@@ -326,6 +326,29 @@ public class TransactionViewActivityTest
         checkFieldProperties(activity, R.id.viewButton, View.VISIBLE, null);
     }
 
+    private void addBudget(Activity activity, String budget)
+    {
+        DBHelper db = new DBHelper(activity);
+
+        if(budget != null)
+        {
+            boolean result = db.insertBudget(budget, 0);
+            assertTrue(result);
+        }
+        db.close();
+    }
+
+    private void addTransactionForBudget(Activity activity, String budget, String receipt)
+    {
+        DBHelper db = new DBHelper(activity);
+
+        boolean result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
+                "account", budget,
+                100.10, "note", nowMs, receipt);
+        assertTrue(result);
+        db.close();
+    }
+
     private ActivityController setupActivity(final String budget, final String receipt,
                                              boolean launchAsView, boolean launchAsUpdate)
     {
@@ -355,22 +378,51 @@ public class TransactionViewActivityTest
                 .withIntent(intent).create();
 
         Activity activity = (Activity)activityController.get();
-        DBHelper db = new DBHelper(activity);
 
         if(budget != null)
         {
-            boolean result = db.insertBudget(budget, 0);
-            assertTrue(result);
+            addBudget(activity, budget);
 
             if (receipt != null)
             {
-                result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
-                        "account", budget,
-                        100.10, "note", nowMs, receipt);
-                assertTrue(result);
+                addTransactionForBudget(activity, budget, receipt);
             }
         }
-        db.close();
+
+        activityController.start();
+        activityController.visible();
+        activityController.resume();
+
+        return activityController;
+    }
+
+    private ActivityController setupActivity(final int actionType, final String budget, final String receipt)
+    {
+        Intent intent = new Intent();
+
+        if(actionType == DBHelper.TransactionDbIds.EXPENSE)
+        {
+            intent.setAction(TransactionViewActivity.ACTION_NEW_EXPENSE);
+        }
+        else
+        {
+            intent.setAction(TransactionViewActivity.ACTION_NEW_REVENUE);
+        }
+
+        ActivityController activityController = Robolectric.buildActivity(TransactionViewActivity.class)
+                .withIntent(intent).create();
+
+        Activity activity = (Activity)activityController.get();
+
+        if(budget != null)
+        {
+            addBudget(activity, budget);
+
+            if (receipt != null)
+            {
+                addTransactionForBudget(activity, budget, receipt);
+            }
+        }
 
         activityController.start();
         activityController.visible();
@@ -387,6 +439,21 @@ public class TransactionViewActivityTest
         Activity activity = (Activity)activityController.get();
 
         checkAllFields(activity, "", "", "budget","", "", "", nowString, "", false, false);
+        DBHelper db = new DBHelper(activity);
+        DatabaseTestHelper.clearDatabase(db, activity);
+        db.close();
+
+        for(int type : new int[]{DBHelper.TransactionDbIds.EXPENSE, DBHelper.TransactionDbIds.REVENUE})
+        {
+            activityController = setupActivity(type, "budget", null);
+            activity = (Activity)activityController.get();
+            checkAllFields(activity, "", "", "budget","", "", "", nowString, "", false, false);
+
+            db = new DBHelper(activity);
+            DatabaseTestHelper.clearDatabase(db, activity);
+            db.close();
+        }
+
     }
 
     @Test
