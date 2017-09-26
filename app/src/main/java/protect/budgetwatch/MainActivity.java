@@ -3,6 +3,7 @@ package protect.budgetwatch;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import protect.budgetwatch.intro.IntroActivity;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -85,6 +88,12 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        SharedPreferences prefs = getSharedPreferences("protect.budgetwatch", MODE_PRIVATE);
+        if (prefs.getBoolean("firstrun", true)) {
+            startIntro();
+            prefs.edit().putBoolean("firstrun", false).commit();
+        }
     }
 
     static class MainMenuItem
@@ -160,6 +169,12 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
+        if(id == R.id.action_intro)
+        {
+            startIntro();
+            return true;
+        }
+
         if(id == R.id.action_about)
         {
             displayAboutDialog();
@@ -174,7 +189,8 @@ public class MainActivity extends AppCompatActivity
         final Map<String, String> USED_LIBRARIES = ImmutableMap.of
         (
             "Commons CSV", "https://commons.apache.org/proper/commons-csv/",
-            "Guava", "https://github.com/google/guava"
+            "Guava", "https://github.com/google/guava",
+            "AppIntro", "https://github.com/apl-devs/AppIntro"
         );
 
         final Map<String, String> USED_ASSETS = ImmutableMap.of
@@ -262,5 +278,11 @@ public class MainActivity extends AppCompatActivity
                 }
             })
             .show();
+    }
+
+    private void startIntro()
+    {
+        Intent intent = new Intent(this, IntroActivity.class);
+        startActivity(intent);
     }
 }

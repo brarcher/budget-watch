@@ -142,4 +142,20 @@
 
     <string name="addExpenseDisabled">Adding an expense is disabled</string>
     <string name="addRevenueDisabled">Adding a revenue is disabled</string>
+
+    <string name="startIntro">Start Intro</string>
+    <string name="intro1Title">Welcome to Budget Watch\n</string>
+    <string name="intro1Description">Manage your budget by tracking you spending.</string>
+    <string name="intro2Title">Budgets\n</string>
+    <string name="intro2Description">You may create as many budgets as you would like to track, each with their own max monthly spending.\n\nTo create a budget, touch Budgets from the main screen, then click the plus in the menu.</string>
+    <string name="intro3Title">Transactions\n</string>
+    <string name="intro3Description">After creating a budget, transactions can be added that apply to budgets.\n\nTo create a transaction touch Transactions from the main screen. Select the Expenses or Revenues tab and click on the plus in the menu.</string>
+    <string name="intro4Title">Filtering\n</string>
+    <string name="intro4Description">Touching a budget will show all transactions for that budget.</string>
+    <string name="intro5Title">Budget Window\n</string>
+    <string name="intro5Description">By default the budgets show the current month\'s spending. To change the time window, touch the calendar icon in the menu.</string>
+    <string name="intro6Title">Budget Window\n</string>
+    <string name="intro6Description">Budget and transactions can be backed-up. To export or import data touch the Import/Export icon in the menu on the main page.</string>
+    <string name="intro7Title">Feedback\n</string>
+    <string name="intro7Description">This app is free, ad-free, and open source. See details by touching About in the menu on the main page.\n\nPlease leave feedback in the app store! (:</string>
 </resources>
