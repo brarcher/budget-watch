@@ -17,4 +17,4 @@ script: ./gradlew assembleRelease testReleaseUnitTest lintRelease findbugs
 
 after_failure:
 - cat app/build/reports/findbugs/findbugs.html
-- cat app/build/reports/tests/debug/index.html
+- cat app/build/reports/tests/testReleaseUnitTest/index.html

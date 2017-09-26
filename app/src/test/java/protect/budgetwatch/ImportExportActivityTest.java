@@ -19,9 +19,9 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowPackageManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 17)
+@Config(constants = BuildConfig.class, sdk = 25)
 public class ImportExportActivityTest
 {
     private Activity activity;
@@ -56,8 +56,7 @@ public class ImportExportActivityTest
     private void registerIntentHandler(String handler)
     {
         // Add something that will 'handle' the given intent type
-
-        RobolectricPackageManager packageManager = (RobolectricPackageManager) RuntimeEnvironment.application.getPackageManager();
+        ShadowPackageManager shadowPackageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
 
         ResolveInfo info = new ResolveInfo();
         info.isDefault = true;
@@ -81,7 +80,7 @@ public class ImportExportActivityTest
             intent.setType("*/*");
         }
 
-        packageManager.addResolveInfoForIntent(intent, info);
+        shadowPackageManager.addResolveInfoForIntent(intent, info);
     }
 
     private void checkVisibility(Activity activity, Integer state, Integer divider, Integer title,

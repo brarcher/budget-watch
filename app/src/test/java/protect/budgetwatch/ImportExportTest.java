@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 17)
+@Config(constants = BuildConfig.class, sdk = 25)
 public class ImportExportTest
 {
     private Activity activity;

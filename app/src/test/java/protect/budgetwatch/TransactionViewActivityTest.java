@@ -1,5 +1,6 @@
 package protect.budgetwatch;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -27,11 +28,11 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
-import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowLog;
-import org.robolectric.util.ActivityController;
+import org.robolectric.shadows.ShadowPackageManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,12 +48,11 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 17)
+@Config(constants = BuildConfig.class, sdk = 25)
 public class TransactionViewActivityTest
 {
     private static final int ORIGINAL_JPEG_QUALITY = 100;
@@ -78,7 +78,7 @@ public class TransactionViewActivityTest
     private void registerMediaStoreIntentHandler()
     {
         // Add something that will 'handle' the media capture intent
-        RobolectricPackageManager packageManager = (RobolectricPackageManager)RuntimeEnvironment.application.getPackageManager();
+        ShadowPackageManager shadowPackageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
 
         ResolveInfo info = new ResolveInfo();
         info.isDefault = true;
@@ -91,7 +91,7 @@ public class TransactionViewActivityTest
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        packageManager.addResolveInfoForIntent(intent, info);
+        shadowPackageManager.addResolveInfoForIntent(intent, info);
     }
 
     /**
@@ -178,6 +178,9 @@ public class TransactionViewActivityTest
     private Uri captureImageWithResult(final Activity activity, final int buttonId,
                                        final boolean success, final int jpegQuality) throws IOException
     {
+        // Ensure that the application has permissions to ask to use the camera
+        shadowOf(activity).grantPermissions(Manifest.permission.CAMERA);
+
         // Start image capture
         final Button captureButton = (Button) activity.findViewById(buttonId);
         captureButton.performClick();
@@ -326,6 +329,29 @@ public class TransactionViewActivityTest
         checkFieldProperties(activity, R.id.viewButton, View.VISIBLE, null);
     }
 
+    private void addBudget(Activity activity, String budget)
+    {
+        DBHelper db = new DBHelper(activity);
+
+        if(budget != null)
+        {
+            boolean result = db.insertBudget(budget, 0);
+            assertTrue(result);
+        }
+        db.close();
+    }
+
+    private void addTransactionForBudget(Activity activity, String budget, String receipt)
+    {
+        DBHelper db = new DBHelper(activity);
+
+        boolean result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
+                "account", budget,
+                100.10, "note", nowMs, receipt);
+        assertTrue(result);
+        db.close();
+    }
+
     private ActivityController setupActivity(final String budget, final String receipt,
                                              boolean launchAsView, boolean launchAsUpdate)
     {
@@ -355,22 +381,51 @@ public class TransactionViewActivityTest
                 .withIntent(intent).create();
 
         Activity activity = (Activity)activityController.get();
-        DBHelper db = new DBHelper(activity);
 
         if(budget != null)
         {
-            boolean result = db.insertBudget(budget, 0);
-            assertTrue(result);
+            addBudget(activity, budget);
 
             if (receipt != null)
             {
-                result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
-                        "account", budget,
-                        100.10, "note", nowMs, receipt);
-                assertTrue(result);
+                addTransactionForBudget(activity, budget, receipt);
             }
         }
-        db.close();
+
+        activityController.start();
+        activityController.visible();
+        activityController.resume();
+
+        return activityController;
+    }
+
+    private ActivityController setupActivity(final int actionType, final String budget, final String receipt)
+    {
+        Intent intent = new Intent();
+
+        if(actionType == DBHelper.TransactionDbIds.EXPENSE)
+        {
+            intent.setAction(TransactionViewActivity.ACTION_NEW_EXPENSE);
+        }
+        else
+        {
+            intent.setAction(TransactionViewActivity.ACTION_NEW_REVENUE);
+        }
+
+        ActivityController activityController = Robolectric.buildActivity(TransactionViewActivity.class)
+                .withIntent(intent).create();
+
+        Activity activity = (Activity)activityController.get();
+
+        if(budget != null)
+        {
+            addBudget(activity, budget);
+
+            if (receipt != null)
+            {
+                addTransactionForBudget(activity, budget, receipt);
+            }
+        }
 
         activityController.start();
         activityController.visible();
@@ -387,6 +442,21 @@ public class TransactionViewActivityTest
         Activity activity = (Activity)activityController.get();
 
         checkAllFields(activity, "", "", "budget","", "", "", nowString, "", false, false);
+        DBHelper db = new DBHelper(activity);
+        DatabaseTestHelper.clearDatabase(db, activity);
+        db.close();
+
+        for(int type : new int[]{DBHelper.TransactionDbIds.EXPENSE, DBHelper.TransactionDbIds.REVENUE})
+        {
+            activityController = setupActivity(type, "budget", null);
+            activity = (Activity)activityController.get();
+            checkAllFields(activity, "", "", "budget","", "", "", nowString, "", false, false);
+
+            db = new DBHelper(activity);
+            DatabaseTestHelper.clearDatabase(db, activity);
+            db.close();
+        }
+
     }
 
     @Test

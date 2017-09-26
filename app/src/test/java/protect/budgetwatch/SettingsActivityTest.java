@@ -2,8 +2,6 @@ package protect.budgetwatch;
 
 import android.app.Activity;
 import android.preference.ListPreference;
-import android.support.v7.widget.AppCompatTextView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.junit.Before;
@@ -11,23 +9,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
-import org.robolectric.util.ActivityController;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 17)
+@Config(constants = BuildConfig.class, sdk = 25)
 public class SettingsActivityTest
 {
     @Before

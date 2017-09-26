@@ -139,4 +139,7 @@
     <string name="searchHint">Search&#8230;</string>
     <string name="searchEmptyExpenses">No matching expense transactions.</string>
     <string name="searchEmptyRevenues">No matching revenue transactions.</string>
+
+    <string name="addExpenseDisabled">Adding an expense is disabled</string>
+    <string name="addRevenueDisabled">Adding a revenue is disabled</string>
 </resources>
