@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 17)
+@Config(constants = BuildConfig.class, sdk = 25)
 public class ImportExportActivityTest
 {
     private Activity activity;

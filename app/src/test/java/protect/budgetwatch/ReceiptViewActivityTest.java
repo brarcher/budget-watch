@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 17)
+@Config(constants = BuildConfig.class, sdk = 25)
 public class ReceiptViewActivityTest
 {
     private ActivityController activityController;
