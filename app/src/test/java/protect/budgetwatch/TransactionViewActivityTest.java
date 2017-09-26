@@ -28,9 +28,9 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.res.builder.RobolectricPackageManager;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowPackageManager;
 import org.robolectric.util.ActivityController;
 
 import java.io.File;
@@ -47,7 +47,6 @@ import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -78,7 +77,7 @@ public class TransactionViewActivityTest
     private void registerMediaStoreIntentHandler()
     {
         // Add something that will 'handle' the media capture intent
-        RobolectricPackageManager packageManager = (RobolectricPackageManager)RuntimeEnvironment.application.getPackageManager();
+        ShadowPackageManager shadowPackageManager = shadowOf(RuntimeEnvironment.application.getPackageManager());
 
         ResolveInfo info = new ResolveInfo();
         info.isDefault = true;
@@ -91,7 +90,7 @@ public class TransactionViewActivityTest
 
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        packageManager.addResolveInfoForIntent(intent, info);
+        shadowPackageManager.addResolveInfoForIntent(intent, info);
     }
 
     /**
