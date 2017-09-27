@@ -33,8 +33,7 @@
         <activity
             android:name=".BudgetViewActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"/>
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".TransactionActivity"
             android:label="@string/transactionsTitle"
@@ -52,8 +51,7 @@
             android:name=".TransactionViewActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="stateHidden"/>
+            android:launchMode="singleTop"/>
         <activity
             android:name=".ImportExportActivity"
             android:label="@string/importExportTitle"
