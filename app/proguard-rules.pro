@@ -20,6 +20,9 @@
 # debugging stack traces.
 -keepattributes SourceFile,LineNumberTable
 
+# This keep the class and method names the same, for debugging stack traces
+-dontobfuscate
+
 -dontwarn javax.annotation.*
 -dontwarn javax.annotation.concurrent.*
 -dontwarn sun.misc.Unsafe

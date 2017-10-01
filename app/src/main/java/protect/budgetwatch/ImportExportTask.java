@@ -38,10 +38,13 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
     {
         boolean result = false;
 
+        final String BASE_MESSAGE = ImportExportTask.this.activity.getResources().getString(R.string.importProgressFormat);
+        ImportExportProgressUpdater updater = new ImportExportProgressUpdater(activity, progress, BASE_MESSAGE);
+
         try
         {
             FileInputStream fileReader = new FileInputStream(importFile);
-            result = MultiFormatImporter.importData(activity, db, fileReader, format);
+            result = MultiFormatImporter.importData(activity, db, fileReader, format, updater);
             fileReader.close();
         }
         catch(IOException e)
@@ -57,10 +60,17 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
     {
         boolean result = false;
 
+        final int TOTAL_ENTRIES = db.getBudgetCount()
+                + db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE)
+                + db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE);
+        final String BASE_MESSAGE = ImportExportTask.this.activity.getResources().getString(R.string.exportProgressFormat);
+
+        ImportExportProgressUpdater updater = new ImportExportProgressUpdater(activity, progress, BASE_MESSAGE, TOTAL_ENTRIES);
+
         try
         {
             FileOutputStream outStream = new FileOutputStream(exportFile);
-            result = MultiFormatExporter.exportData(this.activity, db, outStream, format);
+            result = MultiFormatExporter.exportData(this.activity, db, outStream, format, updater);
             outStream.close();
         }
         catch (IOException e)

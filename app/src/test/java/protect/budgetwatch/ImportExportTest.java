@@ -43,6 +43,27 @@ public class ImportExportTest
         }
     }
 
+    class TestProgressUpdater extends ImportExportProgressUpdater
+    {
+        private int numUpdates = 0;
+
+        TestProgressUpdater()
+        {
+            super(null, null, null);
+        }
+
+        @Override
+        public void update()
+        {
+            numUpdates++;
+        }
+
+        public int getNumUpdates()
+        {
+            return numUpdates;
+        }
+    }
+
     @Before
     public void setUp()
     {
@@ -70,17 +91,25 @@ public class ImportExportTest
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
+            TestProgressUpdater updater = new TestProgressUpdater();
+
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_BUDGETS, updater.getNumUpdates());
 
             DatabaseTestHelper.clearDatabase(db, activity);
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
 
+            updater = new TestProgressUpdater();
+
             // Import the CSV data
-            result = MultiFormatImporter.importData(activity, db, inData, format);
+            result = MultiFormatImporter.importData(activity, db, inData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_BUDGETS, updater.getNumUpdates());
 
             DatabaseTestHelper.checkBudgets(db, NUM_BUDGETS);
 
@@ -100,15 +129,23 @@ public class ImportExportTest
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
+            TestProgressUpdater updater = new TestProgressUpdater();
+
             // Export into CSV data
-            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_BUDGETS, updater.getNumUpdates());
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
 
+            updater = new TestProgressUpdater();
+
             // Import the CSV data on top of the existing database
-            result = MultiFormatImporter.importData(activity, db, inData, format);
+            result = MultiFormatImporter.importData(activity, db, inData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_BUDGETS, updater.getNumUpdates());
 
             DatabaseTestHelper.checkBudgets(db, NUM_BUDGETS);
 
@@ -128,9 +165,13 @@ public class ImportExportTest
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
+            TestProgressUpdater updater = new TestProgressUpdater();
+
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_TRANSACTIONS * 2, updater.getNumUpdates());
 
             DatabaseTestHelper.clearDatabase(db, activity);
 
@@ -139,9 +180,13 @@ public class ImportExportTest
             activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
             assertFalse(dbChanged.hasChanged());
 
+            updater = new TestProgressUpdater();
+
             // Import the CSV data
-            result = MultiFormatImporter.importData(activity, db, inData, format);
+            result = MultiFormatImporter.importData(activity, db, inData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_TRANSACTIONS * 2, updater.getNumUpdates());
 
             // The contents of the database should have changed
             assertTrue(dbChanged.hasChanged());
@@ -165,9 +210,13 @@ public class ImportExportTest
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
+            TestProgressUpdater updater = new TestProgressUpdater();
+
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_TRANSACTIONS * 2, updater.getNumUpdates());
 
             // Do not clear database
 
@@ -177,9 +226,13 @@ public class ImportExportTest
             activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
             assertFalse(dbChanged.hasChanged());
 
+            updater = new TestProgressUpdater();
+
             // Import the CSV data on top of the existing database
-            result = MultiFormatImporter.importData(activity, db, inData, format);
+            result = MultiFormatImporter.importData(activity, db, inData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_TRANSACTIONS * 2, updater.getNumUpdates());
 
             // The contents of the database should not have changed
             assertFalse(dbChanged.hasChanged());
@@ -205,17 +258,25 @@ public class ImportExportTest
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
+            TestProgressUpdater updater = new TestProgressUpdater();
+
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_ITEMS * 3, updater.getNumUpdates());
 
             DatabaseTestHelper.clearDatabase(db, activity);
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
 
+            updater = new TestProgressUpdater();
+
             // Import the CSV data
-            result = MultiFormatImporter.importData(activity, db, inData, format);
+            result = MultiFormatImporter.importData(activity, db, inData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_ITEMS * 3, updater.getNumUpdates());
 
             DatabaseTestHelper.checkBudgets(db, NUM_ITEMS);
             DatabaseTestHelper.checkTransactions(db, activity, NUM_ITEMS, format == DataFormat.ZIP);
@@ -237,9 +298,13 @@ public class ImportExportTest
 
             ByteArrayOutputStream outData = new ByteArrayOutputStream();
 
+            TestProgressUpdater updater = new TestProgressUpdater();
+
             // Export data to CSV format
-            boolean result = MultiFormatExporter.exportData(activity, db, outData, format);
+            boolean result = MultiFormatExporter.exportData(activity, db, outData, format, updater);
             assertTrue(result);
+
+            assertEquals(NUM_ITEMS * 3, updater.getNumUpdates());
 
             DatabaseTestHelper.clearDatabase(db, activity);
 
@@ -247,9 +312,24 @@ public class ImportExportTest
 
             ByteArrayInputStream inData = new ByteArrayInputStream((outData.toString() + corruptEntry).getBytes());
 
+            updater = new TestProgressUpdater();
+
             // Attempt to import the CSV data
-            result = MultiFormatImporter.importData(activity, db, inData, format);
+            result = MultiFormatImporter.importData(activity, db, inData, format, updater);
             assertEquals(false, result);
+
+            if(format == DataFormat.ZIP)
+            {
+                // If there is corrupted data at the end of a zip file,
+                // the file will fail an integrity check and nothing
+                // will be imported
+                assertEquals(0, updater.getNumUpdates());
+            }
+            else
+            {
+                assertEquals(NUM_ITEMS * 3, updater.getNumUpdates());
+            }
+
 
             assertEquals(0, db.getBudgetCount());
             assertEquals(0,

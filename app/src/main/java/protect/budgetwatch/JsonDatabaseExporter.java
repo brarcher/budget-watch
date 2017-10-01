@@ -16,7 +16,7 @@ import java.io.OutputStreamWriter;
  */
 public class JsonDatabaseExporter implements DatabaseExporter
 {
-    public void exportData(Context context, DBHelper db, OutputStream outStream) throws IOException, InterruptedException
+    public void exportData(Context context, DBHelper db, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
     {
         OutputStreamWriter output = new OutputStreamWriter(outStream, Charsets.UTF_8);
         JsonWriter writer = new JsonWriter(output);
@@ -55,6 +55,8 @@ public class JsonDatabaseExporter implements DatabaseExporter
 
                     writer.endObject();
 
+                    updater.update();
+
                     if (Thread.currentThread().isInterrupted())
                     {
                         throw new InterruptedException();
@@ -76,6 +78,8 @@ public class JsonDatabaseExporter implements DatabaseExporter
                 writer.name(DBHelper.TransactionDbIds.VALUE).value((double)budget.max);
 
                 writer.endObject();
+
+                updater.update();
 
                 if (Thread.currentThread().isInterrupted())
                 {

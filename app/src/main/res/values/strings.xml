@@ -158,4 +158,7 @@
     <string name="intro6Description">Budget and transactions can be backed-up. To export or import data touch the Import/Export icon in the menu on the main page.</string>
     <string name="intro7Title">Feedback\n</string>
     <string name="intro7Description">This app is free, ad-free, and open source. See details by touching About in the menu on the main page.\n\nPlease leave feedback in the app store! (:</string>
+
+    <string name="exportProgressFormat">Exported <xliff:g id="completed">%d</xliff:g> of <xliff:g id="total">%d</xliff:g> entries</string>
+    <string name="importProgressFormat">Imported <xliff:g id="completed">%d</xliff:g> entries</string>
 </resources>

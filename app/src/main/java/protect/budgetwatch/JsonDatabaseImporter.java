@@ -18,7 +18,7 @@ import java.io.InputStreamReader;
  */
 public class JsonDatabaseImporter implements DatabaseImporter
 {
-    public void importData(Context context, DBHelper db, InputStream input) throws IOException, FormatException, InterruptedException
+    public void importData(Context context, DBHelper db, InputStream input, ImportExportProgressUpdater updater) throws IOException, FormatException, InterruptedException
     {
         InputStreamReader reader = new InputStreamReader(input, Charsets.UTF_8);
         JsonReader parser = new JsonReader(reader);
@@ -104,6 +104,8 @@ public class JsonDatabaseImporter implements DatabaseImporter
                 }
 
                 parser.endObject();
+
+                updater.update();
 
                 if(Thread.currentThread().isInterrupted())
                 {
