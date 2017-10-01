@@ -17,5 +17,5 @@ interface DatabaseImporter
      * @throws IOException
      * @throws FormatException
      */
-    void importData(Context context, DBHelper db, InputStream input) throws IOException, FormatException, InterruptedException;
+    void importData(Context context, DBHelper db, InputStream input, ImportExportProgressUpdater updater) throws IOException, FormatException, InterruptedException;
 }

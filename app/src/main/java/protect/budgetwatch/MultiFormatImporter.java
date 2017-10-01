@@ -21,7 +21,7 @@ class MultiFormatImporter
      * false otherwise. If false, no data was written to
      * the database.
      */
-    public static boolean importData(Context context, DBHelper db, InputStream input, DataFormat format)
+    public static boolean importData(Context context, DBHelper db, InputStream input, DataFormat format, ImportExportProgressUpdater updater)
     {
         DatabaseImporter importer = null;
 
@@ -42,7 +42,7 @@ class MultiFormatImporter
         {
             try
             {
-                importer.importData(context, db, input);
+                importer.importData(context, db, input, updater);
                 return true;
             }
             catch(IOException | FormatException | InterruptedException e)

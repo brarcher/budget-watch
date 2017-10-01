@@ -14,5 +14,5 @@ interface DatabaseExporter
      * Export the database to the output stream in a given format.
      * @throws IOException
      */
-    void exportData(Context context, DBHelper db, OutputStream output) throws IOException, InterruptedException;
+    void exportData(Context context, DBHelper db, OutputStream output, ImportExportProgressUpdater updater) throws IOException, InterruptedException;
 }

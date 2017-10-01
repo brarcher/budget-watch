@@ -19,14 +19,13 @@ import java.io.OutputStreamWriter;
  */
 public class CsvDatabaseExporter implements DatabaseExporter
 {
-    public void exportData(Context context, DBHelper db, OutputStream outStream) throws IOException, InterruptedException
+    public void exportData(Context context, DBHelper db, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
     {
         OutputStreamWriter output = new OutputStreamWriter(outStream, Charsets.UTF_8);
         CSVPrinter printer = new CSVPrinter(output, CSVFormat.RFC4180);
 
         try
         {
-
             // Print the header
             printer.printRecord(DBHelper.TransactionDbIds.NAME,
                     DBHelper.TransactionDbIds.TYPE,
@@ -62,6 +61,8 @@ public class CsvDatabaseExporter implements DatabaseExporter
                             transaction.dateMs,
                             receiptFilename);
 
+                    updater.update();
+
                     if (Thread.currentThread().isInterrupted())
                     {
                         throw new InterruptedException();
@@ -85,6 +86,8 @@ public class CsvDatabaseExporter implements DatabaseExporter
                         "", // blank note
                         "", // blank date
                         ""); // blank receipt
+
+                updater.update();
 
                 if (Thread.currentThread().isInterrupted())
                 {
