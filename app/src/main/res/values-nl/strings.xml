@@ -1,0 +1,160 @@
+<resources
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Budget Watch</string>
+    <string name="icon">Icoon</string>
+    <string name="budgetsTitle">Budgets</string>
+    <string name="addBudgetTitle">Voeg Budget toe</string>
+    <string name="viewBudgetTitle">Bekijk Budget</string>
+    <string name="editBudgetTitle">Bewerk Budget</string>
+    <string name="budgetDescription">Maak en beheer budgets</string>
+    <string name="transactionsTitle">Transacties</string>
+    <string name="transactionsDescription">Geef transacties en inkomsten in</string>
+    <string name="addExpenseTransactionTitle">Voeg Uitgave toe</string>
+    <string name="editExpenseTransactionTitle">Bewerk Uitgave</string>
+    <string name="viewExpenseTransactionTitle">Bekijk Uitgave</string>
+    <string name="addRevenueTransactionTitle">Voeg Inkomst toe</string>
+    <string name="editRevenueTransactionTitle">Bewerk Inkomst</string>
+    <string name="viewRevenueTransactionTitle">Bekijk Inkomst</string>
+    <string name="importExportTitle">Importeren/Exporteren</string>
+    <string name="totalBudgetTitle">Totaal</string>
+
+    <string name="add">Voeg toe</string>
+    <string name="selectDates">Selecteer Datums</string>
+    <string name="type">Type</string>
+    <string name="value">Waarde</string>
+    <string name="name">Naam</string>
+    <string name="budget">Budget</string>
+    <string name="account">Rekening</string>
+    <string name="note">Notitie</string>
+    <string name="date">Datum</string>
+    <string name="save">Opslaan</string>
+    <string name="cancel">Annuleer</string>
+    <string name="set">Stel in</string>
+    <string name="receipt">Bon</string>
+    <string name="capture">Trek foto</string>
+    <string name="view">Bekijk</string>
+    <string name="update">Werk bij</string>
+    <string name="clean">Opschonen</string>
+    <string name="ok">OK</string>
+    <string name="share">Deel</string>
+    <string name="confirm">Bevestig</string>
+
+    <string name="Grocery">Boodschappen</string>
+    <string name="one_hundred">100</string>
+    <string name="fraction">%1$d/%2$d</string>
+
+    <string name="budgetTypeMissing">Budgettype is leeg</string>
+    <string name="budgetValueMissing">Budgetwaarde is leeg</string>
+    <string name="budgetMissing">Geen budget geselecteerd</string>
+    <string name="valueMissing">Waarde is leeg</string>
+    <string name="valueInvalid">Ongeldige waarde</string>
+    <string name="dateInvalid">Ongeldige datum</string>
+
+    <string name="expensesTitle">Uitgaven</string>
+    <string name="revenuesTitle">Inkomsten</string>
+
+    <string name="edit">Bewerk</string>
+    <string name="delete">Verwijder</string>
+
+    <!-- A date range, where both arguments are date strings -->
+    <string name="dateRangeFormat">%1$s ~ %2$s</string>
+
+    <string name="noBudgets">Je hebt momenteel nog geen budgetten. Klik op de "+" (plus) knop vanboven om te starten.\n\nBudget Watch laat je budgetten maken, om dan gedurende de maand uitgaven in de gaten te houden.</string>
+    <string name="noExpenses">Je hebt momenteel nog geen uitgaven. Klik op de "+" (plus) knop vanboven om te starten.</string>
+    <string name="noExpensesForBudget">Je hebt nog geen uitgaven voor het budget \"%1$s\"</string>
+    <string name="noRevenues">Je hebt momenteel nog geen inkomsten. Klik op de "+" (plus) knop vanboven om te starten.</string>
+    <string name="noRevenuesForBudget">Je hebt nog geen inkomsten voor het budget \"%1$s\"</string>
+
+    <string name="budgetDateRangeHelp">Selecteer een databereik voor budgetten</string>
+    <string name="startDate">Begindatum</string>
+    <string name="endDate">Einddatum</string>
+    <string name="startDateAfterEndDate">Begindatum moet voor einddatum zijn</string>
+
+    <string name="cleanupHelp">Selecteer datum; alle bonnen op of voor de datum zullen verwijderd worden.</string>
+
+    <string name="importExport">Importeren/Exporteren</string>
+    <string name="exportName">Exporteren</string>
+    <string name="importedFrom">Geïmporteerd uit: %1$s</string>
+    <string name="fileFormat">Bestandsformaat</string>
+    <string name="exportedTo">Geëxporteerd naar: %1$s</string>
+    <string name="importFailed">Importeren mislukt: %1$s</string>
+    <string name="exportFailed">Exporteren mislukt: %1$s</string>
+    <string name="importing">Importeren&#8230;</string>
+    <string name="exporting">Exporteren&#8230;</string>
+
+    <string name="purgeOldReceipts">Verwijder oude bonnen</string>
+    <string name="cleaning">Verwijderen&#8230;</string>
+
+    <string name="loading">Laden&#8230;</string>
+
+    <string name="pictureCaptureError">Foto nemen mislukt</string>
+    <string name="noCameraPermissionError">Foto nemen mislukt zonder cameratoestemming</string>
+
+    <string name="iconDescription">BudgetWatch icoon</string>
+    <string name="addExpenseDescription">Voeg uitgave toe</string>
+
+    <string name="about">Over</string>
+    <string name="app_copyright_fmt">Copyright 2016-<xliff:g>%d</xliff:g> Branden Archer</string>
+    <string name="app_license">Gelicentieerd onder de GPLv3</string>
+    <string name="about_title_fmt">Over <xliff:g id="app_name">%s</xliff:g></string>
+    <string name="debug_version_fmt">Versie: <xliff:g id="version">%s</xliff:g></string>
+    <string name="app_revision_fmt">Revisie Informatie: <xliff:g id="app_revision_url">%s</xliff:g></string>
+    <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> gebruikt de volgende softwarebibliotheken van derden: <xliff:g id="app_libraries_list">%s</xliff:g></string>
+    <string name="app_resources"><xliff:g id="app_name">%s</xliff:g> gebruikt de volgende bronnen van derden: <xliff:g id="app_resources_list">%s</xliff:g></string>
+
+    <string name="settings">Instellingen</string>
+    <string name="receiptQuality">Kwaliteit van de bon</string>
+    <string name="receiptQualitySummary">Selecteer de JPEG die gebruikt wordt bij het nemen van foto's</string>
+    <string name="encodingReceipt">Bon codering</string>
+
+    <string name="deleteBudgetTitle">Verwijder Budget</string>
+    <string name="deleteBudgetConfirmation">Gelieve te bevestigen dat je dit budget wil verwijderen. Alle transacties onder dit budget zullen bewaard blijven.</string>
+    <string name="deleteTransactionTitle">Verwijder Transactie</string>
+    <string name="deleteTransactionConfirmation">Gelieve te bevestigen dat je deze transactie wil verwijderen.</string>
+
+    <string name="importExportHelp">Backupdata laat je toe om je budgetten en transacties te verplaatsen naar een ander toestel.</string>
+    <string name="importSuccessfulTitle">Importeren geslaagd</string>
+    <string name="importFailedTitle">Importeren mislukt</string>
+    <string name="exportSuccessfulTitle">Exporteren geslaagd</string>
+    <string name="exportFailedTitle">Exporteren mislukt</string>
+    <string name="noExternalStoragePermissionError">Kan geen data importeren of exporteren zonder de toestemming voor externe opslag</string>
+    <string name="exportOptionExplanation">Gegevens worden naar de bovenste map in externe opslag geschreven.</string>
+    <string name="importOptionFilesystemTitle">Importeren vanuit het bestandssyteem</string>
+    <string name="importOptionFilesystemExplanation">Kies een map van het bestandssysteem.</string>
+    <string name="importOptionFilesystemButton">Vanuit het bestandssysteem</string>
+    <string name="importOptionApplicationTitle">Importeer vanuit het bestandssysteem</string>
+    <string name="importOptionApplicationExplanation">Gebruik een externe toepassing zoals Dropbox, Google Drive of je favoriete bestandsbeheerprogramma om een bestand te openen.</string>
+    <string name="importOptionApplicationButton">Gebruik een externe applicatie</string>
+    <string name="importOptionFixedTitle">Importeren vanuit exporteerlocatie</string>
+    <string name="importOptionFixedExplanation">Importeren vanuit dezelfde plaat in het bestandssysteem waarop geschreven is bij het exporteren.</string>
+    <string name="importOptionFixedButton">Gebruik exporteerlocatie</string>
+    <string name="sendLabel">Versturen&#8230;</string>
+
+    <string name="search">Zoeken</string>
+    <string name="searchHint">Zoeken&#8230;</string>
+    <string name="searchEmptyExpenses">Geen overeenkomende uitgaven.</string>
+    <string name="searchEmptyRevenues">Geen overeenkomende inkomsten.</string>
+
+    <string name="addExpenseDisabled">Uitgaven toevoegen is uitgeschakeld</string>
+    <string name="addRevenueDisabled">Inkomsten toevoegen is uitgeschakeld</string>
+
+    <string name="startIntro">Start Intro</string>
+    <string name="intro1Title">Welkom bij Budget Watch\n</string>
+    <string name="intro1Description">Beheer jouw budget door uitgaven bij te houden.</string>
+    <string name="intro2Title">Budgets\n</string>
+    <string name="intro2Description">U kunt zo veel budgetten maken als u wilt volgen, elk met hun maximale maandelijkse uitgaven.\n\nAls u een budget wilt maken, raakt u de knop Budgets van het hoofdscherm aan en klikt u op de plusknop in het menu.</string>
+    <string name="intro3Title">Transacties\n</string>
+    <string name="intro3Description">Na het maken van een budget kunnen transacties worden toegevoegd die van toepassing zijn op dat budget.\n\nAls u een transactie wilt toevoegen, raakt u de knop Transacties van het hoofdscherm aan, selecteert u de Uitgaven of Inkomsten tab en klikt u op de plusknop in het menu.</string>
+    <string name="intro4Title">Filteren\n</string>
+    <string name="intro4Description">Als u een budget aanraakt, worden alle transacties voor dat budget weergegeven.</string>
+    <string name="intro5Title">Budget Venster\n</string>
+    <string name="intro5Description">Standaard geven de budgetten de uitgaven van de huidige maand weer. Om het tijdvenster te wijzigen, raak het kalendericoon in het menu aan.</string>
+    <string name="intro6Title">Budget Venster\n</string>
+    <string name="intro6Description">Budget en transacties kunnen geback-upt worden. Als u gegevens wilt exporteren of importeren, raakt u het icoon Importeren / Exporteren in het menu op de hoofdpagina aan.</string>
+    <string name="intro7Title">Feedback\n</string>
+    <string name="intro7Description">Deze app is gratis, reclamevrij en open source. Bekijk details door op Over in het menu op de hoofdpagina te tikken.\n\nLaat alstublieft feedback achter in de app store! (:</string>
+
+    <string name="exportProgressFormat">Al <xliff:g id="completed">%d</xliff:g> van de <xliff:g id="total">%d</xliff:g> entries geëxporteerd</string>
+    <string name="importProgressFormat">Al <xliff:g id="completed">%d</xliff:g> entries geïmporteerd</string>
+</resources>
