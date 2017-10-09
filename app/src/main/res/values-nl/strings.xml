@@ -105,7 +105,7 @@
 
     <string name="settings">Instellingen</string>
     <string name="receiptQuality">Kwaliteit van de bon</string>
-    <string name="receiptQualitySummary">Selecteer de JPEG die gebruikt wordt bij het nemen van foto's</string>
+    <string name="receiptQualitySummary">Selecteer de JPEG die gebruikt wordt bij het nemen van foto\'s</string>
     <string name="encodingReceipt">Bon codering</string>
 
     <string name="deleteBudgetTitle">Verwijder Budget</string>
