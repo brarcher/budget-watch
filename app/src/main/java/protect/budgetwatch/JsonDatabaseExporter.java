@@ -6,6 +6,7 @@ import android.util.JsonWriter;
 
 import com.google.common.base.Charsets;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,7 +19,8 @@ public class JsonDatabaseExporter implements DatabaseExporter
 {
     public void exportData(Context context, DBHelper db, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
     {
-        OutputStreamWriter output = new OutputStreamWriter(outStream, Charsets.UTF_8);
+        OutputStreamWriter stream = new OutputStreamWriter(outStream, Charsets.UTF_8);
+        BufferedWriter output = new BufferedWriter(stream);
         JsonWriter writer = new JsonWriter(output);
 
         try
