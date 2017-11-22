@@ -176,14 +176,14 @@ public class ImportExportActivity extends AppCompatActivity
         return format;
     }
 
-    private void startImport(File target, DataFormat format)
+    private void startImport(final File target, DataFormat format)
     {
         ImportExportTask.TaskCompleteListener listener = new ImportExportTask.TaskCompleteListener()
         {
             @Override
-            public void onTaskComplete(boolean success, File file)
+            public void onTaskComplete(boolean success)
             {
-                onImportComplete(success, file);
+                onImportComplete(success, target);
             }
         };
 
@@ -220,16 +220,16 @@ public class ImportExportActivity extends AppCompatActivity
 
     private void startExport(DataFormat format)
     {
+        final File exportFile = new File(sdcardDir, exportFilename + "." + format.extension());
+
         ImportExportTask.TaskCompleteListener listener = new ImportExportTask.TaskCompleteListener()
         {
             @Override
-            public void onTaskComplete(boolean success, File file)
+            public void onTaskComplete(boolean success)
             {
-                onExportComplete(success, file);
+                onExportComplete(success, exportFile);
             }
         };
-
-        File exportFile = new File(sdcardDir, exportFilename + "." + format.extension());
 
         importExporter = new ImportExportTask(ImportExportActivity.this,
                 false, format, exportFile, listener);
