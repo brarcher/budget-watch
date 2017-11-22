@@ -16,6 +16,7 @@ import org.robolectric.shadows.ShadowLog;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
@@ -34,12 +35,10 @@ public class ImportExportTest
     class TestTaskCompleteListener implements ImportExportTask.TaskCompleteListener
     {
         Boolean success;
-        File file;
 
-        public void onTaskComplete(boolean success, File file)
+        public void onTaskComplete(boolean success)
         {
             this.success = success;
-            this.file = file;
         }
     }
 
@@ -352,7 +351,7 @@ public class ImportExportTest
 
             // Export to whatever the default location is
             TestTaskCompleteListener listener = new TestTaskCompleteListener();
-            ImportExportTask task = new ImportExportTask(activity, false, format, exportFile, listener);
+            ImportExportTask task = new ImportExportTask(activity, format, exportFile, listener);
             task.execute();
 
             // Actually run the task to completion
@@ -360,14 +359,13 @@ public class ImportExportTest
 
             assertNotNull(listener.success);
             assertEquals(true, listener.success);
-            assertNotNull(listener.file);
-            assertEquals(exportFile, listener.file);
 
             DatabaseTestHelper.clearDatabase(db, activity);
 
             // Import everything back from the default location
             listener = new TestTaskCompleteListener();
-            task = new ImportExportTask(activity, true, format, exportFile, listener);
+            FileInputStream fileStream = new FileInputStream(exportFile);
+            task = new ImportExportTask(activity, format, fileStream, listener);
             task.execute();
 
             // Actually run the task to completion
@@ -375,8 +373,6 @@ public class ImportExportTest
 
             assertNotNull(listener.success);
             assertEquals(true, listener.success);
-            assertNotNull(listener.file);
-            assertEquals(exportFile, listener.file);
 
             DatabaseTestHelper.checkBudgets(db, NUM_ITEMS);
             DatabaseTestHelper.checkTransactions(db, activity, NUM_ITEMS, format == DataFormat.ZIP);
