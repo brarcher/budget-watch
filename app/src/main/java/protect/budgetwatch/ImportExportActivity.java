@@ -7,14 +7,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +33,10 @@ import android.widget.Toast;
 import com.google.common.collect.ImmutableMap;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -162,8 +169,18 @@ public class ImportExportActivity extends AppCompatActivity
                 DataFormat format = getSelectedFormat(R.id.importFileFormatSpinner);
                 File importFile = new File(sdcardDir, exportFilename + "." + format.extension());
 
-                Log.d(TAG, "Starting import from fixed location: " + importFile.getAbsolutePath());
-                startImport(importFile, format);
+                Uri uri = Uri.fromFile(importFile);
+                try
+                {
+                    FileInputStream stream = new FileInputStream(importFile);
+                    Log.d(TAG, "Starting import from fixed location: " + importFile.getAbsolutePath());
+                    startImport(format, stream, uri);
+                }
+                catch(FileNotFoundException e)
+                {
+                    Log.e(TAG, "Could not import file " + importFile.getAbsolutePath(), e);
+                    onImportComplete(false, uri);
+                }
             }
         });
     }
@@ -176,26 +193,32 @@ public class ImportExportActivity extends AppCompatActivity
         return format;
     }
 
-    private void startImport(File target, DataFormat format)
+    private void startImport(DataFormat format, final InputStream target, final Uri targetUri)
     {
         ImportExportTask.TaskCompleteListener listener = new ImportExportTask.TaskCompleteListener()
         {
             @Override
-            public void onTaskComplete(boolean success, File file)
+            public void onTaskComplete(boolean success)
             {
-                onImportComplete(success, file);
+                onImportComplete(success, targetUri);
             }
         };
 
-        if(format == null)
+        String filename = fileNameFromUri(targetUri);
+        if(filename == null)
+        {
+            filename = targetUri.getPath();
+        }
+
+        if(format == null && filename != null)
         {
             // Attempt to guess the data format based on the extension
-            Log.d(TAG, "Attempting to determine file type for: " + target.getName());
+            Log.d(TAG, "Attempting to determine file type for: " + filename);
 
             for(Map.Entry<String, DataFormat> item : _fileFormatMap.entrySet())
             {
                 String key = item.getKey();
-                if(target.getName().toLowerCase().endsWith(key.toLowerCase()))
+                if(filename.toLowerCase().endsWith(key.toLowerCase()))
                 {
                     format = item.getValue();
                     break;
@@ -205,34 +228,43 @@ public class ImportExportActivity extends AppCompatActivity
 
         if(format != null)
         {
-            Log.d(TAG, "Starting import of file: " + target.getName());
+            Log.d(TAG, "Starting import of file: " + filename);
             importExporter = new ImportExportTask(ImportExportActivity.this,
-                    true, format, target, listener);
+                    format, target, listener);
             importExporter.execute();
         }
         else
         {
             // If format is still null, then we do not know what to import
-            Log.w(TAG, "Could not import " + target.getAbsolutePath() + ", could not determine extension");
-            onImportComplete(false, target);
+            Log.w(TAG, "Could not import " + filename + ", could not determine extension");
+            onImportComplete(false, targetUri);
+
+            try
+            {
+                target.close();
+            }
+            catch (IOException e)
+            {
+                Log.w(TAG, "Failed to close stream during import", e);
+            }
         }
     }
 
-    private void startExport(DataFormat format)
+    private void startExport(final DataFormat format)
     {
+        final File exportFile = new File(sdcardDir, exportFilename + "." + format.extension());
+
         ImportExportTask.TaskCompleteListener listener = new ImportExportTask.TaskCompleteListener()
         {
             @Override
-            public void onTaskComplete(boolean success, File file)
+            public void onTaskComplete(boolean success)
             {
-                onExportComplete(success, file);
+                onExportComplete(success, exportFile, format);
             }
         };
 
-        File exportFile = new File(sdcardDir, exportFilename + "." + format.extension());
-
         importExporter = new ImportExportTask(ImportExportActivity.this,
-                false, format, exportFile, listener);
+                format, exportFile, listener);
         importExporter.execute();
     }
 
@@ -287,7 +319,34 @@ public class ImportExportActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void onImportComplete(boolean success, File path)
+    private String fileNameFromUri(Uri uri)
+    {
+        if("file".equals(uri.getScheme()))
+        {
+            return uri.getPath();
+        }
+
+        Cursor returnCursor =
+                getContentResolver().query(uri, null, null, null, null);
+        if(returnCursor == null)
+        {
+            return null;
+        }
+
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        if(returnCursor.moveToFirst() == false)
+        {
+            returnCursor.close();
+            return null;
+        }
+
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+
+        return name;
+    }
+
+    private void onImportComplete(boolean success, Uri path)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -303,7 +362,15 @@ public class ImportExportActivity extends AppCompatActivity
         int messageId = success ? R.string.importedFrom : R.string.importFailed;
 
         final String template = getResources().getString(messageId);
-        final String message = String.format(template, path.getAbsolutePath());
+
+        // Get the filename of the file being imported
+        String filename = fileNameFromUri(path);
+        if(filename == null)
+        {
+            filename = "(unknown)";
+        }
+
+        final String message = String.format(template, filename);
         builder.setMessage(message);
         builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener()
         {
@@ -317,7 +384,7 @@ public class ImportExportActivity extends AppCompatActivity
         builder.create().show();
     }
 
-    private void onExportComplete(boolean success, final File path)
+    private void onExportComplete(boolean success, final File path, final DataFormat format)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -353,10 +420,13 @@ public class ImportExportActivity extends AppCompatActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {
-                    Uri outputUri = Uri.fromFile(path);
+                    Uri outputUri = FileProvider.getUriForFile(ImportExportActivity.this, BuildConfig.APPLICATION_ID, path);
                     Intent sendIntent = new Intent(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_STREAM, outputUri);
-                    sendIntent.setType("text/plain");
+                    sendIntent.setType(format.mimetype());
+
+                    // set flag to give temporary permission to external app to use the FileProvider
+                    sendIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                     ImportExportActivity.this.startActivity(Intent.createChooser(sendIntent,
                             sendLabel));
@@ -411,34 +481,28 @@ public class ImportExportActivity extends AppCompatActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && requestCode == CHOOSE_EXPORT_FILE)
-        {
-            String path = null;
-
-            Uri uri = data.getData();
-            if(uri != null && uri.toString().startsWith("/"))
-            {
-                uri = Uri.parse("file://" + uri.toString());
-            }
-
-            if(uri != null)
-            {
-                path = uri.getPath();
-            }
-
-            if(path != null)
-            {
-                Log.e(TAG, "Starting file import with: " + uri.toString());
-                startImport(new File(path), null);
-            }
-            else
-            {
-                Log.e(TAG, "Fail to make sense of URI returned from activity: " + (uri != null ? uri.toString() : "null"));
-            }
-        }
-        else
+        if (resultCode != RESULT_OK || requestCode != CHOOSE_EXPORT_FILE)
         {
             Log.w(TAG, "Failed onActivityResult(), result=" + resultCode);
+            return;
+        }
+
+        Uri uri = data.getData();
+        if(uri == null)
+        {
+            Log.e(TAG, "Activity returned a NULL URI");
+            return;
+        }
+
+        try
+        {
+            InputStream reader = getContentResolver().openInputStream(uri);
+            Log.e(TAG, "Starting file import with: " + uri.toString());
+            startImport(null, reader, uri);
+        }
+        catch (FileNotFoundException e)
+        {
+            Log.e(TAG, "Failed to import file: " + uri.toString(), e);
         }
     }
 }

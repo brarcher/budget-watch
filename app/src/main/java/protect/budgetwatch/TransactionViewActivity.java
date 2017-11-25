@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -20,6 +21,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -497,7 +499,23 @@ public class TransactionViewActivity extends AppCompatActivity
         }
 
         File imageLocation = getNewImageLocation();
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageLocation));
+
+        Uri imageUri;
+
+        // Starting in Android N (24+) sharing a file Uri is discouraged or prevented.
+        // For those platforms a FileProvider is used to provide a content Uri. Older
+        // platforms still use the file Uri, in part to also allow easier testing
+        // using Robolectric.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        {
+            imageUri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, imageLocation);
+        }
+        else
+        {
+            imageUri = Uri.fromFile(imageLocation);
+        }
+
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         capturedUncommittedReceipt = (imageLocation != null ? imageLocation.getAbsolutePath() : null);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }

@@ -7,9 +7,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 class ImportExportTask extends AsyncTask<Void, Void, Boolean>
 {
@@ -19,40 +19,49 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
     private final boolean doImport;
     private final DataFormat format;
     private final File target;
+    private final InputStream inputStream;
     private final TaskCompleteListener listener;
 
     private ProgressDialog progress;
 
-    public ImportExportTask(Activity activity, boolean doImport, DataFormat format,
+    /**
+     * Constructor which will setup a task for exporting to the given file
+     */
+    ImportExportTask(Activity activity, DataFormat format,
                             File target, TaskCompleteListener listener)
     {
         super();
         this.activity = activity;
-        this.doImport = doImport;
+        this.doImport = false;
         this.format = format;
         this.target = target;
+        this.inputStream = null;
         this.listener = listener;
     }
 
-    private boolean performImport(File importFile, DBHelper db)
+    /**
+     * Constructor which will setup a task for importing from the given InputStream.
+     */
+    ImportExportTask(Activity activity, DataFormat format,
+                     InputStream input, TaskCompleteListener listener)
     {
-        boolean result = false;
+        super();
+        this.activity = activity;
+        this.doImport = true;
+        this.format = format;
+        this.target = null;
+        this.inputStream = input;
+        this.listener = listener;
+    }
 
+    private boolean performImport(InputStream inputStream, DBHelper db)
+    {
         final String BASE_MESSAGE = ImportExportTask.this.activity.getResources().getString(R.string.importProgressFormat);
         ImportExportProgressUpdater updater = new ImportExportProgressUpdater(activity, progress, BASE_MESSAGE);
 
-        try
-        {
-            FileInputStream fileReader = new FileInputStream(importFile);
-            result = MultiFormatImporter.importData(activity, db, fileReader, format, updater);
-            fileReader.close();
-        }
-        catch(IOException e)
-        {
-            Log.e(TAG, "Unable to import file", e);
-        }
+        boolean result = MultiFormatImporter.importData(activity, db, inputStream, format, updater);
 
-        Log.i(TAG, "Import of '" + importFile.getAbsolutePath() + "' result: " + result);
+        Log.i(TAG, "Import result: " + result);
         return result;
     }
 
@@ -107,7 +116,7 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
 
         if(doImport)
         {
-            result = performImport(target, db);
+            result = performImport(inputStream, db);
         }
         else
         {
@@ -121,7 +130,7 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
 
     protected void onPostExecute(Boolean result)
     {
-        listener.onTaskComplete(result, target);
+        listener.onTaskComplete(result);
 
         progress.dismiss();
         Log.i(TAG, (doImport ? "Import" : "Export") + " Complete");
@@ -135,6 +144,6 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
 
     interface TaskCompleteListener
     {
-        void onTaskComplete(boolean success, File file);
+        void onTaskComplete(boolean success);
     }
 }

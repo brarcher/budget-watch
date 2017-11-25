@@ -1,6 +1,7 @@
 package protect.budgetwatch;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
@@ -19,11 +20,14 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowLog;
 import org.robolectric.shadows.ShadowPackageManager;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Set;
 
@@ -312,7 +316,14 @@ public class ImportExportActivityTest
 
                     // This will return the file location from the activity, starting the import
                     Intent result = new Intent();
-                    result.setData(Uri.fromFile(exportFile));
+                    Uri uri = Uri.fromFile(exportFile);
+                    result.setData(uri);
+
+                    FileInputStream inputStream = new FileInputStream(exportFile);
+                    // Register this stream so it can be retrieved by the code later
+                    ContentResolver contentResolver = activity.getContentResolver();
+                    ShadowContentResolver shadowContentResolver = Shadow.extract(contentResolver);
+                    shadowContentResolver.registerInputStream(uri, inputStream);
 
                     try
                     {
