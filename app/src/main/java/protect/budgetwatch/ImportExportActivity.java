@@ -250,7 +250,7 @@ public class ImportExportActivity extends AppCompatActivity
         }
     }
 
-    private void startExport(DataFormat format)
+    private void startExport(final DataFormat format)
     {
         final File exportFile = new File(sdcardDir, exportFilename + "." + format.extension());
 
@@ -259,7 +259,7 @@ public class ImportExportActivity extends AppCompatActivity
             @Override
             public void onTaskComplete(boolean success)
             {
-                onExportComplete(success, exportFile);
+                onExportComplete(success, exportFile, format);
             }
         };
 
@@ -384,7 +384,7 @@ public class ImportExportActivity extends AppCompatActivity
         builder.create().show();
     }
 
-    private void onExportComplete(boolean success, final File path)
+    private void onExportComplete(boolean success, final File path, final DataFormat format)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -423,7 +423,7 @@ public class ImportExportActivity extends AppCompatActivity
                     Uri outputUri = FileProvider.getUriForFile(ImportExportActivity.this, BuildConfig.APPLICATION_ID, path);
                     Intent sendIntent = new Intent(Intent.ACTION_SEND);
                     sendIntent.putExtra(Intent.EXTRA_STREAM, outputUri);
-                    sendIntent.setType("text/plain");
+                    sendIntent.setType(format.mimetype());
 
                     // set flag to give temporary permission to external app to use the FileProvider
                     sendIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
