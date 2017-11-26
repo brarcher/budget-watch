@@ -167,6 +167,13 @@ public class TransactionViewActivity extends AppCompatActivity
         extractIntentFields(getIntent());
     }
 
+    @Override
+    public void onNewIntent(Intent intent)
+    {
+        Log.i(TAG, "Received new intent");
+        extractIntentFields(intent);
+    }
+
     @SuppressLint("DefaultLocale")
     @Override
     public void onResume()

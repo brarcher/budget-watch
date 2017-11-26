@@ -161,4 +161,7 @@
 
     <string name="exportProgressFormat">Exported <xliff:g id="completed">%d</xliff:g> of <xliff:g id="total">%d</xliff:g> entries</string>
     <string name="importProgressFormat">Imported <xliff:g id="completed">%d</xliff:g> entries</string>
+
+    <string name="addShortcuts">Add Shortcuts</string>
+    <string name="shortcutsAdded">Shortcuts added</string>
 </resources>

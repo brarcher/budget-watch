@@ -3,7 +3,7 @@
     package="protect.budgetwatch">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature android:required="true" android:name="android.hardware.camera"/>
 
@@ -50,7 +50,8 @@
             android:name=".TransactionViewActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop"
+            android:exported="true"/>
         <activity
             android:name=".ImportExportActivity"
             android:label="@string/importExportTitle"
