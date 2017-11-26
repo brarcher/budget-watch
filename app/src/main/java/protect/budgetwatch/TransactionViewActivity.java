@@ -90,6 +90,43 @@ public class TransactionViewActivity extends AppCompatActivity
     private boolean _updateTransaction;
     private boolean _viewTransaction;
 
+    private void extractIntentFields(Intent intent)
+    {
+        final Bundle b = intent.getExtras();
+        String action = intent.getAction();
+        if(b != null)
+        {
+            _transactionId = b.getInt("id");
+            _type = b.getInt("type");
+            _updateTransaction = b.getBoolean("update", false);
+            _viewTransaction = b.getBoolean("view", false);
+        }
+        else if(action != null)
+        {
+            _updateTransaction = false;
+            _viewTransaction = false;
+
+            if(action.equals(ACTION_NEW_EXPENSE))
+            {
+                _type = DBHelper.TransactionDbIds.EXPENSE;
+            }
+            else if(action.equals(ACTION_NEW_REVENUE))
+            {
+                _type = DBHelper.TransactionDbIds.REVENUE;
+            }
+            else
+            {
+                Log.d(TAG, "Unsupported action '" + action + "', bailing");
+                finish();
+            }
+        }
+        else
+        {
+            Log.d(TAG, "Launched TransactionViewActivity without arguments, bailing");
+            finish();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -127,41 +164,7 @@ public class TransactionViewActivity extends AppCompatActivity
         _dateEdit = (EditText) findViewById(R.id.dateEdit);
         _budgetSpinner = (Spinner) findViewById(R.id.budgetSpinner);
 
-        final Bundle b = getIntent().getExtras();
-        String action = getIntent().getAction();
-        if(b != null)
-        {
-            _transactionId = b.getInt("id");
-            _type = b.getInt("type");
-            _updateTransaction = b.getBoolean("update", false);
-            _viewTransaction = b.getBoolean("view", false);
-        }
-        else if(action != null)
-        {
-            _updateTransaction = false;
-            _viewTransaction = false;
-
-            if(action.equals(ACTION_NEW_EXPENSE))
-            {
-                _type = DBHelper.TransactionDbIds.EXPENSE;
-            }
-            else if(action.equals(ACTION_NEW_REVENUE))
-            {
-                _type = DBHelper.TransactionDbIds.REVENUE;
-            }
-            else
-            {
-                Log.d(TAG, "Unsupported action '" + action + "', bailing");
-                finish();
-                return;
-            }
-        }
-        else
-        {
-            Log.d(TAG, "Launched TransactionViewActivity without arguments, bailing");
-            finish();
-            return;
-        }
+        extractIntentFields(getIntent());
     }
 
     @SuppressLint("DefaultLocale")
