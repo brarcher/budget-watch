@@ -288,11 +288,12 @@ class DBHelper extends SQLiteOpenHelper
             {
                 String name = data.getString(data.getColumnIndexOrThrow(BudgetDbIds.NAME));
                 int max = data.getInt(data.getColumnIndexOrThrow(BudgetDbIds.MAX)) * totalMonthsInRange;
-                int expenses = data.getInt(data.getColumnIndexOrThrow(TOTAL_EXPENSE_COL));
-                int revenues = data.getInt(data.getColumnIndexOrThrow(TOTAL_REVENUE_COL));
-                int current = expenses - revenues;
+                double expenses = data.getDouble(data.getColumnIndexOrThrow(TOTAL_EXPENSE_COL));
+                double revenues = data.getDouble(data.getColumnIndexOrThrow(TOTAL_REVENUE_COL));
+                double current = expenses - revenues;
+                int currentRounded = (int)Math.ceil(current);
 
-                budgets.add(new Budget(name, max, current));
+                budgets.add(new Budget(name, max, currentRounded));
             } while(data.moveToNext());
         }
 
