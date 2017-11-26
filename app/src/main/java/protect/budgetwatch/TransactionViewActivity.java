@@ -90,6 +90,43 @@ public class TransactionViewActivity extends AppCompatActivity
     private boolean _updateTransaction;
     private boolean _viewTransaction;
 
+    private void extractIntentFields(Intent intent)
+    {
+        final Bundle b = intent.getExtras();
+        String action = intent.getAction();
+        if(b != null)
+        {
+            _transactionId = b.getInt("id");
+            _type = b.getInt("type");
+            _updateTransaction = b.getBoolean("update", false);
+            _viewTransaction = b.getBoolean("view", false);
+        }
+        else if(action != null)
+        {
+            _updateTransaction = false;
+            _viewTransaction = false;
+
+            if(action.equals(ACTION_NEW_EXPENSE))
+            {
+                _type = DBHelper.TransactionDbIds.EXPENSE;
+            }
+            else if(action.equals(ACTION_NEW_REVENUE))
+            {
+                _type = DBHelper.TransactionDbIds.REVENUE;
+            }
+            else
+            {
+                Log.d(TAG, "Unsupported action '" + action + "', bailing");
+                finish();
+            }
+        }
+        else
+        {
+            Log.d(TAG, "Launched TransactionViewActivity without arguments, bailing");
+            finish();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -127,41 +164,14 @@ public class TransactionViewActivity extends AppCompatActivity
         _dateEdit = (EditText) findViewById(R.id.dateEdit);
         _budgetSpinner = (Spinner) findViewById(R.id.budgetSpinner);
 
-        final Bundle b = getIntent().getExtras();
-        String action = getIntent().getAction();
-        if(b != null)
-        {
-            _transactionId = b.getInt("id");
-            _type = b.getInt("type");
-            _updateTransaction = b.getBoolean("update", false);
-            _viewTransaction = b.getBoolean("view", false);
-        }
-        else if(action != null)
-        {
-            _updateTransaction = false;
-            _viewTransaction = false;
+        extractIntentFields(getIntent());
+    }
 
-            if(action.equals(ACTION_NEW_EXPENSE))
-            {
-                _type = DBHelper.TransactionDbIds.EXPENSE;
-            }
-            else if(action.equals(ACTION_NEW_REVENUE))
-            {
-                _type = DBHelper.TransactionDbIds.REVENUE;
-            }
-            else
-            {
-                Log.d(TAG, "Unsupported action '" + action + "', bailing");
-                finish();
-                return;
-            }
-        }
-        else
-        {
-            Log.d(TAG, "Launched TransactionViewActivity without arguments, bailing");
-            finish();
-            return;
-        }
+    @Override
+    public void onNewIntent(Intent intent)
+    {
+        Log.i(TAG, "Received new intent");
+        extractIntentFields(intent);
     }
 
     @SuppressLint("DefaultLocale")
@@ -543,15 +553,11 @@ public class TransactionViewActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        final Bundle b = getIntent().getExtras();
-        final boolean viewBudget = b != null && b.getBoolean("view", false);
-        final boolean editBudget = b != null && b.getBoolean("update", false);
-
-        if(viewBudget)
+        if(_viewTransaction)
         {
             getMenuInflater().inflate(R.menu.view_menu, menu);
         }
-        else if(editBudget)
+        else if(_updateTransaction)
         {
             getMenuInflater().inflate(R.menu.edit_menu, menu);
         }
@@ -580,18 +586,14 @@ public class TransactionViewActivity extends AppCompatActivity
             return true;
         }
 
-        final Bundle b = getIntent().getExtras();
-        final int transactionId = b.getInt("id");
-        final int type = b.getInt("type");
-
         if(id == R.id.action_edit)
         {
             finish();
 
             Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putInt("id", transactionId);
-            bundle.putInt("type", type);
+            bundle.putInt("id", _transactionId);
+            bundle.putInt("type", _type);
             bundle.putBoolean("update", true);
             i.putExtras(bundle);
             startActivity(i);
@@ -608,9 +610,9 @@ public class TransactionViewActivity extends AppCompatActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {
-                    Log.e(TAG, "Deleting transaction: " + transactionId);
+                    Log.e(TAG, "Deleting transaction: " + _transactionId);
 
-                    _db.deleteTransaction(transactionId);
+                    _db.deleteTransaction(_transactionId);
                     finish();
 
                     dialog.dismiss();
