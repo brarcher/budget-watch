@@ -546,15 +546,11 @@ public class TransactionViewActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
-        final Bundle b = getIntent().getExtras();
-        final boolean viewBudget = b != null && b.getBoolean("view", false);
-        final boolean editBudget = b != null && b.getBoolean("update", false);
-
-        if(viewBudget)
+        if(_viewTransaction)
         {
             getMenuInflater().inflate(R.menu.view_menu, menu);
         }
-        else if(editBudget)
+        else if(_updateTransaction)
         {
             getMenuInflater().inflate(R.menu.edit_menu, menu);
         }
@@ -583,18 +579,14 @@ public class TransactionViewActivity extends AppCompatActivity
             return true;
         }
 
-        final Bundle b = getIntent().getExtras();
-        final int transactionId = b.getInt("id");
-        final int type = b.getInt("type");
-
         if(id == R.id.action_edit)
         {
             finish();
 
             Intent i = new Intent(getApplicationContext(), TransactionViewActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putInt("id", transactionId);
-            bundle.putInt("type", type);
+            bundle.putInt("id", _transactionId);
+            bundle.putInt("type", _type);
             bundle.putBoolean("update", true);
             i.putExtras(bundle);
             startActivity(i);
@@ -611,9 +603,9 @@ public class TransactionViewActivity extends AppCompatActivity
                 @Override
                 public void onClick(DialogInterface dialog, int which)
                 {
-                    Log.e(TAG, "Deleting transaction: " + transactionId);
+                    Log.e(TAG, "Deleting transaction: " + _transactionId);
 
-                    _db.deleteTransaction(transactionId);
+                    _db.deleteTransaction(_transactionId);
                     finish();
 
                     dialog.dismiss();
