@@ -49,7 +49,8 @@ public class BudgetAdapterTest
         DBHelper db = new DBHelper(activity);
         final String NAME = "name";
         final int BUDGET = 100;
-        final int CURRENT = 50;
+        final double CURRENT = 50.01;
+        final int CURRENT_CEIL = (int)Math.ceil(CURRENT);
 
         db.insertBudget(NAME, BUDGET);
         db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "", "", NAME, CURRENT, "", nowMs, "");
@@ -67,11 +68,11 @@ public class BudgetAdapterTest
         final TextView budgetValue = (TextView) view.findViewById(R.id.budgetValue);
 
         assertEquals(NAME, budgetName.getText().toString());
-        assertEquals(CURRENT, budgetBar.getProgress());
+        assertEquals(CURRENT_CEIL, budgetBar.getProgress());
         assertEquals(SCALED_BUDGET, budgetBar.getMax());
 
         String fractionFormat = activity.getResources().getString(R.string.fraction);
-        String fraction = String.format(fractionFormat, CURRENT, SCALED_BUDGET);
+        String fraction = String.format(fractionFormat, CURRENT_CEIL, SCALED_BUDGET);
         assertEquals(fraction, budgetValue.getText().toString());
     }
 }
