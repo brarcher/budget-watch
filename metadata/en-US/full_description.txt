@@ -1,0 +1,5 @@
+Do you know where your money is going? Do you find it creepy that some financial institutions collect data and can present you with your own spending habits? Do you want to get a handle on your spending, but want to maintain your privacy?
+
+Budget Watch helps you keep track of your spending, and keep your data as your own. After adding some budgets, simply record your data-to-day transactions. You can then view how close your sending is to your budget.
+
+The application requires very few permissions, and never attempts to access the Internet. There is an option to backup your cards to local storage. From there you can send the backup somewhere safe.
