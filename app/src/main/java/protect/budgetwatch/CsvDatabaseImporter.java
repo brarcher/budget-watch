@@ -60,7 +60,7 @@ public class CsvDatabaseImporter implements DatabaseImporter
             // Closing the input stream is the responsibility of the caller.
             database.setTransactionSuccessful();
         }
-        catch(IllegalArgumentException e)
+        catch(IllegalArgumentException|IllegalStateException e)
         {
             throw new FormatException("Issue parsing CSV data", e);
         }
