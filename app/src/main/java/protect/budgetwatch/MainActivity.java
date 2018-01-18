@@ -182,51 +182,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
-        if(id == R.id.action_shortcuts)
-        {
-            addShortcuts();
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    private void addShortcuts()
-    {
-        for(int transactionType : new int[]{DBHelper.TransactionDbIds.EXPENSE, DBHelper.TransactionDbIds.REVENUE})
-        {
-            Intent shortcutIntent = new Intent(this, TransactionViewActivity.class);
-            shortcutIntent.setAction(Intent.ACTION_MAIN);
-            // Prevent instances of the view activity from piling up; if one exists let this
-            // one replace it.
-            shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            Bundle bundle = new Bundle();
-            bundle.putInt("type", transactionType);
-            shortcutIntent.putExtras(bundle);
-
-            Intent intent = new Intent();
-            intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-
-            String title;
-            if(transactionType == DBHelper.TransactionDbIds.EXPENSE)
-            {
-                title = getResources().getString(R.string.addExpenseTransactionTitle);
-            }
-            else
-            {
-                title = getResources().getString(R.string.addRevenueTransactionTitle);
-            }
-
-            intent.putExtra(Intent.EXTRA_SHORTCUT_NAME, title);
-            intent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource
-                    .fromContext(this, R.mipmap.ic_launcher));
-            intent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-            // Do not duplicate the shortcut if it is already there
-            intent.putExtra("duplicate", false);
-            getApplicationContext().sendBroadcast(intent);
-        }
-
-        Toast.makeText(this, R.string.shortcutsAdded, Toast.LENGTH_LONG).show();
     }
 
     private void displayAboutDialog()

@@ -18,6 +18,9 @@
     <string name="viewRevenueTransactionTitle">View Revenue</string>
     <string name="importExportTitle">Import/Export</string>
     <string name="totalBudgetTitle">Total</string>
+    <string name="addShortcutsTitle">Add Budget Watch Shortcut</string>
+    <string name="addExpenseTransactionShortcutTitle">Add Expense Shortcut</string>
+    <string name="addRevenueTransactionShortcutTitle">Add Revenue Shortcut</string>
 
     <string name="add">Add</string>
     <string name="selectDates">Select Dates</string>
