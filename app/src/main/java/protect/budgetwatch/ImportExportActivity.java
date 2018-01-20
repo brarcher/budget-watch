@@ -2,18 +2,17 @@ package protect.budgetwatch;
 
 import android.Manifest;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,6 +24,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -203,21 +203,17 @@ public class ImportExportActivity extends AppCompatActivity
             }
         };
 
-        String filename = fileNameFromUri(targetUri);
-        if(filename == null)
-        {
-            filename = targetUri.getPath();
-        }
+        String mimetype = getMimeType(targetUri);
 
-        if(format == null && filename != null)
+        if(format == null && mimetype != null)
         {
             // Attempt to guess the data format based on the extension
-            Log.d(TAG, "Attempting to determine file type for: " + filename);
+            Log.d(TAG, "Attempting to determine file type for: " + mimetype);
 
             for(Map.Entry<String, DataFormat> item : _fileFormatMap.entrySet())
             {
-                String key = item.getKey();
-                if(filename.toLowerCase().endsWith(key.toLowerCase()))
+                DataFormat value = item.getValue();
+                if(mimetype.toLowerCase().equals(value.mimetype()))
                 {
                     format = item.getValue();
                     break;
@@ -227,7 +223,7 @@ public class ImportExportActivity extends AppCompatActivity
 
         if(format != null)
         {
-            Log.d(TAG, "Starting import of file: " + filename);
+            Log.d(TAG, "Starting import of file");
             importExporter = new ImportExportTask(ImportExportActivity.this,
                     format, target, listener);
             importExporter.execute();
@@ -235,7 +231,7 @@ public class ImportExportActivity extends AppCompatActivity
         else
         {
             // If format is still null, then we do not know what to import
-            Log.w(TAG, "Could not import " + filename + ", could not determine extension");
+            Log.w(TAG, "Could not import file because mimetype could not get determined");
             onImportComplete(false, targetUri);
 
             try
@@ -318,31 +314,39 @@ public class ImportExportActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private String fileNameFromUri(Uri uri)
+    public String getMimeType(Uri uri)
     {
-        if("file".equals(uri.getScheme()))
+        String mimeType = null;
+
+        String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri.toString());
+        if(fileExtension != null)
         {
-            return uri.getPath();
+            fileExtension = fileExtension.toLowerCase();
+            for(DataFormat format : DataFormat.values())
+            {
+                if(fileExtension.equals(format.name().toLowerCase()))
+                {
+                    mimeType = format.mimetype();
+                    break;
+                }
+            }
         }
 
-        Cursor returnCursor =
-                getContentResolver().query(uri, null, null, null, null);
-        if(returnCursor == null)
+        if(mimeType == null && uri.getScheme() != null && uri.getScheme().equals(ContentResolver.SCHEME_CONTENT))
         {
-            return null;
+            ContentResolver cr = getContentResolver();
+            mimeType = cr.getType(uri);
+
+            if(mimeType != null)
+            {
+                if(mimeType.equals("text/comma-separated-values"))
+                {
+                    mimeType = "text/csv";
+                }
+            }
         }
 
-        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-        if(returnCursor.moveToFirst() == false)
-        {
-            returnCursor.close();
-            return null;
-        }
-
-        String name = returnCursor.getString(nameIndex);
-        returnCursor.close();
-
-        return name;
+        return mimeType;
     }
 
     private void onImportComplete(boolean success, Uri path)
@@ -359,15 +363,10 @@ public class ImportExportActivity extends AppCompatActivity
         }
 
         int messageId = success ? R.string.importedFrom : R.string.importFailed;
-
         final String template = getResources().getString(messageId);
 
         // Get the filename of the file being imported
-        String filename = fileNameFromUri(path);
-        if(filename == null)
-        {
-            filename = "(unknown)";
-        }
+        String filename = path.toString();
 
         final String message = String.format(template, filename);
         builder.setMessage(message);
@@ -495,13 +494,24 @@ public class ImportExportActivity extends AppCompatActivity
 
         try
         {
-            InputStream reader = getContentResolver().openInputStream(uri);
+            InputStream reader;
+
+            if(uri.getScheme() != null)
+            {
+                reader = getContentResolver().openInputStream(uri);
+            }
+            else
+            {
+                reader = new FileInputStream(new File(uri.toString()));
+            }
+
             Log.e(TAG, "Starting file import with: " + uri.toString());
             startImport(null, reader, uri);
         }
-        catch (FileNotFoundException e)
+        catch(FileNotFoundException e)
         {
             Log.e(TAG, "Failed to import file: " + uri.toString(), e);
+            onImportComplete(false, uri);
         }
     }
 }
