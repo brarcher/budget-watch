@@ -13,6 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Class for exporting the database into CSV (Comma Separate Values)
@@ -20,6 +23,8 @@ import java.io.OutputStreamWriter;
  */
 public class CsvDatabaseExporter implements DatabaseExporter
 {
+    private static final String DATE_FORMATTED_FIELD = "date_formatted";
+
     public void exportData(Context context, DBHelper db, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
     {
         OutputStreamWriter stream = new OutputStreamWriter(outStream, Charsets.UTF_8);
@@ -37,6 +42,7 @@ public class CsvDatabaseExporter implements DatabaseExporter
                     DBHelper.TransactionDbIds.VALUE,
                     DBHelper.TransactionDbIds.NOTE,
                     DBHelper.TransactionDbIds.DATE,
+                    DATE_FORMATTED_FIELD,
                     DBHelper.TransactionDbIds.RECEIPT);
 
             for (Cursor cursor : new Cursor[]{db.getExpenses(), db.getRevenues()})
@@ -52,6 +58,12 @@ public class CsvDatabaseExporter implements DatabaseExporter
                         receiptFilename = receiptFile.getName();
                     }
 
+                    Locale currentLocale = Locale.getDefault();
+                    DateFormat dateFormat = DateFormat.getDateTimeInstance(
+                            DateFormat.DEFAULT, DateFormat.DEFAULT, currentLocale);
+
+                    String dateFormatted = dateFormat.format(new Date(transaction.dateMs));
+
                     printer.printRecord(transaction.id,
                             transaction.type == DBHelper.TransactionDbIds.EXPENSE ?
                                     "EXPENSE" : "REVENUE",
@@ -61,6 +73,7 @@ public class CsvDatabaseExporter implements DatabaseExporter
                             transaction.value,
                             transaction.note,
                             transaction.dateMs,
+                            dateFormatted,
                             receiptFilename);
 
                     updater.update();
@@ -87,6 +100,7 @@ public class CsvDatabaseExporter implements DatabaseExporter
                         budget.max,
                         "", // blank note
                         "", // blank date
+                        "", // blank formatted date
                         ""); // blank receipt
 
                 updater.update();
