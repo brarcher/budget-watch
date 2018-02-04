@@ -20,7 +20,7 @@ class MultiFormatExporter
      * false otherwise. If false, partial data may have been
      * written to the output stream, and it should be discarded.
      */
-    public static boolean exportData(Context context, DBHelper db, OutputStream output, DataFormat format, ImportExportProgressUpdater updater)
+    public static boolean exportData(Context context, DBHelper db, Long startTimeMs, Long endTimeMs, OutputStream output, DataFormat format, ImportExportProgressUpdater updater)
     {
         DatabaseExporter exporter = null;
 
@@ -41,7 +41,7 @@ class MultiFormatExporter
         {
             try
             {
-                exporter.exportData(context, db, output, updater);
+                exporter.exportData(context, db, startTimeMs, endTimeMs, output, updater);
                 return true;
             }
             catch(IOException | InterruptedException e)

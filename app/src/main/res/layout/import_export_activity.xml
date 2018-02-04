@@ -87,6 +87,38 @@
                     android:drawSelectorOnTop="true" />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:textSize="@dimen/text_size_medium"
+                    android:layout_gravity="start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@+id/exportFileFormatSpinner"
+                    android:text="@string/dateRangeField" />
+
+                <TextView
+                    android:id="@+id/dateRangeText"
+                    android:textSize="@dimen/text_size_medium"
+                    android:layout_gravity="start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:labelFor="@+id/exportFileFormatSpinner"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/allDates" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/dateRangeSelectButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:paddingBottom="10dp"
+                android:text="@string/changeDateRange" />
+
             <Button
                 android:id="@+id/exportButton"
                 android:layout_width="match_parent"

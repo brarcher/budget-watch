@@ -15,6 +15,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -25,11 +26,23 @@ public class CsvDatabaseExporter implements DatabaseExporter
 {
     private static final String DATE_FORMATTED_FIELD = "date_formatted";
 
-    public void exportData(Context context, DBHelper db, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
+    public void exportData(Context context, DBHelper db, Long startTimeMs, Long endTimeMs, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
     {
         OutputStreamWriter stream = new OutputStreamWriter(outStream, Charsets.UTF_8);
         BufferedWriter output = new BufferedWriter(stream);
         CSVPrinter printer = new CSVPrinter(output, CSVFormat.RFC4180);
+
+        int numEntries = 0;
+
+        List<String> budgetNames = db.getBudgetNames();
+        numEntries += budgetNames.size();
+
+        Cursor expenseTransactions = db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, null, null, startTimeMs, endTimeMs);
+        numEntries += expenseTransactions.getCount();
+        Cursor revenueTransactions = db.getTransactions(DBHelper.TransactionDbIds.REVENUE, null, null, startTimeMs, endTimeMs);
+        numEntries += revenueTransactions.getCount();
+
+        updater.setTotal(numEntries);
 
         try
         {
@@ -45,7 +58,10 @@ public class CsvDatabaseExporter implements DatabaseExporter
                     DATE_FORMATTED_FIELD,
                     DBHelper.TransactionDbIds.RECEIPT);
 
-            for (Cursor cursor : new Cursor[]{db.getExpenses(), db.getRevenues()})
+            for (Cursor cursor : new Cursor[]{
+                db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, null, null, startTimeMs, endTimeMs),
+                db.getTransactions(DBHelper.TransactionDbIds.REVENUE, null, null, startTimeMs, endTimeMs)
+            })
             {
                 while (cursor.moveToNext())
                 {
@@ -88,7 +104,7 @@ public class CsvDatabaseExporter implements DatabaseExporter
             }
 
 
-            for (String budgetName : db.getBudgetNames())
+            for (String budgetName : budgetNames)
             {
                 Budget budget = db.getBudgetStoredOnly(budgetName);
 

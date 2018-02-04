@@ -22,13 +22,18 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
     private final InputStream inputStream;
     private final TaskCompleteListener listener;
 
+    // Start and end times for exporting transactions
+    private final Long startTimeMs;
+    private final Long endTimeMs;
+
     private ProgressDialog progress;
 
     /**
      * Constructor which will setup a task for exporting to the given file
      */
     ImportExportTask(Activity activity, DataFormat format,
-                            File target, TaskCompleteListener listener)
+                            File target, TaskCompleteListener listener,
+                            Long startTimeMs, Long endTimeMs)
     {
         super();
         this.activity = activity;
@@ -37,6 +42,8 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
         this.target = target;
         this.inputStream = null;
         this.listener = listener;
+        this.startTimeMs = startTimeMs;
+        this.endTimeMs = endTimeMs;
     }
 
     /**
@@ -52,6 +59,8 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
         this.target = null;
         this.inputStream = input;
         this.listener = listener;
+        this.startTimeMs = null;
+        this.endTimeMs = null;
     }
 
     private boolean performImport(InputStream inputStream, DBHelper db)
@@ -65,21 +74,18 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
         return result;
     }
 
-    private boolean performExport(File exportFile, DBHelper db)
+    private boolean performExport(File exportFile, DBHelper db, Long startTimeMs, Long endTimeMs)
     {
         boolean result = false;
 
-        final int TOTAL_ENTRIES = db.getBudgetCount()
-                + db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE)
-                + db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE);
         final String BASE_MESSAGE = ImportExportTask.this.activity.getResources().getString(R.string.exportProgressFormat);
 
-        ImportExportProgressUpdater updater = new ImportExportProgressUpdater(activity, progress, BASE_MESSAGE, TOTAL_ENTRIES);
+        ImportExportProgressUpdater updater = new ImportExportProgressUpdater(activity, progress, BASE_MESSAGE);
 
         try
         {
             FileOutputStream outStream = new FileOutputStream(exportFile);
-            result = MultiFormatExporter.exportData(this.activity, db, outStream, format, updater);
+            result = MultiFormatExporter.exportData(this.activity, db, startTimeMs, endTimeMs, outStream, format, updater);
             outStream.close();
         }
         catch (IOException e)
@@ -120,7 +126,7 @@ class ImportExportTask extends AsyncTask<Void, Void, Boolean>
         }
         else
         {
-            result = performExport(target, db);
+            result = performExport(target, db, startTimeMs, endTimeMs);
         }
 
         db.close();

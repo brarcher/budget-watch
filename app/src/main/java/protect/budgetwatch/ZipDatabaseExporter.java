@@ -15,7 +15,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipDatabaseExporter implements DatabaseExporter
 {
-    public void exportData(Context context, DBHelper db, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
+    public void exportData(Context context, DBHelper db, Long startTimeMs, Long endTimeMs, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
     {
         ZipOutputStream out = new ZipOutputStream(outStream);
 
@@ -52,6 +52,6 @@ public class ZipDatabaseExporter implements DatabaseExporter
         // Write the database to the zip file as a CSV file
         ZipEntry databaseEntry = new ZipEntry("database.csv");
         out.putNextEntry(databaseEntry);
-        MultiFormatExporter.exportData(context, db, out, DataFormat.CSV, updater);
+        MultiFormatExporter.exportData(context, db, startTimeMs, endTimeMs, out, DataFormat.CSV, updater);
     }
 }
