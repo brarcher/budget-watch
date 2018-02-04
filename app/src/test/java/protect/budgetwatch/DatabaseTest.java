@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import org.javatuples.Triplet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +18,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
 import java.util.Calendar;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -603,19 +605,19 @@ public class DatabaseTest
             }
         }
 
-        Cursor cursor = db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, BUDGET_1, null);
+        Cursor cursor = db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, BUDGET_1, null, null, null);
         assertEquals(NUM_TRANSACTIONS_BUDGET_1, cursor.getCount());
         cursor.close();
 
-        cursor = db.getTransactions(DBHelper.TransactionDbIds.REVENUE, BUDGET_1, null);
+        cursor = db.getTransactions(DBHelper.TransactionDbIds.REVENUE, BUDGET_1, null, null, null);
         assertEquals(NUM_TRANSACTIONS_BUDGET_1, cursor.getCount());
         cursor.close();
 
-        cursor = db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, BUDGET_2, null);
+        cursor = db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, BUDGET_2, null, null, null);
         assertEquals(NUM_TRANSACTIONS_BUDGET_2, cursor.getCount());
         cursor.close();
 
-        cursor = db.getTransactions(DBHelper.TransactionDbIds.REVENUE, BUDGET_2, null);
+        cursor = db.getTransactions(DBHelper.TransactionDbIds.REVENUE, BUDGET_2, null, null, null);
         assertEquals(NUM_TRANSACTIONS_BUDGET_2, cursor.getCount());
         cursor.close();
     }
@@ -654,11 +656,11 @@ public class DatabaseTest
             assertTrue(result);
 
             // Second entry
-            result = db.insertTransaction(type, "destination", "actions", BUDGET_2, 10, "notation", 0, "receipt.jpg");
+            result = db.insertTransaction(type, "destination", "actions", BUDGET_2, 10, "notation", 1, "receipt.jpg");
             assertTrue(result);
 
             // Third entry
-            result = db.insertTransaction(type, "nowhere", "abc", BUDGET_1, 222, "words", 0, "description");
+            result = db.insertTransaction(type, "nowhere", "abc", BUDGET_1, 222, "words", 2, "description");
             assertTrue(result);
         }
 
@@ -668,7 +670,7 @@ public class DatabaseTest
                 // Should only pick up First
                 for(String search : new String[]{"description", "account", "100", "note"})
                 {
-                    Cursor cursor = db.getTransactions(type, null, search);
+                    Cursor cursor = db.getTransactions(type, null, search, null, null);
                     printTransactions(cursor);
                     assertEquals(1, cursor.getCount());
                     cursor.moveToFirst();
@@ -682,7 +684,7 @@ public class DatabaseTest
                 // Should pick up First, Second
                 for(String search : new String[]{"des", "ac", "10", "not"})
                 {
-                    Cursor cursor = db.getTransactions(type, null, search);
+                    Cursor cursor = db.getTransactions(type, null, search, null, null);
                     printTransactions(cursor);
                     assertEquals(2, cursor.getCount());
 
@@ -723,13 +725,44 @@ public class DatabaseTest
                 // Should only pick up First
                 for(String search : new String[]{"des", "ac", "10", "not"})
                 {
-                    Cursor cursor = db.getTransactions(type, BUDGET_1, search);
+                    Cursor cursor = db.getTransactions(type, BUDGET_1, search, null, null);
                     printTransactions(cursor);
                     assertEquals(1, cursor.getCount());
                     cursor.moveToFirst();
                     Transaction transaction = Transaction.toTransaction(cursor);
                     assertEquals(transaction.description, "description");
                     cursor.close();
+                }
+            }
+
+            {
+                LinkedList<Triplet<Long, Long, Integer>> tests = new LinkedList<>();
+                tests.add(new Triplet<>(0L, 0L, 1));
+                tests.add(new Triplet<>(1L, 1L, 1));
+                tests.add(new Triplet<>(2L, 2L, 1));
+                tests.add(new Triplet<>(3L, 3L, 0));
+                tests.add(new Triplet<>(0L, 10000L, 3));
+                tests.add(new Triplet<>(1L, 10000L, 2));
+                for(Triplet<Long, Long, Integer> test : tests)
+                {
+                    Long startTimeMs = test.getValue0();
+                    Long endTimeMs = test.getValue1();
+                    int expectedEntries = test.getValue2();
+
+                    Cursor cursor = db.getTransactions(type, null, null, startTimeMs, endTimeMs);
+
+                    assertEquals(expectedEntries, cursor.getCount());
+
+                    if(expectedEntries > 0)
+                    {
+                        cursor.moveToFirst();
+                        do
+                        {
+                            Transaction transaction = Transaction.toTransaction(cursor);
+                            assertTrue(transaction.dateMs >= startTimeMs);
+                            assertTrue(transaction.dateMs <= endTimeMs);
+                        }while(cursor.moveToNext());
+                    }
                 }
             }
         }
