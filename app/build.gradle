@@ -54,6 +54,7 @@ dependencies {
     compile 'com.github.apl-devs:appintro:v4.2.0'
     testCompile 'junit:junit:4.12'
     testCompile "org.robolectric:robolectric:3.4.2"
+    testCompile group: 'org.javatuples', name: 'javatuples', version: '1.2'
 }
 
 task findbugs(type: FindBugs, dependsOn: 'assembleDebug') {

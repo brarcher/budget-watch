@@ -48,7 +48,7 @@ public class TransactionFragment extends Fragment
         ListView listView = (ListView) layout.findViewById(R.id.list);
         final TextView helpText = (TextView) layout.findViewById(R.id.helpText);
 
-        Cursor cursor = _db.getTransactions(_transactionType, budgetToDisplay, searchToUse);
+        Cursor cursor = _db.getTransactions(_transactionType, budgetToDisplay, searchToUse, null, null);
 
         if(cursor.getCount() > 0)
         {

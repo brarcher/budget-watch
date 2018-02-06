@@ -27,7 +27,9 @@ import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.collect.ImmutableMap;
@@ -37,7 +39,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +54,8 @@ public class ImportExportActivity extends AppCompatActivity
 
     private ImportExportTask importExporter;
     private Map<String, DataFormat> _fileFormatMap;
+    private Long exportStartDateMs;
+    private Long exportEndDateMs;
 
     private final File sdcardDir = Environment.getExternalStorageDirectory();
     private final String exportFilename = "BudgetWatch";
@@ -99,6 +105,65 @@ public class ImportExportActivity extends AppCompatActivity
                         PERMISSIONS_EXTERNAL_STORAGE);
             }
         }
+
+        Button dateRangeButton = (Button)findViewById(R.id.dateRangeSelectButton);
+        dateRangeButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(ImportExportActivity.this);
+                builder.setTitle(R.string.exportDateRangeHelp);
+                final View datePickerView = getLayoutInflater().inflate(R.layout.budget_date_picker_layout, null, false);
+                builder.setView(datePickerView);
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.cancel();
+                    }
+                });
+                builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        DatePicker startDatePicker = (DatePicker) datePickerView.findViewById(R.id.startDate);
+                        DatePicker endDatePicker = (DatePicker) datePickerView.findViewById(R.id.endDate);
+
+                        long startDateMs = CalendarUtil.getStartOfDayMs(startDatePicker.getYear(),
+                                startDatePicker.getMonth(), startDatePicker.getDayOfMonth());
+                        long endDateMs = CalendarUtil.getEndOfDayMs(endDatePicker.getYear(),
+                                endDatePicker.getMonth(), endDatePicker.getDayOfMonth());
+
+                        if (startDateMs > endDateMs)
+                        {
+                            Toast.makeText(ImportExportActivity.this, R.string.startDateAfterEndDate, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        exportStartDateMs = startDateMs;
+                        exportEndDateMs = endDateMs;
+
+                        final Calendar date = Calendar.getInstance();
+
+                        date.setTimeInMillis(exportStartDateMs);
+                        String startDateString = DateFormat.getDateInstance(DateFormat.SHORT).format(date.getTime());
+
+                        date.setTimeInMillis(exportEndDateMs);
+                        String endDateString = DateFormat.getDateInstance(DateFormat.SHORT).format(date.getTime());
+
+                        String dateRangeFormat = getResources().getString(R.string.dateRangeFormat);
+                        String dateRangeString = String.format(dateRangeFormat, startDateString, endDateString);
+                        TextView dateRangeText = (TextView)findViewById(R.id.dateRangeText);
+                        dateRangeText.setText(dateRangeString);
+                    }
+                });
+
+                builder.show();
+            }
+        });
 
         Button exportButton = (Button)findViewById(R.id.exportButton);
         exportButton.setOnClickListener(new View.OnClickListener()
@@ -259,7 +324,7 @@ public class ImportExportActivity extends AppCompatActivity
         };
 
         importExporter = new ImportExportTask(ImportExportActivity.this,
-                format, exportFile, listener);
+                format, exportFile, listener, exportStartDateMs, exportEndDateMs);
         importExporter.execute();
     }
 

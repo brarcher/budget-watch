@@ -13,6 +13,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Class for exporting the database into CSV (Comma Separate Values)
@@ -20,11 +24,25 @@ import java.io.OutputStreamWriter;
  */
 public class CsvDatabaseExporter implements DatabaseExporter
 {
-    public void exportData(Context context, DBHelper db, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
+    private static final String DATE_FORMATTED_FIELD = "date_formatted";
+
+    public void exportData(Context context, DBHelper db, Long startTimeMs, Long endTimeMs, OutputStream outStream, ImportExportProgressUpdater updater) throws IOException, InterruptedException
     {
         OutputStreamWriter stream = new OutputStreamWriter(outStream, Charsets.UTF_8);
         BufferedWriter output = new BufferedWriter(stream);
         CSVPrinter printer = new CSVPrinter(output, CSVFormat.RFC4180);
+
+        int numEntries = 0;
+
+        List<String> budgetNames = db.getBudgetNames();
+        numEntries += budgetNames.size();
+
+        Cursor expenseTransactions = db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, null, null, startTimeMs, endTimeMs);
+        numEntries += expenseTransactions.getCount();
+        Cursor revenueTransactions = db.getTransactions(DBHelper.TransactionDbIds.REVENUE, null, null, startTimeMs, endTimeMs);
+        numEntries += revenueTransactions.getCount();
+
+        updater.setTotal(numEntries);
 
         try
         {
@@ -37,9 +55,13 @@ public class CsvDatabaseExporter implements DatabaseExporter
                     DBHelper.TransactionDbIds.VALUE,
                     DBHelper.TransactionDbIds.NOTE,
                     DBHelper.TransactionDbIds.DATE,
+                    DATE_FORMATTED_FIELD,
                     DBHelper.TransactionDbIds.RECEIPT);
 
-            for (Cursor cursor : new Cursor[]{db.getExpenses(), db.getRevenues()})
+            for (Cursor cursor : new Cursor[]{
+                db.getTransactions(DBHelper.TransactionDbIds.EXPENSE, null, null, startTimeMs, endTimeMs),
+                db.getTransactions(DBHelper.TransactionDbIds.REVENUE, null, null, startTimeMs, endTimeMs)
+            })
             {
                 while (cursor.moveToNext())
                 {
@@ -52,6 +74,12 @@ public class CsvDatabaseExporter implements DatabaseExporter
                         receiptFilename = receiptFile.getName();
                     }
 
+                    Locale currentLocale = Locale.getDefault();
+                    DateFormat dateFormat = DateFormat.getDateTimeInstance(
+                            DateFormat.DEFAULT, DateFormat.DEFAULT, currentLocale);
+
+                    String dateFormatted = dateFormat.format(new Date(transaction.dateMs));
+
                     printer.printRecord(transaction.id,
                             transaction.type == DBHelper.TransactionDbIds.EXPENSE ?
                                     "EXPENSE" : "REVENUE",
@@ -61,6 +89,7 @@ public class CsvDatabaseExporter implements DatabaseExporter
                             transaction.value,
                             transaction.note,
                             transaction.dateMs,
+                            dateFormatted,
                             receiptFilename);
 
                     updater.update();
@@ -75,7 +104,7 @@ public class CsvDatabaseExporter implements DatabaseExporter
             }
 
 
-            for (String budgetName : db.getBudgetNames())
+            for (String budgetName : budgetNames)
             {
                 Budget budget = db.getBudgetStoredOnly(budgetName);
 
@@ -87,6 +116,7 @@ public class CsvDatabaseExporter implements DatabaseExporter
                         budget.max,
                         "", // blank note
                         "", // blank date
+                        "", // blank formatted date
                         ""); // blank receipt
 
                 updater.update();

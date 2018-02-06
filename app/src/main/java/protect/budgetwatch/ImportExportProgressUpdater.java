@@ -14,21 +14,21 @@ class ImportExportProgressUpdater
     private final Activity activity;
     private final ProgressDialog dialog;
     private final String baseMessage;
-    private final Integer totalEntries;
 
+    private Integer totalEntries;
     private int entriesMoved = 0;
     private long lastUpdateTimeMs = 0;
 
     ImportExportProgressUpdater(Activity activity, ProgressDialog dialog, String baseMessage)
     {
-        this(activity, dialog, baseMessage, null);
-    }
-
-    ImportExportProgressUpdater(Activity activity, ProgressDialog dialog, String baseMessage, Integer totalEntries)
-    {
         this.activity = activity;
         this.dialog = dialog;
         this.baseMessage = baseMessage;
+        this.totalEntries = null;
+    }
+
+    public void setTotal(int totalEntries)
+    {
         this.totalEntries = totalEntries;
     }
 

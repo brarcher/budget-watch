@@ -614,7 +614,7 @@ class DBHelper extends SQLiteOpenHelper
      *      if not null, all returned expenses will have at least one field
      *      which contains this query string
      */
-    public Cursor getTransactions(int type, String budget, String search)
+    public Cursor getTransactions(int type, String budget, String search, Long startDateMs, Long endDateMs)
     {
         SQLiteDatabase db = getReadableDatabase();
 
@@ -649,6 +649,14 @@ class DBHelper extends SQLiteOpenHelper
             query += " )";
         }
 
+        if(startDateMs != null && endDateMs != null)
+        {
+            query += " AND " + TransactionDbIds.DATE + " >= ? AND " +
+                    TransactionDbIds.DATE + " <= ?";
+            args.addLast(Long.toString(startDateMs));
+            args.addLast(Long.toString(endDateMs));
+        }
+
         query += " ORDER BY " + TransactionDbIds.DATE + " DESC";
 
         String [] argArray = args.toArray(new String[args.size()]);
@@ -663,7 +671,7 @@ class DBHelper extends SQLiteOpenHelper
      */
     public Cursor getExpenses()
     {
-        return getTransactions(TransactionDbIds.EXPENSE, null, null);
+        return getTransactions(TransactionDbIds.EXPENSE, null, null, null, null);
     }
 
     /**
@@ -672,7 +680,7 @@ class DBHelper extends SQLiteOpenHelper
      */
     public Cursor getRevenues()
     {
-        return getTransactions(TransactionDbIds.REVENUE, null, null);
+        return getTransactions(TransactionDbIds.REVENUE, null, null, null, null);
     }
 
     /**

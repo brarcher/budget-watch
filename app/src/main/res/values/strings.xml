@@ -78,6 +78,10 @@
 
     <string name="importExport">Import/Export</string>
     <string name="exportName">Export</string>
+    <string name="dateRangeField">Date Range:</string>
+    <string name="allDates">All Dates</string>
+    <string name="changeDateRange">Change date range</string>
+    <string name="exportDateRangeHelp">Select date range of transactions to export</string>
     <string name="importedFrom">Imported from: %1$s</string>
     <string name="fileFormat">File format</string>
     <string name="exportedTo">Exported to: %1$s</string>
