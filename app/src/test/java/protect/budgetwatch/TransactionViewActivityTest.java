@@ -377,8 +377,7 @@ public class TransactionViewActivityTest
 
         intent.putExtras(bundle);
 
-        ActivityController activityController = Robolectric.buildActivity(TransactionViewActivity.class)
-                .withIntent(intent).create();
+        ActivityController activityController = Robolectric.buildActivity(TransactionViewActivity.class, intent).create();
 
         Activity activity = (Activity)activityController.get();
 
@@ -412,8 +411,7 @@ public class TransactionViewActivityTest
             intent.setAction(TransactionViewActivity.ACTION_NEW_REVENUE);
         }
 
-        ActivityController activityController = Robolectric.buildActivity(TransactionViewActivity.class)
-                .withIntent(intent).create();
+        ActivityController activityController = Robolectric.buildActivity(TransactionViewActivity.class, intent).create();
 
         Activity activity = (Activity)activityController.get();
 
