@@ -80,8 +80,7 @@ public class BudgetViewActivityTest
 
         intent.putExtras(bundle);
 
-        ActivityController activityController = Robolectric.buildActivity(BudgetViewActivity.class)
-                .withIntent(intent).create();
+        ActivityController activityController = Robolectric.buildActivity(BudgetViewActivity.class, intent).create();
 
         Activity activity = (Activity)activityController.get();
         DBHelper db = new DBHelper(activity);

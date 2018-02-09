@@ -38,7 +38,7 @@ public class ReceiptViewActivityTest
         intent.putExtras(bundle);
 
         activityController = Robolectric.buildActivity(
-                ReceiptViewActivity.class).withIntent(intent).create();
+                ReceiptViewActivity.class, intent).create();
     }
 
     @Test
