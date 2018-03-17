@@ -48,6 +48,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,9 +65,13 @@ public class TransactionViewActivity extends AppCompatActivity
     static final String ACTION_NEW_EXPENSE = "ActionAddExpense";
     static final String ACTION_NEW_REVENUE = "ActionAddRevenue";
 
-    static final String PREFS_SEARCH_HISTORY = "NameHistory";
+    static final String[] PREFS_HISTORY = {"NameHistory", "AccountHistory", "ValueHistory", "NoteHistory"};
+    static final int NAME_PREF = 0;
+    static final int ACCOUNT_PREF = 1;
+    static final int VALUE_PREF = 2;
+    static final int NOTE_PREF = 3;
     private SharedPreferences prefs;
-    private Set<String> history;
+    private HashMap<String, Set<String>> history;
 
     private String capturedUncommittedReceipt = null;
     private DBHelper _db;
@@ -136,23 +141,35 @@ public class TransactionViewActivity extends AppCompatActivity
 
     private void setAutoCompleteFromHistory()
     {
-        AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.nameEdit);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this, android.R.layout.simple_list_item_1, history.toArray(new String[history.size()]));
-        textView.setAdapter(adapter);
-        textView.setThreshold(1);
+        HashMap<String, AutoCompleteTextView> autoCompleteTextViews = new HashMap<>();
+        autoCompleteTextViews.put(PREFS_HISTORY[0], (AutoCompleteTextView) findViewById(R.id.nameEdit));
+        autoCompleteTextViews.put(PREFS_HISTORY[1], (AutoCompleteTextView) findViewById(R.id.accountEdit));
+        autoCompleteTextViews.put(PREFS_HISTORY[2], (AutoCompleteTextView) findViewById(R.id.valueEdit));
+        autoCompleteTextViews.put(PREFS_HISTORY[3], (AutoCompleteTextView) findViewById(R.id.noteEdit));
+
+        for (String prefEntry : PREFS_HISTORY) {
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    this,
+                    android.R.layout.simple_dropdown_item_1line,
+                    history.get(prefEntry).toArray(new String[history.get(prefEntry).size()]));
+            autoCompleteTextViews.get(prefEntry).setAdapter(adapter);
+            autoCompleteTextViews.get(prefEntry).setThreshold(1);
+        }
+
     }
 
-    private void addPreviousEntry(String input) {
-        if (!history.contains(input)) {
-            history.add(input);
+    private void addPreviousEntry(int field, String input) {
+        if (!history.get(PREFS_HISTORY[field]).contains(input)) {
+            history.get(PREFS_HISTORY[field]).add(input);
         }
     }
 
     private void savePreferences()
     {
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putStringSet(PREFS_SEARCH_HISTORY, history);
+        for (String prefEntry : PREFS_HISTORY) {
+            editor.putStringSet(prefEntry, history.get(prefEntry));
+        }
         editor.apply();
         editor.commit();
     }
@@ -195,7 +212,10 @@ public class TransactionViewActivity extends AppCompatActivity
         _budgetSpinner = (Spinner) findViewById(R.id.budgetSpinner);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        history = prefs.getStringSet(PREFS_SEARCH_HISTORY, new HashSet<String>());
+        history = new HashMap<>();
+        for (String prefEntry : PREFS_HISTORY) {
+            history.put(prefEntry, prefs.getStringSet(prefEntry, new HashSet<String>()));
+        }
         setAutoCompleteFromHistory();
 
         extractIntentFields(getIntent());
@@ -509,7 +529,10 @@ public class TransactionViewActivity extends AppCompatActivity
                     value, note, dateMs, receipt);
         }
 
-        addPreviousEntry(name);
+        addPreviousEntry(NAME_PREF, name);
+        addPreviousEntry(ACCOUNT_PREF, account);
+        addPreviousEntry(VALUE_PREF, valueStr);
+        addPreviousEntry(NOTE_PREF, note);
         savePreferences();
 
         finish();
