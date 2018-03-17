@@ -63,7 +63,7 @@
                             android:padding="@dimen/inputPadding"
                             android:textSize="@dimen/inputSize"/>
 
-                        <EditText
+                        <AutoCompleteTextView
                             android:id="@+id/nameEdit"
                             android:inputType="textCapWords"
                             android:layout_height="wrap_content"
@@ -170,7 +170,7 @@
                             android:padding="@dimen/inputPadding"
                             android:textSize="@dimen/inputSize"/>
 
-                        <EditText
+                        <AutoCompleteTextView
                             android:id="@+id/accountEdit"
                             android:inputType="textCapWords"
                             android:layout_height="wrap_content"
@@ -219,7 +219,7 @@
                             android:padding="@dimen/inputPadding"
                             android:textSize="@dimen/inputSize"/>
 
-                        <EditText
+                        <AutoCompleteTextView
                             android:id="@+id/valueEdit"
                             android:inputType="numberDecimal"
                             android:layout_height="wrap_content"
@@ -268,7 +268,7 @@
                             android:padding="@dimen/inputPadding"
                             android:textSize="@dimen/inputSize"/>
 
-                        <EditText
+                        <AutoCompleteTextView
                             android:id="@+id/noteEdit"
                             android:inputType="textCapWords"
                             android:layout_height="wrap_content"
