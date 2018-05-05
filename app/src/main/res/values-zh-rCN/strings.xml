@@ -1,0 +1,170 @@
+<resources
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Budget Watch</string>
+    <string name="icon">图标</string>
+    <string name="budgetsTitle">预算</string>
+    <string name="addBudgetTitle">添加预算</string>
+    <string name="viewBudgetTitle">查看预算</string>
+    <string name="editBudgetTitle">编辑预算</string>
+    <string name="budgetDescription">创建和管理预算</string>
+    <string name="transactionsTitle">交易</string>
+    <string name="transactionsDescription">输入交易和收入</string>
+    <string name="addExpenseTransactionTitle">添加支出</string>
+    <string name="editExpenseTransactionTitle">编辑支出</string>
+    <string name="viewExpenseTransactionTitle">查看支出</string>
+    <string name="addRevenueTransactionTitle">添加收入</string>
+    <string name="editRevenueTransactionTitle">编辑收入</string>
+    <string name="viewRevenueTransactionTitle">查看收入</string>
+    <string name="importExportTitle">导入/导出</string>
+    <string name="totalBudgetTitle">总计</string>
+    <string name="addShortcutsTitle">添加 Budget Watch 快捷方式</string>
+    <string name="addExpenseTransactionShortcutTitle">添加支出快捷方式</string>
+    <string name="addRevenueTransactionShortcutTitle">添加收入快捷方式</string>
+
+    <string name="add">添加</string>
+    <string name="selectDates">选择日期</string>
+    <string name="type">类型</string>
+    <string name="value">价值</string>
+    <string name="name">名称</string>
+    <string name="budget">预算</string>
+    <string name="account">账户</string>
+    <string name="note">注解</string>
+    <string name="date">日期</string>
+    <string name="save">保存</string>
+    <string name="cancel">取消</string>
+    <string name="set">设置</string>
+    <string name="receipt">收据</string>
+    <string name="capture">拍照留存</string>
+    <string name="view">查看</string>
+    <string name="update">更新</string>
+    <string name="clean">清理</string>
+    <string name="ok">OK</string>
+    <string name="share">分享</string>
+    <string name="confirm">确认</string>
+
+    <string name="Grocery">食品杂货</string>
+    <string name="one_hundred">100</string>
+    <string name="fraction">%1$d/%2$d</string>
+
+    <string name="budgetTypeMissing">预算类型是空的</string>
+    <string name="budgetValueMissing">预算价值是空的</string>
+    <string name="budgetMissing">未选择任何预算</string>
+    <string name="valueMissing">价值是空的</string>
+    <string name="valueInvalid">价值无效</string>
+    <string name="dateInvalid">日期无效</string>
+
+    <string name="expensesTitle">支出</string>
+    <string name="revenuesTitle">收入</string>
+
+    <string name="edit">编辑</string>
+    <string name="delete">删除</string>
+
+    <!-- A date range, where both arguments are date strings -->
+    <string name="dateRangeFormat">%1$s ~ %2$s</string>
+
+    <string name="noBudgets">您现在还没有预算。点击上面的“+”（加号）按钮来创建预算。\n\nBudget Watch 允许您创建预算然后跟踪每个月的开销情况。</string>
+    <string name="noExpenses">您现在还没有支出交易。点击上面的“+”（加号）按钮来创建支出交易。</string>
+    <string name="noExpensesForBudget">“%1$s”预算下没有任何支出交易。</string>
+    <string name="noRevenues">您现在还没有收入交易。点击上面的“+”（加号）按钮来创建收入交易。</string>
+    <string name="noRevenuesForBudget">“%1$s”预算下没有任何收入交易。</string>
+
+    <string name="budgetDateRangeHelp">选择显示预算的日期范围</string>
+    <string name="startDate">开始日期</string>
+    <string name="endDate">结束日期</string>
+    <string name="startDateAfterEndDate">开始日期必须在结束日期之前或和结束日期相同</string>
+
+    <string name="cleanupHelp">选择日期；在该日期当天和之前的所有收据会被删除</string>
+
+    <string name="importExport">导入/导出</string>
+    <string name="exportName">导出</string>
+    <string name="dateRangeField">日期范围：</string>
+    <string name="allDates">全部日期</string>
+    <string name="changeDateRange">选择日期范围</string>
+    <string name="exportDateRangeHelp">选择要导出交易的日期范围</string>
+    <string name="importedFrom">已导入自：%1$s</string>
+    <string name="fileFormat">文件格式</string>
+    <string name="exportedTo">已导出到：%1$s</string>
+    <string name="importFailed">导入失败：%1$s</string>
+    <string name="exportFailed">导出失败：%1$s</string>
+    <string name="importing">正在导入&#8230;</string>
+    <string name="exporting">正在导出&#8230;</string>
+
+    <string name="purgeOldReceipts">清除旧的收据</string>
+    <string name="cleaning">正在清理&#8230;</string>
+
+    <string name="loading">正在加载&#8230;</string>
+
+    <string name="pictureCaptureError">无法使用相机来拍照</string>
+    <string name="noCameraPermissionError">无法在没有相机权限的情况下拍照留存收据</string>
+
+    <string name="iconDescription">BudgetWatch 图标</string>
+    <string name="addExpenseDescription">添加一笔支出交易</string>
+
+    <string name="about">关于</string>
+    <string name="app_copyright_fmt">Copyright 2016-<xliff:g>%d</xliff:g> Branden Archer</string>
+    <string name="app_license">以 GPLv3 授权。</string>
+    <string name="about_title_fmt">关于 <xliff:g id="app_name">%s</xliff:g></string>
+<string name="debug_version_fmt">版本：<xliff:g id="version">%s</xliff:g></string>
+<string name="app_revision_fmt">修订版信息：<xliff:g id="app_revision_url">%s</xliff:g></string>
+<string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> 使用以下第三方库：<xliff:g id="app_libraries_list">%s</xliff:g></string>
+<string name="app_resources"><xliff:g id="app_name">%s</xliff:g> 使用以下第三方资源：<xliff:g id="app_resources_list">%s</xliff:g></string>
+
+<string name="settings">设置</string>
+<string name="receiptQuality">收据照片质量</string>
+<string name="receiptQualitySummary">选择拍照留存收据时要使用的 JPEG 质量</string>
+<string name="encodingReceipt">正在编码收据</string>
+
+<string name="deleteBudgetTitle">移除预算</string>
+<string name="deleteBudgetConfirmation">请确认您想要删除该预算。与该预算关联的所有交易都会被保留下来。</string>
+<string name="deleteTransactionTitle">移除交易</string>
+<string name="deleteTransactionConfirmation">请确认您想要删除该交易。</string>
+
+<string name="importExportHelp">您可以使用备份的数据将您的预算和交易迁移到另一台设备上。</string>
+<string name="importSuccessfulTitle">导入成功</string>
+<string name="importFailedTitle">导入失败</string>
+<string name="exportSuccessfulTitle">导出成功</string>
+<string name="exportFailedTitle">导出失败</string>
+<string name="noExternalStoragePermissionError">无法在没有外部存储权限的情况下导入自或导出到存储卡</string>
+<string name="exportOptionExplanation">数据已写入到外部存储的根目录。</string>
+<string name="importOptionFilesystemTitle">从文件系统导入</string>
+<string name="importOptionFilesystemExplanation">从文件系统中选择一个文件</string>
+<string name="importOptionFilesystemButton">从文件系统</string>
+<string name="importOptionApplicationTitle">从文件系统导入</string>
+<string name="importOptionApplicationExplanation">使用外部应用，比如 Dropbox、Google Drive，或者您喜欢的文件管理器，来打开文件。</string>
+<string name="importOptionApplicationButton">使用外部应用</string>
+<string name="importOptionFixedTitle">从导出位置导入</string>
+<string name="importOptionFixedExplanation">从与导出时的写入位置一样的文件系统位置导入</string>
+<string name="importOptionFixedButton">使用导出位置</string>
+<string name="sendLabel">发送&#8230;</string>
+
+<string name="search">搜索</string>
+<string name="searchHint">搜索&#8230;</string>
+<string name="searchEmptyExpenses">没有匹配的支出交易。</string>
+<string name="searchEmptyRevenues">没有匹配的收入交易。</string>
+
+<string name="addExpenseDisabled">添加支出已被禁用</string>
+<string name="addRevenueDisabled">添加收入已被禁用</string>
+
+<string name="startIntro">开始介绍</string>
+<string name="intro1Title">欢迎使用 Budget Watch\n</string>
+<string name="intro1Description">以跟踪花费的方式管理您的预算。</string>
+<string name="intro2Title">预算\n</string>
+<string name="intro2Description">您可以创建您想要跟踪的任意数量的预算，每个预算有自己的每月支出上限。\n\n要创建预算，只需在主界面点击“预算”，然后点击菜单中的加号。</string>
+<string name="intro3Title">交易\n</string>
+<string name="intro3Description">创建好预算后，您可以添加应用于预算的交易。\n\n要创建交易，只需在主界面点击“交易”，然后选择“支出”或“收入”标签页，再点击菜单中的加号。</string>
+<string name="intro4Title">过滤\n</string>
+<string name="intro4Description">点击一个预算可以显示该预算下的所有交易。</string>
+<string name="intro5Title">预算窗口\n</string>
+<string name="intro5Description">在默认情况下，预算列表显示的是当月的支出。若要更改显示的时间窗口，可以点击菜单中的日历图标。</string>
+<string name="intro6Title">预算窗口\n</string>
+<string name="intro6Description">您可以备份预算和交易数据。要导出或导入数据，请在主界面上点击“导出/导入”图标。</string>
+<string name="intro7Title">用户反馈\n</string>
+<string name="intro7Description">本应用免费，无广告，并且开放源代码。点击主界面菜单中的“关于”可以了解详情。\n\n请在应用商店中留下您的反馈！(:</string>
+
+<string name="exportProgressFormat">已导出 <xliff:g id="completed">%d</xliff:g> / <xliff:g id="total"> %d</xliff:g>条。</string>
+<string name="importProgressFormat">已导出 <xliff:g id="completed"> %d</xliff:g> 条。</string>
+
+<string name="addShortcuts">添加快捷方式</string>
+<string name="shortcutsAdded">快捷方式已添加</string>
+</resources>
