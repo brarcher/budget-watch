@@ -1,0 +1,171 @@
+<resources
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Budget Watch</string>
+    <string name="icon">icône</string>
+    <string name="budgetsTitle">Budgets</string>
+    <string name="addBudgetTitle">Ajouter un budget</string>
+    <string name="viewBudgetTitle">Voir le budget</string>
+    <string name="editBudgetTitle">Modifier le budget</string>
+    <string name="budgetDescription">Créer et gérer des budgets</string>
+    <string name="transactionsTitle">Transactions</string>
+    <string name="transactionsDescription">Entrer les transactions et les revenus</string>
+    <string name="addExpenseTransactionTitle">Ajouter des dépenses</string>
+    <string name="editExpenseTransactionTitle">Modifier les dépenses</string>
+    <string name="viewExpenseTransactionTitle">Voir les dépenses</string>
+    <string name="addRevenueTransactionTitle">Ajouter des revenus</string>
+    <string name="editRevenueTransactionTitle">Modifier des revenus</string>
+    <string name="viewRevenueTransactionTitle">Voir les revenus</string>
+    <string name="importExportTitle">Importer / Exporter</string>
+    <string name="totalBudgetTitle">Total</string>
+    <string name="addShortcutsTitle">Ajouter un raccourci de veille budgétaire</string>
+    <string name="addExpenseTransactionShortcutTitle">Ajouter un raccourci de dépenses</string>
+    <string name="addRevenueTransactionShortcutTitle">Ajouter un raccourci de revenu</string>
+
+    <string name="add">Ajouter</string>
+    <string name="selectDates">Sélectionnez les dates</string>
+    <string name="type">Type</string>
+    <string name="value">Valeur</string>
+    <string name="name">Prénom</string>
+    <string name="budget">Budget </string>
+    <string name="account">Compte</string>
+    <string name="note">Note</string>
+    <string name="date">Date</string>
+    <string name="save">Sauvegarder</string>
+    <string name="cancel">Annuler</string>
+    <string name="set">Appliquer</string>
+    <string name="receipt">Reçu</string>
+    <string name="capture">Capturer</string>
+    <string name="view">Aperçu</string>
+    <string name="update">Mise à jour</string>
+    <string name="clean">Nettoyer</string>
+    <string name="ok">OK</string>
+    <string name="share">Partager</string>
+    <string name="confirm">Confirmer</string>
+
+    <string name="Grocery">Épicerie</string>
+    <string name="one_hundred">100</string>
+    <string name="fraction">%1$d/%2$d</string>
+
+    <string name="budgetTypeMissing">Le type de budget est vide</string>
+    <string name="budgetValueMissing">La valeur du budget est vide</string>
+    <string name="budgetMissing">Aucun budget sélectionné</string>
+    <string name="valueMissing">La valeur est vide</string>
+    <string name="valueInvalid">Valeur invalide</string>
+    <string name="dateInvalid">Date invalide</string>
+
+    <string name="expensesTitle">Dépenses</string>
+    <string name="revenuesTitle">Revenus</string>
+
+    <string name="edit">Modifier</string>
+    <string name="delete">Effacer</string>
+
+    <!-- A date range, where both arguments are date strings -->
+    <string name="dateRangeFormat">%1$s ~ %2$s</string>
+
+    <string name="noBudgets">Vous n\'avez aucun budget pour le moment. Cliquez sur le bouton "+" (plus) en haut pour commencer.\n\nBudget Watch vous permet de créer des budgets, puis suivre les dépenses au cours du mois.</string>
+    <string name="noExpenses">Vous n\'avez aucune transaction de dépenses pour le moment. Cliquez sur le bouton "+" (plus) en haut pour commencer.</string>
+    <string name="noExpensesForBudget">Vous n\'avez aucune transaction de dépenses pour le budget "%1$s"</string>
+    <string name="noRevenues">Vous n\'avez aucune transaction de revenus pour le moment. Cliquez sur le bouton "+" (plus) en haut pour commencer.</string>
+    <string name="noRevenuesForBudget">Vous n\'avez aucune transaction de revenus pour le budget "%1$s"</string>
+
+    <string name="budgetDateRangeHelp">Sélectionner la plage de dates à afficher pour les budgets</string>
+    <string name="startDate">Date de début</string>
+    <string name="endDate">Date de fin</string>
+    <string name="startDateAfterEndDate">La date de début doit être avant la date de fin</string>
+
+    <string name="cleanupHelp">Sélectionner une date; tous les reçus à ou avant la date seront supprimés</string>
+
+    <string name="importExport">Importer/Exporter</string>
+    <string name="exportName">Exporter</string>
+    <string name="dateRangeField">Plage de dates:</string>
+    <string name="allDates">Toutes les dates</string>
+    <string name="changeDateRange">Modifier la plage de dates</string>
+    <string name="exportDateRangeHelp">Sélectionner la plage de dates des transactions à exporter</string>
+    <string name="importedFrom">Importé depuis: %1$s</string>
+    <string name="fileFormat">Format du fichier</string>
+    <string name="exportedTo">Exporté vers: %1$s</string>
+    <string name="importFailed">Impossible d\'importer: %1$s</string>
+    <string name="exportFailed">Échec de l\'exportation: %1$s</string>
+    <string name="importing">Importation&#8230;</string>
+    <string name="exporting">Exportation&#8230;</string>
+
+    <string name="purgeOldReceipts">Supprimer les anciens reçus</string>
+    <string name="cleaning">Nettoyage&#8230;</string>
+
+    <string name="loading">Chargement&#8230;</string>
+
+    <string name="pictureCaptureError">Impossible de prendre une photo avec l\'appareil photo</string>
+    <string name="noCameraPermissionError">Impossible de capturer le reçu sans l\'autorisation d’accès à  la caméra</string>
+
+    <string name="iconDescription">Icône BudgetWatch</string>
+    <string name="addExpenseDescription">Ajouter une transaction de dépenses</string>
+
+    <string name="about">À Propos</string>
+    <string name="app_copyright_fmt">Copyright 2016-<xliff:g>%d</xliff:g> Branden Archer</string>
+    <string name="app_license">sous licence GPLv3.</string>
+    <string name="about_title_fmt">About <xliff:g id="app_name">%s</xliff:g></string>
+    <string name="debug_version_fmt">Version: <xliff:g id="version">%s</xliff:g></string>
+    <string name="app_revision_fmt">Version: <xliff:g id="version">%s</xliff:g></string>
+    <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> utilise les ressources tierces suivantes: <xliff:g id="app_libraries_list">%s</xliff:g></string>
+    <string name="app_resources"><xliff:g id="app_name">%s</xliff:g> utilise les ressources tierces suivantes:
+<xliff:g id="app_resources_list">%s</xliff:g></string>
+
+    <string name="settings">Paramètres</string>
+    <string name="receiptQuality">Qualité du reçu</string>
+    <string name="receiptQualitySummary">Sélectionnez la qualité JPEG utilisée lors de la capture d\'images des reçus</string>
+    <string name="encodingReceipt">Enregistrement du reçu</string>
+
+    <string name="deleteBudgetTitle">Supprimer le budget</string>
+    <string name="deleteBudgetConfirmation">Veuillez confirmer que vous souhaitez supprimer ce budget. Toutes les transactions associées à ce budget resteront.</string>
+    <string name="deleteTransactionTitle">Supprimer la transaction</string>
+    <string name="deleteTransactionConfirmation">Veuillez confirmer que vous souhaitez supprimer cette transaction.</string>
+
+    <string name="importExportHelp">Les données sauvegardées peuvent vous permettre de déplacer vos budgets et vos transactions vers un autre appareil.</string>
+    <string name="importSuccessfulTitle">Importé avec succès</string>
+    <string name="importFailedTitle">Échec de l\'import</string>
+    <string name="exportSuccessfulTitle">Exportation réussie</string>
+    <string name="exportFailedTitle">L\'exportation a échoué</string>
+    <string name="noExternalStoragePermissionError">Impossible d\'importer ou d\'exporter des cartes sans les permissions d\'écriture sur le stockage externe</string>
+    <string name="exportOptionExplanation">Les données sont écrites à la racine du stockage externe.</string>
+    <string name="importOptionFilesystemTitle">Importer depuis le système de fichiers</string>
+    <string name="importOptionFilesystemExplanation">Choisissez un fichier spécifique depuis le système de fichiers.</string>
+    <string name="importOptionFilesystemButton">A partir du système de fichiers</string>
+    <string name="importOptionApplicationTitle">Importer depuis le système de fichiers</string>
+    <string name="importOptionApplicationExplanation">Utilisez une application externe telle que Dropbox, Google Drive ou votre gestionnaire de fichiers favori pour ouvrir un fichier.</string>
+    <string name="importOptionApplicationButton">Utiliser une application externe</string>
+    <string name="importOptionFixedTitle">Importer depuis l\'emplacement d\'exportation</string>
+    <string name="importOptionFixedExplanation">Importez depuis le même emplacement sur le système de fichiers dans lequel est écrit l\'export.</string>
+    <string name="importOptionFixedButton">Utiliser l\'emplacement d\'exportation</string>
+    <string name="sendLabel">Envoi&#8230;</string>
+
+    <string name="search">Recherche</string>
+    <string name="searchHint">Recherche&#8230;</string>
+    <string name="searchEmptyExpenses">Aucune transaction de dépenses correspondante.</string>
+    <string name="searchEmptyRevenues">Aucune transaction de revenus correspondante.</string>
+
+    <string name="addExpenseDisabled">l\'ajout de dépenses est désactivé</string>
+    <string name="addRevenueDisabled">l\'ajout de revenus est désactivé</string>
+
+    <string name="startIntro">Guide rapide</string>
+    <string name="intro1Title">Bienvenue sur Budget Watch\n</string>
+    <string name="intro1Description">Gérez votre budget en suivant vos dépenses.</string>
+    <string name="intro2Title">Budgets\n</string>
+    <string name="intro2Description">Vous pouvez créer autant de budgets que vous souhaitez suivre, chacun avec ses propres dépenses mensuelles maximales.\n\nPour créer un budget, appuyez sur Budgets dans l\'écran principal, puis cliquez sur le signe plus dans le menu.</string>
+    <string name="intro3Title">Transactions\n</string>
+    <string name="intro3Description">Après avoir créé un budget, vous pouvez ajouter des transactions qui s\'appliquent aux budgets.\n\nPour créer une transaction, appuyez sur Transactions à partir de l\'écran principal. Sélectionnez l\'onglet Dépenses ou Revenus et cliquez sur plus dans le menu.</string>
+    <string name="intro4Title">Filtrage\n</string>
+    <string name="intro4Description"> Toucher un budget affichera toutes les transactions pour ce budget.</string>
+    <string name="intro5Title">Fenêtre de budget\n</string>
+    <string name="intro5Description">Par défaut, les budgets indiquent les dépenses du mois en cours. Pour changer la fenêtre de temps, touchez l\'icône du calendrier dans le menu.</string>
+    <string name="intro6Title">Fenêtre de budget\n</string>
+    <string name="intro6Description">Le budget et les transactions peuvent être sauvegardés. Pour exporter ou importer des données, appuyez sur l\'icône Importer / Exporter dans le menu de la page principale.</string>
+    <string name="intro7Title">À propos</string>
+    <string name="intro7Description">Cette application est gratuite, sans publicité et open source. Pour plus de détails, touchez À propos dans le menu de la page principale. \n\nVeuillez laisser vos commentaires dans le store! (:</string>
+
+    <string name="exportProgressFormat"><xliff:g id="completed">%d</xliff:g> entrées sur <xliff:g id="total">%d</xliff:g> ont été exporté</string>
+    <string name="importProgressFormat"><xliff:g id="completed">%d</xliff:g> entrées ont été importé</string>
+
+    <string name="addShortcuts">Ajouter un raccourci</string>
+    <string name="shortcutsAdded">Raccourci ajouté</string>
+</resources>
