@@ -63,11 +63,11 @@
     <!-- A date range, where both arguments are date strings -->
     <string name="dateRangeFormat">%1$s~%2$s</string>
 
-    <string name="noBudgets">Vous n\'avez aucun budget pour le moment. Cliquez sur le bouton "+" (plus) en haut pour en créer un.\n\nBudget Watch vous permet de créer des budgets, puis de les suivre durant le mois.</string>
-    <string name="noExpenses">Vous n\'avez aucunes dépenses pour le moment. Cliquez sur le bouton "+" (plus) en haut pour en créer un.</string>
-    <string name="noExpensesForBudget">Vous n\'avez aucunes dépenses pour le budget "%1$s"</string>
-    <string name="noRevenues">Vous n\'avez aucun revenu pour le moment. Cliquez sur le bouton "+" (plus) en haut pour en créer un.</string>
-    <string name="noRevenuesForBudget">Vous n\'avez aucun revenu pour le budget "%1$s"</string>
+    <string name="noBudgets">Vous n\'avez aucun budget pour le moment. Cliquez sur le bouton \"+\" (plus) en haut pour en créer un.\n\nBudget Watch vous permet de créer des budgets, puis de les suivre durant le mois.</string>
+    <string name="noExpenses">Vous n\'avez aucunes dépenses pour le moment. Cliquez sur le bouton \"+\" (plus) en haut pour en créer un.</string>
+    <string name="noExpensesForBudget">Vous n\'avez aucunes dépenses pour le budget \"%1$s\"</string>
+    <string name="noRevenues">Vous n\'avez aucun revenu pour le moment. Cliquez sur le bouton \"+\" (plus) en haut pour en créer un.</string>
+    <string name="noRevenuesForBudget">Vous n\'avez aucun revenu pour le budget \"%1$s\"</string>
 
     <string name="budgetDateRangeHelp">Sélectionner la plage de dates à afficher pour les budgets</string>
     <string name="startDate">Date de début</string>
@@ -120,4 +120,4 @@
     <string name="deleteTransactionTitle">Supprimer la transaction</string>
     <string name="deleteTransactionConfirmation">Veuillez confirmer que vous souhaitez supprimer cette transaction.</string>
 
-</resources>
+    </resources>

@@ -59,13 +59,13 @@
     <!-- A date range, where both arguments are date strings -->
     <string name="dateRangeFormat">%1$s ~ %2$s</string>
 
-    <string name="noBudgets">Nu aveți niciun buget în acest moment. Apăsați butonul "+" (plus) de sus pentru a începe. \n
+    <string name="noBudgets">Nu aveți niciun buget în acest moment. Apăsați butonul \"+\" (plus) de sus pentru a începe. \n
   \n
   Budget Watch vă permite să creați bugete, apoi să urmăriți cheltuielile în timpul lunii.</string>
-    <string name="noExpenses">Nu aveți nicio tranzacție de cheltuieli în prezent. Apăsați butonul "+" (plus) de sus pentru a începe.</string>
-    <string name="noExpensesForBudget">Nu aveți nicio tranzacție de cheltuieli pentru bugetul "%1$s"</string>
-    <string name="noRevenues">Nu aveți nicio tranzacție de venituri în prezent. Apăsați butonul "+" (plus) de sus pentru a începe.</string>
-    <string name="noRevenuesForBudget">Nu aveți nicio tranzacție de venituri pentru bugetul "%1$s"</string>
+    <string name="noExpenses">Nu aveți nicio tranzacție de cheltuieli în prezent. Apăsați butonul \"+\" (plus) de sus pentru a începe.</string>
+    <string name="noExpensesForBudget">Nu aveți nicio tranzacție de cheltuieli pentru bugetul \"%1$s"</string>
+    <string name="noRevenues">Nu aveți nicio tranzacție de venituri în prezent. Apăsați butonul \"+\" (plus) de sus pentru a începe.</string>
+    <string name="noRevenuesForBudget">Nu aveți nicio tranzacție de venituri pentru bugetul \"%1$s"</string>
 
     <string name="budgetDateRangeHelp">Selectează perioada de timp pentru afișarea bugetelor</string>
     <string name="startDate">Data de start</string>
@@ -137,4 +137,4 @@
     <string name="searchEmptyExpenses">Nu s-au găsit tranzacții de cheltuieli potrivite căutării</string>
     <string name="searchEmptyRevenues">Nu s-au găsit tranzacții de venituri potrivite căutării</string>
 
-</resources>
+    </resources>
