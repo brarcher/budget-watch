@@ -97,56 +97,56 @@
     <string name="app_copyright_fmt">Autoriõigused 2016-<xliff:g>%d</xliff:g> Branden Archer</string>
     <string name="app_license">Välja antud GPLv3 litsentsi alusel.</string>
     <string name="about_title_fmt">Info <xliff:g id="app_name">%s kohta</xliff:g></string>
-<string name="debug_version_fmt">Versioon: <xliff:g id="version">%s</xliff:g></string>
-<string name="app_revision_fmt">Versiooni info: <xliff:g id="app_revision_url">%s</xliff:g></string>
-<string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> kasutab järgnevaid teiste arendajate poolt loodud teeke: <xliff:g id="app_libraries_list">%s</xliff:g></string>
-<string name="app_resources"><xliff:g id="app_name">%s</xliff:g> kasutab järgnevaid teiste arendajate poolt loodud ressursse: <xliff:g id="app_resources_list">%s</xliff:g></string>
+    <string name="debug_version_fmt">Versioon: <xliff:g id="version">%s</xliff:g></string>
+    <string name="app_revision_fmt">Versiooni info: <xliff:g id="app_revision_url">%s</xliff:g></string>
+    <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> kasutab järgnevaid teiste arendajate poolt loodud teeke: <xliff:g id="app_libraries_list">%s</xliff:g></string>
+    <string name="app_resources"><xliff:g id="app_name">%s</xliff:g> kasutab järgnevaid teiste arendajate poolt loodud ressursse: <xliff:g id="app_resources_list">%s</xliff:g></string>
 
-<string name="settings">Seaded</string>
-<string name="receiptQuality">Kviitungi kvaliteet</string>
-<string name="receiptQualitySummary">Vali JPEG kvaliteet, mida kasutatakse kviitungitest fotode tegemisel</string>
-<string name="encodingReceipt">Kviitungi kodeerimine</string>
+    <string name="settings">Seaded</string>
+    <string name="receiptQuality">Kviitungi kvaliteet</string>
+    <string name="receiptQualitySummary">Vali JPEG kvaliteet, mida kasutatakse kviitungitest fotode tegemisel</string>
+    <string name="encodingReceipt">Kviitungi kodeerimine</string>
 
-<string name="deleteBudgetTitle">Eemalda eelarve</string>
-<string name="deleteBudgetConfirmation">Palu kinnita, et sa soovid seda eelarvet kustutada. Kõik sellega seotud tehingud jäävad alles.</string>
-<string name="deleteTransactionTitle">Eemalda tehing</string>
-<string name="deleteTransactionConfirmation">Palun kinnita, et sa soovid seda tehingut kustutada.</string>
+    <string name="deleteBudgetTitle">Eemalda eelarve</string>
+    <string name="deleteBudgetConfirmation">Palu kinnita, et sa soovid seda eelarvet kustutada. Kõik sellega seotud tehingud jäävad alles.</string>
+    <string name="deleteTransactionTitle">Eemalda tehing</string>
+    <string name="deleteTransactionConfirmation">Palun kinnita, et sa soovid seda tehingut kustutada.</string>
 
-<string name="importSuccessfulTitle">Importimine on tehtud</string>
-<string name="importFailedTitle">Importimine ebaõnnestus</string>
-<string name="exportSuccessfulTitle">Eksportimine on tehtud</string>
-<string name="exportFailedTitle">Eksportimine ebaõnnestus</string>
-<string name="exportOptionExplanation">Andmed kirjutatakse välise salvestusketta peamisesse kausta.</string>
-<string name="importOptionFilesystemTitle">Impordi failisüsteemist</string>
-<string name="importOptionFilesystemExplanation">Vali konkreetne koht failisüsteemis.</string>
-<string name="importOptionFilesystemButton">Failisüsteemist</string>
-<string name="importOptionApplicationTitle">Impordi failisüsteemist</string>
-<string name="importOptionApplicationButton">Kasuta välist rakendust</string>
-<string name="importOptionFixedTitle">Impordi eksportimise asukohast</string>
-<string name="importOptionFixedButton">Kasuta eksportimise asukohta</string>
-<string name="sendLabel">Saada&#8230;</string>
+    <string name="importSuccessfulTitle">Importimine on tehtud</string>
+    <string name="importFailedTitle">Importimine ebaõnnestus</string>
+    <string name="exportSuccessfulTitle">Eksportimine on tehtud</string>
+    <string name="exportFailedTitle">Eksportimine ebaõnnestus</string>
+    <string name="exportOptionExplanation">Andmed kirjutatakse välise salvestusketta peamisesse kausta.</string>
+    <string name="importOptionFilesystemTitle">Impordi failisüsteemist</string>
+    <string name="importOptionFilesystemExplanation">Vali konkreetne koht failisüsteemis.</string>
+    <string name="importOptionFilesystemButton">Failisüsteemist</string>
+    <string name="importOptionApplicationTitle">Impordi failisüsteemist</string>
+    <string name="importOptionApplicationButton">Kasuta välist rakendust</string>
+    <string name="importOptionFixedTitle">Impordi eksportimise asukohast</string>
+    <string name="importOptionFixedButton">Kasuta eksportimise asukohta</string>
+    <string name="sendLabel">Saada&#8230;</string>
 
-<string name="search">Otsi</string>
-<string name="searchHint">Otsi&#8230;</string>
-<string name="searchEmptyExpenses">Sobivat väljaminekut ei leitud.</string>
-<string name="searchEmptyRevenues">Sobivat sissetulekut ei leitud.</string>
+    <string name="search">Otsi</string>
+    <string name="searchHint">Otsi&#8230;</string>
+    <string name="searchEmptyExpenses">Sobivat väljaminekut ei leitud.</string>
+    <string name="searchEmptyRevenues">Sobivat sissetulekut ei leitud.</string>
 
-<string name="addExpenseDisabled">Väljaminekute lisamine on keelatud.</string>
-<string name="addRevenueDisabled">Sissetulekute lisamine on keelatud.</string>
+    <string name="addExpenseDisabled">Väljaminekute lisamine on keelatud.</string>
+    <string name="addRevenueDisabled">Sissetulekute lisamine on keelatud.</string>
 
-<string name="startIntro">Käivita tutvustust</string>
-<string name="intro1Title">Teretulemast kasutama Budget Watchi\n</string>
-<string name="intro1Description">Halda oma eelarvet jälgides oma kulusid.</string>
-<string name="intro2Title">Eelarved\n</string>
-<string name="intro3Title">Tehingud\n</string>
-<string name="intro4Title">Filtreerimine\n</string>
-<string name="intro4Description">Eelarvele vajutamine näitab kõiki selle eelarvega seotud tehinguid.</string>
-<string name="intro5Title">Eelarve aken\n</string>
-<string name="intro6Title">Eelarve aken\n</string>
-<string name="intro7Title">Tagasiside\n</string>
-<string name="exportProgressFormat">Eksporditud <xliff:g id="completed">%d</xliff:g> of <xliff:g id="total">%d</xliff:g> entries</string>
-<string name="importProgressFormat">Imporditi <xliff:g id="completed">%d</xliff:g> sissekannet</string>
+    <string name="startIntro">Käivita tutvustust</string>
+    <string name="intro1Title">Teretulemast kasutama Budget Watchi\n</string>
+    <string name="intro1Description">Halda oma eelarvet jälgides oma kulusid.</string>
+    <string name="intro2Title">Eelarved\n</string>
+    <string name="intro3Title">Tehingud\n</string>
+    <string name="intro4Title">Filtreerimine\n</string>
+    <string name="intro4Description">Eelarvele vajutamine näitab kõiki selle eelarvega seotud tehinguid.</string>
+    <string name="intro5Title">Eelarve aken\n</string>
+    <string name="intro6Title">Eelarve aken\n</string>
+    <string name="intro7Title">Tagasiside\n</string>
+    <string name="exportProgressFormat">Eksporditud <xliff:g id="completed">%d</xliff:g> of <xliff:g id="total">%d</xliff:g> entries</string>
+    <string name="importProgressFormat">Imporditi <xliff:g id="completed">%d</xliff:g> sissekannet</string>
 
-<string name="addShortcuts">Lisa otseteed</string>
-<string name="shortcutsAdded">Otseteed on lisatud</string>
-    </resources>
+    <string name="addShortcuts">Lisa otseteed</string>
+    <string name="shortcutsAdded">Otseteed on lisatud</string>
+</resources>

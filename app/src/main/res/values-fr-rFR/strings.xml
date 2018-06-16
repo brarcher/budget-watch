@@ -63,11 +63,11 @@
     <!-- A date range, where both arguments are date strings -->
     <string name="dateRangeFormat">%1$s ~ %2$s</string>
 
-    <string name="noBudgets">Vous n\'avez aucun budget pour le moment. Cliquez sur le bouton "+" (plus) en haut pour commencer.\n\nBudget Watch vous permet de créer des budgets, puis suivre les dépenses au cours du mois.</string>
-    <string name="noExpenses">Vous n\'avez aucune transaction de dépenses pour le moment. Cliquez sur le bouton "+" (plus) en haut pour commencer.</string>
-    <string name="noExpensesForBudget">Vous n\'avez aucune transaction de dépenses pour le budget "%1$s"</string>
-    <string name="noRevenues">Vous n\'avez aucune transaction de revenus pour le moment. Cliquez sur le bouton "+" (plus) en haut pour commencer.</string>
-    <string name="noRevenuesForBudget">Vous n\'avez aucune transaction de revenus pour le budget "%1$s"</string>
+    <string name="noBudgets">Vous n\'avez aucun budget pour le moment. Cliquez sur le bouton \"+\" (plus) en haut pour commencer.\n\nBudget Watch vous permet de créer des budgets, puis suivre les dépenses au cours du mois.</string>
+    <string name="noExpenses">Vous n\'avez aucune transaction de dépenses pour le moment. Cliquez sur le bouton \"+\" (plus) en haut pour commencer.</string>
+    <string name="noExpensesForBudget">Vous n\'avez aucune transaction de dépenses pour le budget \"%1$s\"</string>
+    <string name="noRevenues">Vous n\'avez aucune transaction de revenus pour le moment. Cliquez sur le bouton \"+\" (plus) en haut pour commencer.</string>
+    <string name="noRevenuesForBudget">Vous n\'avez aucune transaction de revenus pour le budget \"%1$s\"</string>
 
     <string name="budgetDateRangeHelp">Sélectionner la plage de dates à afficher pour les budgets</string>
     <string name="startDate">Date de début</string>
@@ -106,7 +106,7 @@
     <string name="app_license">sous licence GPLv3.</string>
     <string name="about_title_fmt">About <xliff:g id="app_name">%s</xliff:g></string>
     <string name="debug_version_fmt">Version: <xliff:g id="version">%s</xliff:g></string>
-    <string name="app_revision_fmt">Version: <xliff:g id="version">%s</xliff:g></string>
+    <string name="app_revision_fmt">Version: <xliff:g id="version\">%s</xliff:g></string>
     <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> utilise les ressources tierces suivantes: <xliff:g id="app_libraries_list">%s</xliff:g></string>
     <string name="app_resources"><xliff:g id="app_name">%s</xliff:g> utilise les ressources tierces suivantes:
 <xliff:g id="app_resources_list">%s</xliff:g></string>

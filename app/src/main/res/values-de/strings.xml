@@ -65,9 +65,9 @@
 
     <string name="noBudgets">Sie haben derzeit keine Budgets. Drücken Sie den "+" (Plus) Knopf, um anzufangen.\n\nBudget Watch lässt Sie Budgets erstellen und dann die monatlichen Ausgaben verfolgen.</string>
     <string name="noExpenses">Sie haben derzeit keine Ausgabentransaktionen. Drücken Sie den "+" (Plus) Knopf, um anzufangen.</string>
-    <string name="noExpensesForBudget">Sie haben keine Ausgabentransaktionen im Budget "%1$s"</string>
+    <string name="noExpensesForBudget">Sie haben keine Ausgabentransaktionen im Budget \"%1$s\"</string>
     <string name="noRevenues">Sie haben derzeit keine Einnahmentransaktionen. Drücken Sie den "+" (Plus) Knopf, um anzufangen.</string>
-    <string name="noRevenuesForBudget">Sie haben keine Einkommenstransaktionen im Budget "%1$s"</string>
+    <string name="noRevenuesForBudget">Sie haben keine Einkommenstransaktionen im Budget \"%1$s\"</string>
 
     <string name="budgetDateRangeHelp">Wählen Sie einen Datumsbereich, um Budgets anzeigen zu lassen</string>
     <string name="startDate">Startdatum</string>
