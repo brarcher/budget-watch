@@ -161,7 +161,7 @@
     <string name="intro4Description">Touching a budget will show all transactions for that budget.</string>
     <string name="intro5Title">Budget Window\n</string>
     <string name="intro5Description">By default the budgets show the current month\'s spending. To change the time window, touch the calendar icon in the menu.</string>
-    <string name="intro6Title">Budget Window\n</string>
+    <string name="intro6Title">Export and Import\n</string>
     <string name="intro6Description">Budget and transactions can be backed-up. To export or import data touch the Import/Export icon in the menu on the main page.</string>
     <string name="intro7Title">Feedback\n</string>
     <string name="intro7Description">This app is free, ad-free, and open source. See details by touching About in the menu on the main page.\n\nPlease leave feedback in the app store! (:</string>
