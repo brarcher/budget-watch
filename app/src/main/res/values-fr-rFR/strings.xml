@@ -106,7 +106,7 @@
     <string name="app_license">sous licence GPLv3.</string>
     <string name="about_title_fmt">About <xliff:g id="app_name">%s</xliff:g></string>
     <string name="debug_version_fmt">Version: <xliff:g id="version">%s</xliff:g></string>
-    <string name="app_revision_fmt">Version: <xliff:g id="version\">%s</xliff:g></string>
+    <string name="app_revision_fmt">Version: <xliff:g id="version">%s</xliff:g></string>
     <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> utilise les ressources tierces suivantes: <xliff:g id="app_libraries_list">%s</xliff:g></string>
     <string name="app_resources"><xliff:g id="app_name">%s</xliff:g> utilise les ressources tierces suivantes:
 <xliff:g id="app_resources_list">%s</xliff:g></string>
