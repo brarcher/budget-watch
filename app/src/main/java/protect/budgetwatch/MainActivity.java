@@ -87,7 +87,8 @@ public class MainActivity extends AppCompatActivity {
             startIntro();
             prefs.edit().putBoolean("firstrun", false).commit();
         }
-        if (!authorized && prefs.getString("password", null) != null)
+        PasswordManager pm = new PasswordManager(this);
+        if (!authorized && pm.isPasswordEnabled())
             startAuthorization();
     }
 
@@ -263,13 +264,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startCreatePassword() {
-        Intent intent = new Intent(this, CreatePasswordActivity.class);
+        Intent intent = new Intent(this, PasswordCreationActivity.class);
         startActivity(intent);
     }
 
     private void startAuthorization() {
         authorized = true;
-        Intent intent = new Intent(getApplicationContext(), EnterPasswordActivity.class);
+        Intent intent = new Intent(getApplicationContext(), PasswordAuthenticationActivity.class);
         startActivity(intent);
     }
 

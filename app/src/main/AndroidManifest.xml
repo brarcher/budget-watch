@@ -94,10 +94,10 @@
         </provider>
 
         <activity
-            android:name=".EnterPasswordActivity"
+            android:name=".PasswordAuthenticationActivity"
             android:label="@string/enterPasswordTitle" />
         <activity
-            android:name=".CreatePasswordActivity"
+            android:name=".PasswordCreationActivity"
             android:label="@string/createPasswordTitle"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>

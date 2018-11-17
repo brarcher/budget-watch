@@ -1,6 +1,5 @@
 package protect.budgetwatch;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -12,20 +11,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class EnterPasswordActivity extends AppCompatActivity {
+public class PasswordAuthenticationActivity extends AppCompatActivity {
 
 
     // UI references.
-    private EditText mPasswordView;
-    private SharedPreferences prefs;
+    private EditText _passwordEditText;
+    private PasswordManager _pm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.enter_password_activity);
+        setContentView(R.layout.password_authentication_activity);
 
-        mPasswordView = findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        _pm = new PasswordManager(this);
+        _passwordEditText = findViewById(R.id.password);
+        Button enterButton = findViewById(R.id.enter_button);
+
+        _passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -35,10 +37,8 @@ public class EnterPasswordActivity extends AppCompatActivity {
                 return false;
             }
         });
-        prefs = getSharedPreferences("protect.budgetwatch", MODE_PRIVATE);
 
-        Button mEnterButton = findViewById(R.id.enter_button);
-        mEnterButton.setOnClickListener(new OnClickListener() {
+        enterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
@@ -49,22 +49,22 @@ public class EnterPasswordActivity extends AppCompatActivity {
 
     private void attemptLogin() {
         // Reset errors.
-        mPasswordView.setError(null);
+        _passwordEditText.setError(null);
 
         // Store values at the time of the login attempt.
-        String password = mPasswordView.getText().toString();
+        String password = _passwordEditText.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
-            mPasswordView.setError(getString(R.string.error_field_required));
-            focusView = mPasswordView;
+            _passwordEditText.setError(getString(R.string.error_field_required));
+            focusView = _passwordEditText;
             cancel = true;
-        } else if (!isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_incorrect_password));
-            focusView = mPasswordView;
+        } else if (!_pm.isPasswordCorrect(password)) {
+            _passwordEditText.setError(getString(R.string.error_incorrect_password));
+            focusView = _passwordEditText;
             cancel = true;
         }
 
@@ -73,11 +73,6 @@ public class EnterPasswordActivity extends AppCompatActivity {
             focusView.requestFocus();
         else
             finish();
-    }
-
-    private boolean isPasswordValid(String password) {
-
-        return password.equals(prefs.getString("password", ""));
     }
 
 }

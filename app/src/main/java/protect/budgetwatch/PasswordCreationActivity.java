@@ -1,6 +1,5 @@
 package protect.budgetwatch;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +13,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
-public class CreatePasswordActivity extends AppCompatActivity {
+public class PasswordCreationActivity extends AppCompatActivity {
 
     private EditText _passwordEdit;
     private EditText _passwordConfirmEdit;
@@ -22,7 +21,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_password_activity);
+        setContentView(R.layout.password_creation_activity);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -30,7 +29,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        final SharedPreferences prefs = getSharedPreferences("protect.budgetwatch", MODE_PRIVATE);
+        final PasswordManager pm = new PasswordManager(this);
         final Switch _usePasswordSwitch = findViewById(R.id.usePassword_switch);
         final Button _createPasswordButton = findViewById(R.id.createPassword_Button);
         _passwordEdit = findViewById(R.id.newPassword);
@@ -43,7 +42,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
                 _passwordConfirmEdit.setEnabled(b);
                 _createPasswordButton.setEnabled(b);
                 if (!b) {
-                    prefs.edit().remove("password").commit();
+                    pm.clearPassword();
                     Toast.makeText(getApplicationContext(), R.string.passwordClearedMessage,
                             Toast.LENGTH_LONG).show();
                 }
@@ -54,7 +53,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (IsValidePassword()) {
-                    prefs.edit().putString("password", _passwordEdit.getText().toString()).commit();
+                    pm.setPassword(_passwordEdit.getText().toString());
                     Toast.makeText(getApplicationContext(), R.string.passwordCreatedMessage,
                             Toast.LENGTH_LONG).show();
                     finish();
@@ -62,7 +61,7 @@ public class CreatePasswordActivity extends AppCompatActivity {
             }
         });
 
-        if (prefs.getString("password", null) != null) {
+        if (pm.isPasswordEnabled()) {
             _createPasswordButton.setText(R.string.changePasswordButton);
             _usePasswordSwitch.setChecked(true);
         }
