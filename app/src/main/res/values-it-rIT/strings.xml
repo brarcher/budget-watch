@@ -1,0 +1,170 @@
+<resources
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Gestore Bilancio</string>
+    <string name="icon">icona</string>
+    <string name="budgetsTitle">Bilanci</string>
+    <string name="addBudgetTitle">Aggiungi Bilancio</string>
+    <string name="viewBudgetTitle">Visualizza Bilancio</string>
+    <string name="editBudgetTitle">Modifica Bilancio</string>
+    <string name="budgetDescription">Crea e gestisci bilanci</string>
+    <string name="transactionsTitle">Transazioni</string>
+    <string name="transactionsDescription">Inserisci transazioni e ricavi</string>
+    <string name="addExpenseTransactionTitle">Aggiungi Spesa</string>
+    <string name="editExpenseTransactionTitle">Modifica Spesa</string>
+    <string name="viewExpenseTransactionTitle">Visualizza Spesa</string>
+    <string name="addRevenueTransactionTitle">Aggiungi Ricavo</string>
+    <string name="editRevenueTransactionTitle">Modifica Ricavo</string>
+    <string name="viewRevenueTransactionTitle">Visualizza Ricavo</string>
+    <string name="importExportTitle">Importa/Esporta</string>
+    <string name="totalBudgetTitle">Totale</string>
+    <string name="addShortcutsTitle">Aggiungi scorciatoia Gestore Bilancio</string>
+    <string name="addExpenseTransactionShortcutTitle">Aggiungi scorciatoria spesa</string>
+    <string name="addRevenueTransactionShortcutTitle">Aggiungi scorciatoia ricavo</string>
+
+    <string name="add">Aggiungi</string>
+    <string name="selectDates">Seleziona Date</string>
+    <string name="type">Tipo</string>
+    <string name="value">Valore</string>
+    <string name="name">Nome</string>
+    <string name="budget">Bilancio</string>
+    <string name="account">Conto</string>
+    <string name="note">Note</string>
+    <string name="date">Data</string>
+    <string name="save">Salva</string>
+    <string name="cancel">Annulla</string>
+    <string name="set">Imposta</string>
+    <string name="receipt">Ricevuta</string>
+    <string name="capture">Cattura</string>
+    <string name="view">Visualizza</string>
+    <string name="update">Aggiorna</string>
+    <string name="clean">Pulisci</string>
+    <string name="ok">OK</string>
+    <string name="share">Condividi</string>
+    <string name="confirm">Conferma</string>
+
+    <string name="Grocery">Drogheria</string>
+    <string name="one_hundred">100</string>
+    <string name="fraction">%1$d/%2$d</string>
+
+    <string name="budgetTypeMissing">Il tipo di bilancio è vuoto</string>
+    <string name="budgetValueMissing">Il valore del bilancio è vuoto</string>
+    <string name="budgetMissing">Nessun bialncio selezionato</string>
+    <string name="valueMissing">Il valore è vuoto</string>
+    <string name="valueInvalid">Valore non valido</string>
+    <string name="dateInvalid">Data non valida</string>
+
+    <string name="expensesTitle">Spese</string>
+    <string name="revenuesTitle">Ricavi</string>
+
+    <string name="edit">Modifica</string>
+    <string name="delete">Elimina</string>
+
+    <!-- A date range, where both arguments are date strings -->
+    <string name="dateRangeFormat">%1$s ~ %2$s</string>
+
+    <string name="noBudgets">Non hai bilanci al momento. Clicca sul pulsante \"+\" (più) in alto a destra per cominciare.\n\nGestore Bilancio ti permette di creare bilancio ed in seguito tracciare le spese mensili.</string>
+    <string name="noExpenses">Non hai transazioni di spesa al momento. Clicca sul pulsante \"+\" (più) in alto a destra per cominciare.</string>
+    <string name="noExpensesForBudget">Non hai transazioni di spera per il bilancio \"%1$s\"</string>
+    <string name="noRevenues">Non hai transazioni di ricavo al momento. Clicca sul pulsante \"+\" (più) in alto a destra per cominciare.</string>
+    <string name="noRevenuesForBudget">Non hai transazioni di ricavo per il bilancio \"%1$s\"</string>
+
+    <string name="budgetDateRangeHelp">Seleziona intervallo di date per visualizzare i bilanci</string>
+    <string name="startDate">Data d\'inizio</string>
+    <string name="endDate">Data di fine</string>
+    <string name="startDateAfterEndDate">La data di inizio deve essere precedente alla data di fine</string>
+
+    <string name="cleanupHelp">Seleziona data; tutte le ricevute fino alla data compresa saranno cancellate</string>
+
+    <string name="importExport">Importa/Esporta</string>
+    <string name="exportName">Esporta</string>
+    <string name="dateRangeField">Intervallo date:</string>
+    <string name="allDates">Tutte le date</string>
+    <string name="changeDateRange">Cambia intervallo date</string>
+    <string name="exportDateRangeHelp">Seleziona intervallo di date per esportare le transazioni</string>
+    <string name="importedFrom">Importa da: %1$s</string>
+    <string name="fileFormat">Formato file</string>
+    <string name="exportedTo">Esportato in; %1$s</string>
+    <string name="importFailed">Fallita importazione: %1$s</string>
+    <string name="exportFailed">Fallita esportazione: %1$s</string>
+    <string name="importing">Importazione&#8230;</string>
+    <string name="exporting">Esportazione&#8230;</string>
+
+    <string name="purgeOldReceipts">Elimina le vecchie ricevute</string>
+    <string name="cleaning">Pulizia&#8230;</string>
+
+    <string name="loading">Caricamento&#8230;</string>
+
+    <string name="pictureCaptureError">Impossibile acquisire l\'immagine dalla fotocamera</string>
+    <string name="noCameraPermissionError">Impossibile acquisire la ricevuta senza permessi di accesso alla fotocamera</string>
+
+    <string name="iconDescription">Icone Gestore Bilancio</string>
+    <string name="addExpenseDescription">Aggiungi una transazione di spesa</string>
+
+    <string name="about">A proposito di</string>
+    <string name="app_copyright_fmt">Copyright 2016-<xliff:g>%d</xliff:g> Branden Archer </string>
+    <string name="app_license">Licenziato sotto GPLv3.</string>
+    <string name="about_title_fmt">A proposito di <xliff:g id="app_name">%s</xliff:g></string>
+    <string name="debug_version_fmt">Versione: <xliff:g id="version">%s</xliff:g></string>
+    <string name="app_revision_fmt">Informazioni sulle versioni: <xliff:g id="app_revision_url">%s</xliff:g></string>
+    <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> usa le seguenti librerie di terze parti: <xliff:g id="app_libraries_list">%s</xliff:g></string>
+    <string name="app_resources"><xliff:g id="app_name">%s</xliff:g> usa le seguenti risorse di terze parti: <xliff:g id="app_resources_list">%s</xliff:g></string>
+
+    <string name="settings">Impostazioni</string>
+    <string name="receiptQuality">Qualità della ricevuta</string>
+    <string name="receiptQualitySummary">Seleziona la qualità JPEG che verrà usata durante la cattura delle ricevute</string>
+    <string name="encodingReceipt">Codifica ricevuta</string>
+
+    <string name="deleteBudgetTitle">Rimuovi Bilancio</string>
+    <string name="deleteBudgetConfirmation">Per favore confermi di voler eliminare questo bilancio. Tutte le transazioni associate non verranno rimosse.</string>
+    <string name="deleteTransactionTitle">Rimuovi Transazione</string>
+    <string name="deleteTransactionConfirmation">Per favore conferma di voler eliminare questa transazione.</string>
+
+    <string name="importExportHelp">I dati salvati ti permettono di spostare i tuoi bilanci e le tue transazioni su un altro dispositivo.</string>
+    <string name="importSuccessfulTitle">Importazione riuscita</string>
+    <string name="importFailedTitle">Importazione fallita</string>
+    <string name="exportSuccessfulTitle">Esportazione riuscita</string>
+    <string name="exportFailedTitle">Esportazione fallita</string>
+    <string name="noExternalStoragePermissionError">Impossibile importare od esportare senza i permessi di accesso all\'unità di archiviazione</string>
+    <string name="exportOptionExplanation">I data sono stati salvati nella cartella principale della memoria esterna.</string>
+    <string name="importOptionFilesystemTitle">Importa dal filesystem</string>
+    <string name="importOptionFilesystemExplanation">Seleziona un file specifico dal filesystem</string>
+    <string name="importOptionFilesystemButton">Dal filesystem</string>
+    <string name="importOptionApplicationTitle">Importa dal filesystem</string>
+    <string name="importOptionApplicationExplanation">Usa un applicazione esterna  come Dropbox, Google Drive, oppure il tuo gestore file preferito per aprire un file.</string>
+    <string name="importOptionApplicationButton">Usa applicazione esterna</string>
+    <string name="importOptionFixedTitle">Importa dalla posizione di esportazione</string>
+    <string name="importOptionFixedExplanation">Importa dalla posizione di esportazione.</string>
+    <string name="importOptionFixedButton">Usa la posizione di esportazione</string>
+    <string name="sendLabel">Invia&#8230;</string>
+
+    <string name="search">Cerca</string>
+    <string name="searchHint">Cerca&#8230;</string>
+    <string name="searchEmptyExpenses">Nessun risultato.</string>
+    <string name="searchEmptyRevenues">Nessun risultato.</string>
+
+    <string name="addExpenseDisabled">L\'aggiunta di una spesa non è attiva</string>
+    <string name="addRevenueDisabled">L\'aggiunta di un ricavo non è attiva</string>
+
+    <string name="startIntro">Comincia introduzione</string>
+    <string name="intro1Title">Benvenuto\a in Gestore Bilancio\n</string>
+    <string name="intro1Description">Gestisci il tuo bilancio tracciando le tue spese.</string>
+    <string name="intro2Title">Bilanci\n</string>
+    <string name="intro2Description">Puoi creare quanti bilanci vuoi, ognuno con il proprio tetto di spesa mensile.\n\nPer creare un bilancio, tocca Bilanci dalla schermata principale, quindi tocca il pulsante \"+\" nel menù.</string>
+    <string name="intro3Title">Transazioni\n</string>
+    <string name="intro3Description">Dopo aver creato un bilancio, puoi associarvi delle transazioni.\n\nPer creare una transazione tocca Transazioni dal menù principale. Selezione le scheda di Spese o Ricavi e tocca il pulsante \"+\" nel menù.</string>
+    <string name="intro4Title">Filtraggio\n</string>
+    <string name="intro4Description">Toccando un bilancio verranno mostrate tutte le relative transazioni.</string>
+    <string name="intro5Title">Finestra di Bilancio\n</string>
+    <string name="intro5Description">Per impostazione predefinita i bilanci mostrano le spese del mese corrente. Per cambiare periodo tocca l\'icona del calendario nel menù.</string>
+    <string name="intro6Title">Esporta ed Importa\n</string>
+    <string name="intro6Description">Bilanci e transazioni possono essere salvate. Per esportare od importare informazioni tocca l\'icona Importa/Esporta nella pagina principale.</string>
+    <string name="intro7Title">Valutazione\n</string>
+    <string name="intro7Description">Questa applicazione è gratuita, senza pubblicità ed open source. Approfondisci toccando \'A proposito di\' nel menù della pagina principale.\n\nPer favore lascia una valutazione nell\'app store! (:</string>
+
+    <string name="exportProgressFormat">Esportate <xliff:g id="completed">%d</xliff:g> di <xliff:g id="total">%d</xliff:g> voci</string>
+    <string name="importProgressFormat">Importati <xliff:g id="completed">%d</xliff:g> voci</string>
+
+    <string name="addShortcuts">Aggiungi scorciatoie</string>
+    <string name="shortcutsAdded">Scorciatoie aggiunte</string>
+</resources>
