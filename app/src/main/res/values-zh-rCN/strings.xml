@@ -157,7 +157,6 @@
     <string name="intro4Description">点击一个预算可以显示该预算下的所有交易。</string>
     <string name="intro5Title">预算窗口\n</string>
     <string name="intro5Description">在默认情况下，预算列表显示的是当月的支出。若要更改显示的时间窗口，可以点击菜单中的日历图标。</string>
-    <string name="intro6Title">预算窗口\n</string>
     <string name="intro6Description">您可以备份预算和交易数据。要导出或导入数据，请在主界面上点击“导出/导入”图标。</string>
     <string name="intro7Title">用户反馈\n</string>
     <string name="intro7Description">本应用免费，无广告，并且开放源代码。点击主界面菜单中的“关于”可以了解详情。\n\n请在应用商店中留下您的反馈！(:</string>

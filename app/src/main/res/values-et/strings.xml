@@ -63,10 +63,10 @@
     <!-- A date range, where both arguments are date strings -->
     <string name="dateRangeFormat">%1$s - %2$s</string>
 
-    <string name="noBudgets">Sul ei ole hetkel ühtegi eelarvet. Alustamiseks vajuta "+" (pluss) nuppu ekraani ülaosas.\n\nEelarve jälgija aitab sul luua eelarveid ja jälgida oma väljaminekuid.</string>
-    <string name="noExpenses">Sul ei ole hetkel ühtegi väljaminekut. Alustamiseks vajuta "+" (pluss) nuppu ekraani ülaosas.</string>
+    <string name="noBudgets">Sul ei ole hetkel ühtegi eelarvet. Alustamiseks vajuta \"+\" (pluss) nuppu ekraani ülaosas.\n\nEelarve jälgija aitab sul luua eelarveid ja jälgida oma väljaminekuid.</string>
+    <string name="noExpenses">Sul ei ole hetkel ühtegi väljaminekut. Alustamiseks vajuta \"+\" (pluss) nuppu ekraani ülaosas.</string>
     <string name="noExpensesForBudget">Sul ei ole hetkel ühtegi väljaminekut eelarves \"%1$s\".</string>
-    <string name="noRevenues">Sul ei ole hetkel ühtegi sissetulekut. Alustamiseks vajuta "+" (pluss) nuppu ekraani ülaosas.</string>
+    <string name="noRevenues">Sul ei ole hetkel ühtegi sissetulekut. Alustamiseks vajuta \"+\" (pluss) nuppu ekraani ülaosas.</string>
     <string name="noRevenuesForBudget">Sul ei ole hetkel ühtegi sissetulekut eelarves \"%1$s\".</string>
 
     <string name="budgetDateRangeHelp">Vali kuupäevade vahemik, mille kohta eelarveid kuvada</string>
@@ -116,22 +116,25 @@
     <string name="encodingReceipt">Kviitungi kodeerimine</string>
 
     <string name="deleteBudgetTitle">Eemalda eelarve</string>
-    <string name="deleteBudgetConfirmation">Palun kinnita, et sa soovid seda eelarvet kustutada. Kõik sellega seotud tehingud jäävad alles.</string>
+    <string name="deleteBudgetConfirmation">Palun kinnita, et soovid seda eelarvet kustutada. Kõik sellega seotud tehingud jäävad alles.</string>
     <string name="deleteTransactionTitle">Eemalda tehing</string>
-    <string name="deleteTransactionConfirmation">Palun kinnita, et sa soovid seda tehingut kustutada.</string>
+    <string name="deleteTransactionConfirmation">Palun kinnita, et soovid seda tehingut kustutada.</string>
 
     <string name="importExportHelp">Tagavarakoopia tegemine võimaldab sul oma eelarved ja tehingud liigutada teise seadmesse.</string>
     <string name="importSuccessfulTitle">Importimine õnnestus</string>
     <string name="importFailedTitle">Importimine ebaõnnestus</string>
     <string name="exportSuccessfulTitle">Eksportimine õnnestus</string>
     <string name="exportFailedTitle">Eksportimine ebaõnnestus</string>
-    <string name="exportOptionExplanation">Andmed kirjutatakse seadme juurkausta.</string>
+    <string name="noExternalStoragePermissionError">Import/eksport ei tööta ilma failisüsteemi kasutamise õiguseta</string>
+    <string name="exportOptionExplanation">Andmed kirjutatakse välise salvestusketta peamisesse kausta.</string>
     <string name="importOptionFilesystemTitle">Impordi failisüsteemist</string>
-    <string name="importOptionFilesystemExplanation">Vali konkreetne fail failisüsteemist.</string>
+    <string name="importOptionFilesystemExplanation">Vali failisüsteemist konkreetne fail.</string>
     <string name="importOptionFilesystemButton">Failisüsteemist</string>
     <string name="importOptionApplicationTitle">Impordi teisest rakendusest</string>
+    <string name="importOptionApplicationExplanation">Kasuta faili avamiseks välist rakendust, näiteks Dropbox, Google Drive või sinu lemmik failihaldur.</string>
     <string name="importOptionApplicationButton">Kasuta välist rakendust</string>
     <string name="importOptionFixedTitle">Impordi eksportimise asukohast</string>
+    <string name="importOptionFixedExplanation">Impordi samast failisüseemi asukohast, kuhu salvestatakse ka eksportimisel.</string>
     <string name="importOptionFixedButton">Kasuta eksportimise asukohta</string>
     <string name="sendLabel">Saada&#8230;</string>
 
@@ -147,18 +150,18 @@
     <string name="intro1Title">Tere tulemast kasutama Eelarve jälgijat\n</string>
     <string name="intro1Description">Halda oma eelarvet jälgides oma kulusid.</string>
     <string name="intro2Title">Eelarved\n</string>
-    <string name="intro2Description">Võid luua nii palju eelarveid kui soovid, igaühel oma väljaminekute kuulimiit.\n\nEelarve loomiseks vali avalehel "Eelarved" ning vajuta seejärel menüüst "+" (pluss) nuppu.</string>
+    <string name="intro2Description">Võid luua nii palju eelarveid kui soovid, igaühel oma väljaminekute kuulimiit.\n\nEelarve loomiseks vali avalehel \"Eelarved\" ning vajuta seejärel menüüst \"+\" (pluss) nuppu.</string>
     <string name="intro3Title">Tehingud\n</string>
-    <string name="intro3Description">Peale eelarve loomist saad lisada neile tehinguid.\n\nTehingu loomiseks vali avalehelt "Tehingud", vali vastavalt "Väljaminekud" või "Sissetulekud" vahekaart ning vajuta seejärel menüüst "+" (pluss) nuppu.</string>
+    <string name="intro3Description">Peale eelarve loomist saad lisada neile tehinguid.\n\nTehingu loomiseks vali avalehelt \"Tehingud\", vali vastavalt \"Väljaminekud\" või \"Sissetulekud\" vahekaart ning vajuta seejärel menüüst \"+\" (pluss) nuppu.</string>
     <string name="intro4Title">Filtreerimine\n</string>
     <string name="intro4Description">Eelarvele vajutamine näitab kõiki selle eelarvega seotud tehinguid.</string>
     <string name="intro5Title">Eelarve aken\n</string>
     <string name="intro5Description">Vaikimisi näidatakse eelarve käesoleva kuu väljaminekuid. Selle muutmiseks vajuta menüüs kalendri ikoonile.</string>
     <string name="intro6Title">Eksport ja import\n</string>
-    <string name="intro6Description">Eelarvetest ja tehingutest saab teha tagavarakoopiaid. Selleks vali menüüs "Import/Eksport".</string>
+    <string name="intro6Description">Eelarvetest ja tehingutest saab teha tagavarakoopiaid. Selleks vali menüüs \"Import/Eksport\".</string>
     <string name="intro7Title">Tagasiside\n</string>
-    <string name="intro7Description">See rakendus on tasuta, reklaamivaba ja avatud lähtekoodiga. Lisainfo saamiseks vali menüüst "Info".\n\nPalun hinda rakendust rakenduste poes! :)</string>
-    
+    <string name="intro7Description">See rakendus on tasuta, reklaamivaba ja avatud lähtekoodiga. Lisainfo saamiseks vali menüüst \"Info\".\n\nPalun hinda rakendust rakenduste poes! :)</string>
+
     <string name="exportProgressFormat">Eksporditud <xliff:g id="completed">%d</xliff:g>/<xliff:g id="total">%d</xliff:g> sissekannet</string>
     <string name="importProgressFormat">Imporditud <xliff:g id="completed">%d</xliff:g> sissekannet</string>
 
