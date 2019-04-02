@@ -32,12 +32,14 @@ import java.util.Map;
 
 import protect.budgetwatch.intro.IntroActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     private final static String TAG = "BudgetWatch";
     private boolean authorized = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -52,18 +54,22 @@ public class MainActivity extends AppCompatActivity {
         final ListView buttonList = (ListView) findViewById(R.id.list);
         final MenuAdapter buttonListAdapter = new MenuAdapter(this, menuItems);
         buttonList.setAdapter(buttonListAdapter);
-        buttonList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        buttonList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
                 MainMenuItem item = (MainMenuItem) parent.getItemAtPosition(position);
-                if (item == null) {
+                if (item == null)
+                {
                     Log.w(TAG, "Clicked menu item at position " + position + " is null");
                     return;
                 }
 
                 Class goalClass = null;
 
-                switch (item.menuTextId) {
+                switch (item.menuTextId)
+                {
                     case R.string.budgetsTitle:
                         goalClass = BudgetActivity.class;
                         break;
@@ -75,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
 
-                if (goalClass != null) {
+                if (goalClass != null)
+                {
                     Intent i = new Intent(getApplicationContext(), goalClass);
                     startActivity(i);
                 }
@@ -83,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         SharedPreferences prefs = getSharedPreferences("protect.budgetwatch", MODE_PRIVATE);
-        if (prefs.getBoolean("firstrun", true)) {
+        if (prefs.getBoolean("firstrun", true))
+        {
             startIntro();
             prefs.edit().putBoolean("firstrun", false).commit();
         }
@@ -92,31 +100,37 @@ public class MainActivity extends AppCompatActivity {
             startAuthorization();
     }
 
-    static class MainMenuItem {
+    static class MainMenuItem
+    {
         public final int iconId;
         public final int menuTextId;
         public final int menuDescId;
 
-        public MainMenuItem(int iconId, int menuTextId, int menuDescId) {
+        public MainMenuItem(int iconId, int menuTextId, int menuDescId)
+        {
             this.iconId = iconId;
             this.menuTextId = menuTextId;
             this.menuDescId = menuDescId;
         }
     }
 
-    static class MenuAdapter extends ArrayAdapter<MainMenuItem> {
-        public MenuAdapter(Context context, List<MainMenuItem> items) {
+    static class MenuAdapter extends ArrayAdapter<MainMenuItem>
+    {
+        public MenuAdapter(Context context, List<MainMenuItem> items)
+        {
             super(context, 0, items);
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, ViewGroup parent)
+        {
             // Get the data item for this position
             MainMenuItem item = getItem(position);
 
             // Check if an existing view is being reused, otherwise inflate the view
 
-            if (convertView == null) {
+            if (convertView == null)
+            {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.main_button,
                         parent, false);
             }
@@ -134,38 +148,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         int id = item.getItemId();
 
-        if (id == R.id.action_import_export) {
+        if (id == R.id.action_import_export)
+        {
             Intent i = new Intent(getApplicationContext(), ImportExportActivity.class);
             startActivity(i);
             return true;
         }
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_settings)
+        {
             Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(i);
             return true;
         }
 
-        if (id == R.id.action_intro) {
+        if (id == R.id.action_intro)
+        {
             startIntro();
             return true;
         }
 
-        if (id == R.id.action_about) {
+        if (id == R.id.action_about)
+        {
             displayAboutDialog();
             return true;
         }
 
-        if (id == R.id.action_create_password) {
+        if (id == R.id.action_create_password)
+        {
             startCreatePassword();
             return true;
         }
@@ -173,7 +194,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void displayAboutDialog() {
+    private void displayAboutDialog()
+    {
         final Map<String, String> USED_LIBRARIES = ImmutableMap.of
                 (
                         "Commons CSV", "https://commons.apache.org/proper/commons-csv/",
@@ -191,13 +213,15 @@ public class MainActivity extends AppCompatActivity {
                 );
 
         StringBuilder libs = new StringBuilder().append("<ul>");
-        for (Map.Entry<String, String> entry : USED_LIBRARIES.entrySet()) {
+        for (Map.Entry<String, String> entry : USED_LIBRARIES.entrySet())
+        {
             libs.append("<li><a href=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append("</a></li>");
         }
         libs.append("</ul>");
 
         StringBuilder resources = new StringBuilder().append("<ul>");
-        for (Map.Entry<String, String> entry : USED_ASSETS.entrySet()) {
+        for (Map.Entry<String, String> entry : USED_ASSETS.entrySet())
+        {
             resources.append("<li><a href=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append("</a></li>");
         }
         resources.append("</ul>");
@@ -206,15 +230,19 @@ public class MainActivity extends AppCompatActivity {
         int year = Calendar.getInstance().get(Calendar.YEAR);
 
         String version = "?";
-        try {
+        try
+        {
             PackageManager manager = getPackageManager();
-            if (manager != null) {
+            if (manager != null)
+            {
                 PackageInfo pi = manager.getPackageInfo(getPackageName(), 0);
                 version = pi.versionName;
-            } else {
+            } else
+            {
                 Log.w(TAG, "Package name not found, PackageManager unavailable");
             }
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e)
+        {
             Log.w(TAG, "Package name not found", e);
         }
 
@@ -250,25 +278,30 @@ public class MainActivity extends AppCompatActivity {
         new AlertDialog.Builder(this)
                 .setView(wv)
                 .setCancelable(true)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         dialog.dismiss();
                     }
                 })
                 .show();
     }
 
-    private void startIntro() {
+    private void startIntro()
+    {
         Intent intent = new Intent(this, IntroActivity.class);
         startActivity(intent);
     }
 
-    private void startCreatePassword() {
+    private void startCreatePassword()
+    {
         Intent intent = new Intent(this, PasswordCreationActivity.class);
         startActivity(intent);
     }
 
-    private void startAuthorization() {
+    private void startAuthorization()
+    {
         authorized = true;
         Intent intent = new Intent(getApplicationContext(), PasswordAuthenticationActivity.class);
         startActivity(intent);
