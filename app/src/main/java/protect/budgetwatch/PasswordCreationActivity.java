@@ -52,7 +52,7 @@ public class PasswordCreationActivity extends AppCompatActivity {
         _createPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (IsValidePassword()) {
+                if (IsValidPassword()) {
                     pm.setPassword(_passwordEdit.getText().toString());
                     Toast.makeText(getApplicationContext(), R.string.passwordCreatedMessage,
                             Toast.LENGTH_LONG).show();
@@ -68,7 +68,7 @@ public class PasswordCreationActivity extends AppCompatActivity {
 
     }
 
-    private boolean IsValidePassword() {
+    private boolean IsValidPassword() {
         String password1 = _passwordEdit.getText().toString();
         String password2 = _passwordConfirmEdit.getText().toString();
 

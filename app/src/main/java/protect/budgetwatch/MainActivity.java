@@ -35,7 +35,7 @@ import protect.budgetwatch.intro.IntroActivity;
 public class MainActivity extends AppCompatActivity
 {
     private final static String TAG = "BudgetWatch";
-    static final int AUTHORIZATION_REQUEST = 1;
+    private final static int AUTHORIZATION_REQUEST = 1;
 
     private boolean authorized = false;
 
