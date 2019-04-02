@@ -13,8 +13,8 @@ android {
         applicationId "protect.budgetwatch"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 27
-        versionName "0.21.3"
+        versionCode 28
+        versionName "0.21.4"
     }
     buildTypes {
         release {
@@ -62,7 +62,7 @@ task findbugs(type: FindBugs, dependsOn: 'assembleDebug') {
     description 'Run findbugs'
     group 'verification'
 
-    classes = fileTree('build/intermediates/classes/debug/')
+    classes = fileTree('build/intermediates/javac/debug/compileDebugJavaWithJavac/classes')
     source = fileTree('src/main/java')
     classpath = files()
 

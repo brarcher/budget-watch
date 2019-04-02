@@ -127,7 +127,7 @@
     <string name="exportFailedTitle">Az exportálás nem sikerült</string>
     <string name="noExternalStoragePermissionError">Nem lehet importálni vagy exportálni a kártyákat külső tároló jogosultságok nélkül</string>
     <string name="exportOptionExplanation">Az adatok a legfelső könyvtárba lettek kiírva a külső tárolón.</string>
-    <string name="importOptionFilesystemTitle">importálás fájlrendszerről</string>
+    <string name="importOptionFilesystemTitle">Importálás fájlrendszerről</string>
     <string name="importOptionFilesystemExplanation">Válasszon egy adott fájlt a fájlrendszerről.</string>
     <string name="importOptionFilesystemButton">Fájlrendszerről</string>
     <string name="importOptionApplicationTitle">Importálás fájlrendszerről</string>
@@ -157,7 +157,7 @@
     <string name="intro4Description">Egy költségvetés megérintése megjeleníti a költségvetés összes tranzakcióját.</string>
     <string name="intro5Title">Költségvetési ablak\n</string>
     <string name="intro5Description">Alapértelmezetten a költségvetések a jelenlegi hónap költekezéseit jelenítik meg. Az időablak megváltoztatásához érintse meg a naptárikont a menüben.</string>
-    <string name="intro6Title">Költségvetési ablak\n</string>
+    <string name="intro6Title">Exportálás és importálás\n</string>
     <string name="intro6Description">A költségvetésről és a tranzakciókról biztonsági mentés készíthető. Az adatok exportálásához vagy importálásához érintse meg az Importálás és exportálás ikont a főoldalon lévő menüben.</string>
     <string name="intro7Title">Visszajelzés\n</string>
     <string name="intro7Description">Ez az alkalmazás ingyenes, reklámmentes és nyílt forráskódú. A részleteket a Névjegy megérintésével nézheti meg a főoldalon lévő menüben.\n\nÍrjon visszajelzést az alkalmazásboltban! (:</string>

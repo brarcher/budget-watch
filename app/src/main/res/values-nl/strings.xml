@@ -23,7 +23,7 @@
     <string name="addRevenueTransactionShortcutTitle">Inkomsten-snelkoppeling toevoegen</string>
 
     <string name="add">Toevoegen</string>
-    <string name="selectDates">Datums selecteren</string>
+    <string name="selectDates">Datums kiezen</string>
     <string name="type">Type</string>
     <string name="value">Waarde</string>
     <string name="name">Naam</string>
@@ -63,25 +63,25 @@
     <!-- A date range, where both arguments are date strings -->
     <string name="dateRangeFormat">%1$s~%2$s</string>
 
-    <string name="noBudgets">Je heb nog geen budgetten. Druk op de \"+\" (plus)-knop bovenin om te beginnen.\n\nBudgetbeheer laat je budgetten creëren om je uitgaven gedurende de maand in de gaten te houden.</string>
-    <string name="noExpenses">Je hebt nog geen uitgaven. Druk op de \"+\" (plus)-knop bovenin om te beginnen.</string>
-    <string name="noExpensesForBudget">Je hebt nog geen uitgaven voor het budget \"%1$s\".</string>
-    <string name="noRevenues">Je hebt nog geen inkomsten. Druk op de \"+\" (plus)-knop bovenin om te beginnen.</string>
-    <string name="noRevenuesForBudget">Je hebt nog geen inkomsten voor het budget \"%1$s\".</string>
+    <string name="noBudgets">Je heb nog geen budgetten. Druk op de knop \"+\" (plus) bovenin om te beginnen.\n\nBudgetbeheer laat je budgetten creëren om je uitgaven gedurende de maand in de gaten te houden.</string>
+    <string name="noExpenses">Je hebt nog geen uitgaven. Druk op de knop \"+\" (plus) bovenin om te beginnen.</string>
+    <string name="noExpensesForBudget">Er zijn nog geen uitgaven voor het budget \"%1$s\".</string>
+    <string name="noRevenues">Er zijn nog geen inkomsten. Druk op de knop \"+\" (plus) bovenin om te beginnen.</string>
+    <string name="noRevenuesForBudget">Er zijn nog geen inkomsten voor het budget \"%1$s\".</string>
 
-    <string name="budgetDateRangeHelp">Selecteer een datumbereik voor het tonen van budgetten</string>
+    <string name="budgetDateRangeHelp">Kies een datumbereik voor het tonen van budgetten</string>
     <string name="startDate">Begindatum</string>
     <string name="endDate">Einddatum</string>
-    <string name="startDateAfterEndDate">De begindatum moet op of vóór de einddatum zijn</string>
+    <string name="startDateAfterEndDate">De begindatum moet óp of vóór de einddatum zijn</string>
 
-    <string name="cleanupHelp">Selecteer een datum. Alle bonnen op of vóór de datum zullen worden verwijderd.</string>
+    <string name="cleanupHelp">Kies een datum. Alle bonnen óp of vóór de datum zullen worden verwijderd.</string>
 
     <string name="importExport">Importeren/Exporteren</string>
     <string name="exportName">Exporteren</string>
     <string name="dateRangeField">Datumbereik:</string>
     <string name="allDates">Alle datums</string>
     <string name="changeDateRange">Datumbereik wijzigen</string>
-    <string name="exportDateRangeHelp">Selecteer een datumbereik om te exporteren</string>
+    <string name="exportDateRangeHelp">Kies een datumbereik om te exporteren</string>
     <string name="importedFrom">Geïmporteerd uit: %1$s</string>
     <string name="fileFormat">Bestandsformaat</string>
     <string name="exportedTo">Geëxporteerd naar: %1$s</string>
@@ -157,7 +157,7 @@
     <string name="intro4Description">Als je op een budget drukt, dan worden alle transacties voor dat budget getoond.</string>
     <string name="intro5Title">Budgetvenster\n</string>
     <string name="intro5Description">Standaard tonen de budgetten de uitgaven van de huidige maand. Als je het tijdvak wilt wijzigen, druk dan op het kalenderpictogram in het menu.</string>
-    <string name="intro6Title">Budgetvenster\n</string>
+    <string name="intro6Title">Exporteren en importeren\n</string>
     <string name="intro6Description">Budgetten en transacties kunnen worden geback-upt. Als je gegevens wilt exporteren of importeren, druk dan op het pictogram Importeren/Exporteren in het menu op het beginscherm.</string>
     <string name="intro7Title">Feedback\n</string>
     <string name="intro7Description">Deze app is gratis, reclamevrij en open source. Bekijk de details door te drukken op Over in het menu op het hoofdscherm.\n\nGeef feedback in de app-winkel! (:</string>
