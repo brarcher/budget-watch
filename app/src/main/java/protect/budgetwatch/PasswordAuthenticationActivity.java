@@ -11,7 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class PasswordAuthenticationActivity extends AppCompatActivity {
+public class PasswordAuthenticationActivity extends AppCompatActivity
+{
 
 
     // UI references.
@@ -19,7 +20,8 @@ public class PasswordAuthenticationActivity extends AppCompatActivity {
     private PasswordManager _pm;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.password_authentication_activity);
 
@@ -27,10 +29,13 @@ public class PasswordAuthenticationActivity extends AppCompatActivity {
         _passwordEditText = findViewById(R.id.password);
         Button enterButton = findViewById(R.id.enter_button);
 
-        _passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        _passwordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
             @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent)
+            {
+                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL)
+                {
                     attemptLogin();
                     return true;
                 }
@@ -38,41 +43,37 @@ public class PasswordAuthenticationActivity extends AppCompatActivity {
             }
         });
 
-        enterButton.setOnClickListener(new OnClickListener() {
+        enterButton.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 attemptLogin();
             }
         });
     }
 
 
-    private void attemptLogin() {
+    private void attemptLogin()
+    {
         // Reset errors.
         _passwordEditText.setError(null);
-
-        // Store values at the time of the login attempt.
         String password = _passwordEditText.getText().toString();
 
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (TextUtils.isEmpty(password)) {
+        View focusView = _passwordEditText;
+        if (TextUtils.isEmpty(password))
+        {
             _passwordEditText.setError(getString(R.string.error_field_required));
-            focusView = _passwordEditText;
-            cancel = true;
-        } else if (!_pm.isPasswordCorrect(password)) {
-            _passwordEditText.setError(getString(R.string.error_incorrect_password));
-            focusView = _passwordEditText;
-            cancel = true;
-        }
-
-
-        if (cancel)
             focusView.requestFocus();
-        else
+        } else if (!_pm.isPasswordCorrect(password))
+        {
+            _passwordEditText.setError(getString(R.string.error_incorrect_password));
+            focusView.requestFocus();
+        } else
+        {
+            setResult(RESULT_OK);
             finish();
+        }
     }
 
 }

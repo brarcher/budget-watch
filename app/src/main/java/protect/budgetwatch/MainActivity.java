@@ -35,6 +35,8 @@ import protect.budgetwatch.intro.IntroActivity;
 public class MainActivity extends AppCompatActivity
 {
     private final static String TAG = "BudgetWatch";
+    static final int AUTHORIZATION_REQUEST = 1;
+
     private boolean authorized = false;
 
     @Override
@@ -302,9 +304,14 @@ public class MainActivity extends AppCompatActivity
 
     private void startAuthorization()
     {
-        authorized = true;
         Intent intent = new Intent(getApplicationContext(), PasswordAuthenticationActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, AUTHORIZATION_REQUEST);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == AUTHORIZATION_REQUEST)
+            authorized = resultCode == RESULT_OK;
+    }
 }
