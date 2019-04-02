@@ -312,6 +312,11 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if (requestCode == AUTHORIZATION_REQUEST)
-            authorized = resultCode == RESULT_OK;
+        {
+            if (resultCode == RESULT_OK)
+                authorized = true;
+            else
+                finish();
+        }
     }
 }
