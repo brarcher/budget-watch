@@ -1,4 +1,92 @@
 <resources
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string name="app_name">Sledovanie rozpočtu</string>
+    <string name="addBudgetTitle">Pridaj rozpočet</string>
+    <string name="viewBudgetTitle">Zobraz rozpočet</string>
+    <string name="editBudgetTitle">Uprav rozpočet</string>
+    <string name="budgetDescription">Vytvor a spravuj rozpočty</string>
+    <string name="transactionsTitle">Transakcie</string>
+    <string name="transactionsDescription">Zadaj transakcie a príjmy</string>
+    <string name="addExpenseTransactionTitle">Pridaj výdavok</string>
+    <string name="editExpenseTransactionTitle">Uprav výdavok</string>
+    <string name="viewExpenseTransactionTitle">Zobraz výdavok</string>
+    <string name="addRevenueTransactionTitle">Pridaj príjem</string>
+    <string name="editRevenueTransactionTitle">Uprav príjem</string>
+    <string name="viewRevenueTransactionTitle">Zobraz príjem</string>
+    <string name="importExportTitle">Import/Export</string>
+    <string name="totalBudgetTitle">Celkom</string>
+    <string name="add">Pridaj</string>
+    <string name="selectDates">Vyber dátumy</string>
+    <string name="type">Typ</string>
+    <string name="value">Hodnota</string>
+    <string name="name">Názov</string>
+    <string name="budget">Rozpočet</string>
+    <string name="account">Účet</string>
+    <string name="note">Poznámka</string>
+    <string name="date">Dátum</string>
+    <string name="save">Uložiť</string>
+    <string name="cancel">Zrušiť</string>
+    <string name="ok">OK</string>
+    <string name="share">Zdieľaj</string>
+    <string name="confirm">Potvrď</string>
+
+    <string name="Grocery">Potraviny</string>
+    <string name="one_hundred">100</string>
+    <string name="fraction">%1$d/%2$d</string>
+
+    <string name="budgetTypeMissing">Typ rozpočtu je prázdny</string>
+    <string name="budgetValueMissing">Hodnota rozpočtu je prázdna</string>
+    <string name="budgetMissing">Nie je vybraný rozpočet</string>
+    <string name="valueMissing">Hodnota je prázdna</string>
+    <string name="valueInvalid">Nesprávna hodnota</string>
+    <string name="dateInvalid">Nesprávny dátum</string>
+
+    <string name="expensesTitle">Výdavky</string>
+    <string name="revenuesTitle">Príjmy</string>
+
+    <string name="edit">Upraviť</string>
+    <string name="delete">Zmazať</string>
+
+    <!-- A date range, where both arguments are date strings -->
+    <string name="dateRangeFormat">%1$s ~ %2$s</string>
+
+    <string name="noRevenues">Momentálne nemáte žiadne kreditné transakcie. Stlačte tlačidlo \"+\" pre pridanie.</string>
+    <string name="noRevenuesForBudget">Nemáte žiadne kreditné transakcie pre rozpočet \"%1$s\"</string>
+
+    <string name="budgetDateRangeHelp">Vyber časové rozpätie, pre ktoré chceš zobraziť rozpočet</string>
+    <string name="startDate">Začiatok</string>
+    <string name="endDate">Koniec</string>
+    <string name="startDateAfterEndDate">Začiatočný dátum musí byť menší alebo rovný koncovému.</string>
+
+    <string name="importExport">Import/Export</string>
+    <string name="exportName">Export</string>
+    <string name="allDates">Všetky dni</string>
+    <string name="changeDateRange">Zmeň časové rozpätie</string>
+    <string name="exportDateRangeHelp">Vyber časové rozpätie exportu transakcií</string>
+    <string name="importedFrom">Importované z: %1$s</string>
+    <string name="fileFormat">Formát súboru</string>
+    <string name="exportedTo">Exportované do: %1$s</string>
+    <string name="about">O aplikácii</string>
+    <string name="app_copyright_fmt">Copyright 2016-<xliff:g>%d</xliff:g> Branden Archer</string>
+    <string name="app_license">Licencované GPLv3.</string>
+    <string name="about_title_fmt">O <xliff:g id="app_name">%s</xliff:g></string>
+    <string name="debug_version_fmt">Verzia: <xliff:g id="version">%s</xliff:g></string>
+    <string name="app_revision_fmt">Informácia pre revíziu: <xliff:g id="app_revision_url">%s</xliff:g></string>
+    <string name="app_libraries"><xliff:g id="app_name">%s</xliff:g> používa nasledujúce knižnice tretích strán: <xliff:g id="app_libraries_list">%s</xliff:g></string>
+    <string name="app_resources"><xliff:g id="app_name">%s</xliff:g> používa nasledujúce knižnice tretích strán: <xliff:g id="app_resources_list">%s</xliff:g></string>
+
+    <string name="settings">Nastavenia</string>
+    <string name="deleteTransactionTitle">Odobrať transakciu</string>
+    <string name="deleteTransactionConfirmation">Prosím potvrďte odstránenie tejto transakcie.</string>
+
+    <string name="importExportHelp">Zálohovanie dát Vám umožňuje presun rozpočtov a transakcií na iné zariadenie.</string>
+    <string name="importSuccessfulTitle">Import bol úspešný</string>
+    <string name="importFailedTitle">Import zlyhal</string>
+    <string name="exportSuccessfulTitle">Export bol úspešný</string>
+    <string name="exportFailedTitle">Export zlyhal</string>
+    <string name="importOptionFilesystemTitle">Import zo súborového systému</string>
+    <string name="intro3Title">Transakcie\n</string>
+    <string name="intro6Title">Export a Import\n</string>
+    <string name="intro7Title">Spätná väzba\n</string>
     </resources>
