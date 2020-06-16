@@ -209,55 +209,7 @@ public class BudgetActivity extends AppCompatActivity
 
         if(id == R.id.action_calendar)
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.budgetDateRangeHelp);
-
-            final View view = getLayoutInflater().inflate(R.layout.budget_date_picker_layout, null, false);
-
-            builder.setView(view);
-            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
-                    dialog.cancel();
-                }
-            });
-            builder.setPositiveButton(R.string.set, new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
-                    DatePicker startDatePicker = (DatePicker) view.findViewById(R.id.startDate);
-                    DatePicker endDatePicker = (DatePicker) view.findViewById(R.id.endDate);
-
-                    long startOfBudgetMs = CalendarUtil.getStartOfDayMs(startDatePicker.getYear(),
-                            startDatePicker.getMonth(), startDatePicker.getDayOfMonth());
-                    long endOfBudgetMs = CalendarUtil.getEndOfDayMs(endDatePicker.getYear(),
-                            endDatePicker.getMonth(), endDatePicker.getDayOfMonth());
-
-                    if (startOfBudgetMs > endOfBudgetMs)
-                    {
-                        Toast.makeText(BudgetActivity.this, R.string.startDateAfterEndDate, Toast.LENGTH_LONG).show();
-                        return;
-                    }
-
-                    Intent intent = new Intent(BudgetActivity.this, BudgetActivity.class);
-                    intent.setFlags(
-                            Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
-
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("budgetStart", startOfBudgetMs);
-                    bundle.putLong("budgetEnd", endOfBudgetMs);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-
-                    BudgetActivity.this.finish();
-                }
-            });
-
-            builder.show();
-            return true;
+            new DateSelectDialogFragment().show(getFragmentManager(), "tag");
         }
 
         if(id == android.R.id.home)
