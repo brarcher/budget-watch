@@ -158,6 +158,7 @@
     <string name="intro4Description"> Toucher un budget affichera toutes les transactions pour ce budget.</string>
     <string name="intro5Title">Fenêtre de budget\n</string>
     <string name="intro5Description">Par défaut, les budgets indiquent les dépenses du mois en cours. Pour changer la fenêtre de temps, touchez l\'icône du calendrier dans le menu.</string>
+    <string name="intro6Title">Exporter et importer \n</string>
     <string name="intro6Description">Le budget et les transactions peuvent être sauvegardés. Pour exporter ou importer des données, appuyez sur l\'icône Importer / Exporter dans le menu de la page principale.</string>
     <string name="intro7Title">À propos</string>
     <string name="intro7Description">Cette application est gratuite, sans publicité et open source. Pour plus de détails, touchez À propos dans le menu de la page principale. \n\nVeuillez laisser vos commentaires dans le store! (:</string>

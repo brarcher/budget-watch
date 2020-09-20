@@ -10,9 +10,6 @@
 Budget Watch helps manage personal budgets. After adding your budgets, simply record your day-to-day transactions.
 You can then view how close your sending is to your budget.
 
-If there is any interest in improving this project, kindly submit a pull request with
-proposed changes.
-
 # Screenshots
 [<img src="https://cloud.githubusercontent.com/assets/5264535/23584126/9f3b6e3e-0125-11e7-8c0a-27d176dd0c00.png" width=250>](https://cloud.githubusercontent.com/assets/5264535/23584126/9f3b6e3e-0125-11e7-8c0a-27d176dd0c00.png)
 [<img src="https://cloud.githubusercontent.com/assets/5264535/23584129/b21da058-0125-11e7-952a-3f8202fe70b4.png" width=250>](https://cloud.githubusercontent.com/assets/5264535/23584129/b21da058-0125-11e7-952a-3f8202fe70b4.png)
@@ -53,3 +50,6 @@ App icons from [The Noun Project](https://thenounproject.com) and
 - [Ticket Bill](https://thenounproject.com/term/ticket-bill/634398/)
 by [naim](https://thenounproject.com/naim.solis/)
 - [Save](https://thenounproject.com/term/save/716011) by [Bernar Novalyi](https://thenounproject.com/bernar.novalyi)
+
+# Note from Developer
+The developer is currently on hiatus from the project. Questions and pull requests may not be looked at for some time. Apologies in advance.

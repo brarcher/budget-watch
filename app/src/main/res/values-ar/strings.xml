@@ -1,4 +1,52 @@
 <resources
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <string name="icon">أيقونة</string>
+    <string name="budgetsTitle">الميزانيات</string>
+    <string name="addBudgetTitle">إضافة الميزانية</string>
+    <string name="viewBudgetTitle">عرض الميزانية</string>
+    <string name="editBudgetTitle">تحرير الميزانية</string>
+    <string name="budgetDescription">إنشاء وإدارة الميزانيات</string>
+    <string name="transactionsTitle">المعاملات</string>
+    <string name="transactionsDescription">أدخل المعاملات والإيرادات</string>
+    <string name="addExpenseTransactionTitle">إضافة حساب</string>
+    <string name="editExpenseTransactionTitle">تحرير المصاريف</string>
+    <string name="viewExpenseTransactionTitle">عرض النفقات</string>
+    <string name="addRevenueTransactionTitle">إضافة الإيرادات</string>
+    <string name="editRevenueTransactionTitle">تحرير الإيرادات</string>
+    <string name="viewRevenueTransactionTitle">عرض الإيرادات</string>
+    <string name="importExportTitle">استيراد/تصدير</string>
+    <string name="totalBudgetTitle">مجموع</string>
+    <string name="add">إضافة</string>
+    <string name="selectDates">اختر التواريخ</string>
+    <string name="type">نوع</string>
+    <string name="value">القيمة</string>
+    <string name="name">اسم</string>
+    <string name="budget">ميزانية</string>
+    <string name="account">الحساب</string>
+    <string name="date">تاريخ</string>
+    <string name="save">حفظ</string>
+    <string name="cancel">إلغاء</string>
+    <string name="set">جلس</string>
+    <string name="receipt">استلام</string>
+    <string name="capture">قبض على</string>
+    <string name="view">معاينة</string>
+    <string name="update">تحديث</string>
+    <string name="clean">نظيف</string>
+    <string name="ok">تمام</string>
+    <string name="share">شارك</string>
+    <string name="confirm">تؤكد</string>
+
+    <string name="Grocery">خضروات و فواكه</string>
+    <string name="delete">حذف</string>
+
+    <string name="about">حول</string>
+    <string name="app_license">مرخص بموجب GPLv3</string>
+    <string name="settings">الإعدادات</string>
+    <string name="deleteTransactionConfirmation">يرجى تأكيد أنك تريد حذف هذه المعاملة.</string>
+
+    <string name="search">بحث</string>
+    <string name="intro1Title">مرحبا بكم في مشاهدة الميزانية
+</string>
+    <string name="intro1Description">إدارة ميزانيتك من خلال تتبع الانفاق الخاص بك.</string>
     </resources>

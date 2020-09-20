@@ -71,7 +71,7 @@ class DatabaseCleanupTask  extends AsyncTask<Void, Void, Void>
         cursor.close();
     }
 
-    private void correctTransactionsWithMissingReceipts(DBHelper db)
+    private static void correctTransactionsWithMissingReceipts(DBHelper db)
     {
         Cursor cursor = db.getTransactionsWithReceipts(null);
 
