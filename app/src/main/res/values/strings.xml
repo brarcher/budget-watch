@@ -1,5 +1,4 @@
-<resources
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name">Budget Watch</string>
     <string name="icon">icon</string>
@@ -171,4 +170,20 @@
 
     <string name="addShortcuts">Add Shortcuts</string>
     <string name="shortcutsAdded">Shortcuts added</string>
+
+    <string name="enterPasswordTitle">Authorization</string>
+    <string name="prompt_password">Password</string>
+    <string name="enterPasswordButton">Enter</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="createPasswordTitle">Create Password</string>
+    <string name="password_protection">Password Protection</string>
+    <string name="createPasswordButton">Create Password</string>
+    <string name="changePasswordButton">Change Password</string>
+    <string name="prompt_confirm_password">Confirm Password</string>
+    <string name="usePasswordButton">Use Password Protection</string>
+    <string name="passwords_mismatch">Passwords does not match</string>
+    <string name="passwordClearedMessage">Password Protection Disabled</string>
+    <string name="passwordCreatedMessage">Password Created Successfully</string>
+
 </resources>
