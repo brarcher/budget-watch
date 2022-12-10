@@ -52,7 +52,7 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 23)
+@Config(sdk = 24)
 public class TransactionViewActivityTest
 {
     private static final int ORIGINAL_JPEG_QUALITY = 100;

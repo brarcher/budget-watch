@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 17)
+@Config(sdk = 24)
 public class BudgetViewActivityTest
 {
     @Before

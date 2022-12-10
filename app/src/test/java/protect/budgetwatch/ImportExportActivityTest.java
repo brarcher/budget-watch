@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25)
+@Config(sdk = 25)
 public class ImportExportActivityTest
 {
     private Activity activity;
@@ -54,7 +54,8 @@ public class ImportExportActivityTest
 
         activity = Robolectric.setupActivity(ImportExportActivity.class);
         db = new DBHelper(activity);
-        sdcardDir = Environment.getExternalStorageDirectory();
+
+        sdcardDir = activity.getExternalFilesDir(null);
     }
 
     private void registerIntentHandler(String handler)
