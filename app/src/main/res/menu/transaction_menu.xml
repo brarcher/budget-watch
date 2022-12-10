@@ -6,7 +6,7 @@
     <item
         android:id="@+id/action_search"
         android:title="@string/search"
-        appcompat:actionViewClass="android.support.v7.widget.SearchView"
+        appcompat:actionViewClass="androidx.appcompat.widget.SearchView"
         appcompat:showAsAction="always"/>
     <item
         android:id="@+id/action_add"
