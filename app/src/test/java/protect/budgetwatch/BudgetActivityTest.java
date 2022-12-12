@@ -88,7 +88,7 @@ public class BudgetActivityTest
         final Activity activity = Robolectric.setupActivity(BudgetActivity.class);
 
         shadowOf(activity).clickMenuItem(android.R.id.home);
-        assertTrue(shadowOf(activity).isFinishing());
+        assertTrue(activity.isFinishing());
     }
 
     @Test

@@ -38,7 +38,7 @@ public class SettingsActivityTest
         final Activity activity = Robolectric.setupActivity(SettingsActivity.class);
 
         shadowOf(activity).clickMenuItem(android.R.id.home);
-        assertTrue(shadowOf(activity).isFinishing());
+        assertTrue(activity.isFinishing());
     }
 
     @Test

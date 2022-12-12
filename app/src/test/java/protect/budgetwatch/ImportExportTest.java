@@ -3,6 +3,7 @@ package protect.budgetwatch;
 import android.app.Activity;
 import android.content.IntentFilter;
 import android.os.Environment;
+import android.os.Looper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -11,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
+import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadows.ShadowLog;
 
 import java.io.ByteArrayInputStream;
@@ -24,9 +26,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
+import static org.robolectric.annotation.LooperMode.Mode.LEGACY;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 25)
+@LooperMode(LEGACY)
 public class ImportExportTest
 {
     private Activity activity;
@@ -493,6 +497,6 @@ public class ImportExportTest
     public void clickBackFinishes()
     {
         shadowOf(activity).clickMenuItem(android.R.id.home);
-        assertTrue(shadowOf(activity).isFinishing());
+        assertTrue(activity.isFinishing());
     }
 }

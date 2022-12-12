@@ -120,7 +120,7 @@ public class TransactionActivityTest
         final Activity activity = Robolectric.setupActivity(TransactionActivity.class);
 
         shadowOf(activity).clickMenuItem(android.R.id.home);
-        assertTrue(shadowOf(activity).isFinishing());
+        assertTrue(activity.isFinishing());
     }
 
     private void checkClickAddWhileOnTap(Integer tab, int expectedType)

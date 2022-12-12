@@ -43,6 +43,6 @@ dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '20.0'
     implementation 'com.github.apl-devs:appintro:v4.2.0'
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:3.7"
+    testImplementation "org.robolectric:robolectric:4.9"
     testImplementation group: 'org.javatuples', name: 'javatuples', version: '1.2'
 }

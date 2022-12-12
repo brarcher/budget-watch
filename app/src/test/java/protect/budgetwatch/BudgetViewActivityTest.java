@@ -54,7 +54,7 @@ public class BudgetViewActivityTest
         final Activity activity = Robolectric.setupActivity(BudgetViewActivity.class);
 
         shadowOf(activity).clickMenuItem(android.R.id.home);
-        assertTrue(shadowOf(activity).isFinishing());
+        assertTrue(activity.isFinishing());
     }
 
     private ActivityController setupActivity(final String budget, int value,
