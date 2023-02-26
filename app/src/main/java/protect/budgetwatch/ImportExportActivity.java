@@ -13,14 +13,14 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +32,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 
 import java.io.File;
@@ -57,7 +58,6 @@ public class ImportExportActivity extends AppCompatActivity
     private Long exportStartDateMs;
     private Long exportEndDateMs;
 
-    private final File sdcardDir = Environment.getExternalStorageDirectory();
     private final String exportFilename = "BudgetWatch";
 
     @Override
@@ -79,6 +79,8 @@ public class ImportExportActivity extends AppCompatActivity
                 .put(getResources().getString(R.string.zip), DataFormat.ZIP)
                 .build();
 
+        final Optional<File> sdcardDir = Optional.fromNullable(this.getExternalFilesDir(null));
+
         for(int id : new int[]{R.id.importFileFormatSpinner, R.id.exportFileFormatSpinner})
         {
             final Spinner fileFormatSpinner = (Spinner) findViewById(id);
@@ -87,23 +89,6 @@ public class ImportExportActivity extends AppCompatActivity
                     android.R.layout.simple_spinner_item, names);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             fileFormatSpinner.setAdapter(dataAdapter);
-        }
-
-        // If the application does not have permissions to external
-        // storage, ask for it now
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-        {
-            if (ContextCompat.checkSelfPermission(ImportExportActivity.this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                    ContextCompat.checkSelfPermission(ImportExportActivity.this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-            {
-                ActivityCompat.requestPermissions(ImportExportActivity.this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        PERMISSIONS_EXTERNAL_STORAGE);
-            }
         }
 
         Button dateRangeButton = (Button)findViewById(R.id.dateRangeSelectButton);
@@ -171,10 +156,12 @@ public class ImportExportActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                startExport(getSelectedFormat(R.id.exportFileFormatSpinner));
+                startExport(getSelectedFormat(R.id.exportFileFormatSpinner), sdcardDir);
             }
         });
-
+        if(!sdcardDir.isPresent()) {
+            exportButton.setVisibility(View.INVISIBLE);
+        }
 
         // Check that there is an activity that can bring up a file chooser
         final Intent intentPickAction = new Intent(Intent.ACTION_PICK);
@@ -230,8 +217,12 @@ public class ImportExportActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                if(!sdcardDir.isPresent()) {
+                    Log.w(TAG, "Unable to import from location, there is no directory");
+                    return;
+                }
                 DataFormat format = getSelectedFormat(R.id.importFileFormatSpinner);
-                File importFile = new File(sdcardDir, exportFilename + "." + format.extension());
+                File importFile = new File(sdcardDir.get(), exportFilename + "." + format.extension());
 
                 Uri uri = Uri.fromFile(importFile);
                 try
@@ -247,6 +238,9 @@ public class ImportExportActivity extends AppCompatActivity
                 }
             }
         });
+        if(!sdcardDir.isPresent()) {
+            importButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     private DataFormat getSelectedFormat(int id)
@@ -310,9 +304,14 @@ public class ImportExportActivity extends AppCompatActivity
         }
     }
 
-    private void startExport(final DataFormat format)
+    private void startExport(final DataFormat format, Optional<File> sdcardDir)
     {
-        final File exportFile = new File(sdcardDir, exportFilename + "." + format.extension());
+        if(!sdcardDir.isPresent()) {
+            Log.w(TAG, "Unable to export to storage, there is no folder to export to");
+            return;
+        }
+
+        final File exportFile = new File(sdcardDir.get(), exportFilename + "." + format.extension());
 
         ImportExportTask.TaskCompleteListener listener = new ImportExportTask.TaskCompleteListener()
         {

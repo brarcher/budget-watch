@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 17)
+@Config(sdk = 24)
 public class BudgetViewActivityTest
 {
     @Before
@@ -54,7 +54,7 @@ public class BudgetViewActivityTest
         final Activity activity = Robolectric.setupActivity(BudgetViewActivity.class);
 
         shadowOf(activity).clickMenuItem(android.R.id.home);
-        assertTrue(shadowOf(activity).isFinishing());
+        assertTrue(activity.isFinishing());
     }
 
     private ActivityController setupActivity(final String budget, int value,

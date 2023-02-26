@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 import android.view.Menu;
 
 import org.junit.Before;
@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25)
+@Config(sdk = 25)
 public class TransactionActivityTest
 {
     @Before
@@ -99,7 +99,6 @@ public class TransactionActivityTest
     }
 
     @Test
-    @Ignore
     public void onCreateShouldInflateMenu() throws Exception
     {
         final Activity activity = Robolectric.setupActivity(TransactionActivity.class);
@@ -116,13 +115,12 @@ public class TransactionActivityTest
     }
 
     @Test
-    @Ignore
     public void clickBackFinishes()
     {
         final Activity activity = Robolectric.setupActivity(TransactionActivity.class);
 
         shadowOf(activity).clickMenuItem(android.R.id.home);
-        assertTrue(shadowOf(activity).isFinishing());
+        assertTrue(activity.isFinishing());
     }
 
     private void checkClickAddWhileOnTap(Integer tab, int expectedType)
@@ -161,21 +159,18 @@ public class TransactionActivityTest
     }
 
     @Test
-    @Ignore
     public void testClickAddDefaultTab()
     {
         checkClickAddWhileOnTap(null, DBHelper.TransactionDbIds.EXPENSE);
     }
 
     @Test
-    @Ignore
     public void testClickAddExpense()
     {
         checkClickAddWhileOnTap(0, DBHelper.TransactionDbIds.EXPENSE);
     }
 
     @Test
-    @Ignore
     public void testClickAddRevenue()
     {
         checkClickAddWhileOnTap(1, DBHelper.TransactionDbIds.REVENUE);

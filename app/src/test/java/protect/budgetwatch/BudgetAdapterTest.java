@@ -20,7 +20,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 17)
+@Config(sdk = 24)
 public class BudgetAdapterTest
 {
     private long nowMs;

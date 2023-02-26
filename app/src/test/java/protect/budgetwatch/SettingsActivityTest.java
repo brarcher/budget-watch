@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 25)
+@Config(sdk = 25)
 public class SettingsActivityTest
 {
     @Before
@@ -38,7 +38,7 @@ public class SettingsActivityTest
         final Activity activity = Robolectric.setupActivity(SettingsActivity.class);
 
         shadowOf(activity).clickMenuItem(android.R.id.home);
-        assertTrue(shadowOf(activity).isFinishing());
+        assertTrue(activity.isFinishing());
     }
 
     @Test
