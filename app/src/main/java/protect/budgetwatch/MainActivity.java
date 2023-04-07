@@ -35,6 +35,9 @@ import protect.budgetwatch.intro.IntroActivity;
 public class MainActivity extends AppCompatActivity
 {
     private final static String TAG = "BudgetWatch";
+    private final static int AUTHORIZATION_REQUEST = 1;
+
+    private boolean authorized = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -58,8 +61,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                MainMenuItem item = (MainMenuItem)parent.getItemAtPosition(position);
-                if(item == null)
+                MainMenuItem item = (MainMenuItem) parent.getItemAtPosition(position);
+                if (item == null)
                 {
                     Log.w(TAG, "Clicked menu item at position " + position + " is null");
                     return;
@@ -67,7 +70,7 @@ public class MainActivity extends AppCompatActivity
 
                 Class goalClass = null;
 
-                switch(item.menuTextId)
+                switch (item.menuTextId)
                 {
                     case R.string.budgetsTitle:
                         goalClass = BudgetActivity.class;
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity
                         break;
                 }
 
-                if(goalClass != null)
+                if (goalClass != null)
                 {
                     Intent i = new Intent(getApplicationContext(), goalClass);
                     startActivity(i);
@@ -89,10 +92,14 @@ public class MainActivity extends AppCompatActivity
         });
 
         SharedPreferences prefs = getSharedPreferences("protect.budgetwatch", MODE_PRIVATE);
-        if (prefs.getBoolean("firstrun", true)) {
+        if (prefs.getBoolean("firstrun", true))
+        {
             startIntro();
             prefs.edit().putBoolean("firstrun", false).commit();
         }
+        PasswordManager pm = new PasswordManager(this);
+        if (!authorized && pm.isPasswordEnabled())
+            startAuthorization();
     }
 
     static class MainMenuItem
@@ -154,29 +161,35 @@ public class MainActivity extends AppCompatActivity
     {
         int id = item.getItemId();
 
-        if(id == R.id.action_import_export)
+        if (id == R.id.action_import_export)
         {
             Intent i = new Intent(getApplicationContext(), ImportExportActivity.class);
             startActivity(i);
             return true;
         }
 
-        if(id == R.id.action_settings)
+        if (id == R.id.action_settings)
         {
             Intent i = new Intent(getApplicationContext(), SettingsActivity.class);
             startActivity(i);
             return true;
         }
 
-        if(id == R.id.action_intro)
+        if (id == R.id.action_intro)
         {
             startIntro();
             return true;
         }
 
-        if(id == R.id.action_about)
+        if (id == R.id.action_about)
         {
             displayAboutDialog();
+            return true;
+        }
+
+        if (id == R.id.action_create_password)
+        {
+            startCreatePassword();
             return true;
         }
 
@@ -186,20 +199,20 @@ public class MainActivity extends AppCompatActivity
     private void displayAboutDialog()
     {
         final Map<String, String> USED_LIBRARIES = ImmutableMap.of
-        (
-            "Commons CSV", "https://commons.apache.org/proper/commons-csv/",
-            "Guava", "https://github.com/google/guava",
-            "AppIntro", "https://github.com/apl-devs/AppIntro"
-        );
+                (
+                        "Commons CSV", "https://commons.apache.org/proper/commons-csv/",
+                        "Guava", "https://github.com/google/guava",
+                        "AppIntro", "https://github.com/apl-devs/AppIntro"
+                );
 
         final Map<String, String> USED_ASSETS = ImmutableMap.of
-        (
-            "Piggy Bank by Icons8", "https://thenounproject.com/term/piggy-bank/61478/",
-            "Purse by Dima Lagunov", "https://thenounproject.com/term/purse/26896/",
-            "Ticket Bill by naim", "https://thenounproject.com/term/ticket-bill/634398/",
-            "Purchase Order by Icons8", "https://icons8.com/web-app/for/all/purchase-order",
-            "Save by Bernar Novalyi", "https://thenounproject.com/term/save/716011"
-        );
+                (
+                        "Piggy Bank by Icons8", "https://thenounproject.com/term/piggy-bank/61478/",
+                        "Purse by Dima Lagunov", "https://thenounproject.com/term/purse/26896/",
+                        "Ticket Bill by naim", "https://thenounproject.com/term/ticket-bill/634398/",
+                        "Purchase Order by Icons8", "https://icons8.com/web-app/for/all/purchase-order",
+                        "Save by Bernar Novalyi", "https://thenounproject.com/term/save/716011"
+                );
 
         StringBuilder libs = new StringBuilder().append("<ul>");
         for (Map.Entry<String, String> entry : USED_LIBRARIES.entrySet())
@@ -222,66 +235,88 @@ public class MainActivity extends AppCompatActivity
         try
         {
             PackageManager manager = getPackageManager();
-            if(manager != null)
+            if (manager != null)
             {
                 PackageInfo pi = manager.getPackageInfo(getPackageName(), 0);
                 version = pi.versionName;
-            }
-            else
+            } else
             {
                 Log.w(TAG, "Package name not found, PackageManager unavailable");
             }
-        }
-        catch (PackageManager.NameNotFoundException e)
+        } catch (PackageManager.NameNotFoundException e)
         {
             Log.w(TAG, "Package name not found", e);
         }
 
         WebView wv = new WebView(this);
         String html =
-            "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />" +
-            "<img src=\"file:///android_res/mipmap/ic_launcher.png\" alt=\"" + appName + "\"/>" +
-            "<h1>" +
-            String.format(getString(R.string.about_title_fmt),
-                    "<a href=\"" + getString(R.string.app_webpage_url)) + "\">" +
-            appName +
-            "</a>" +
-            "</h1><p>" +
-            appName +
-            " " +
-            String.format(getString(R.string.debug_version_fmt), version) +
-            "</p><p>" +
-            String.format(getString(R.string.app_revision_fmt),
-                    "<a href=\"" + getString(R.string.app_revision_url) + "\">" +
-                            getString(R.string.app_revision_url) +
-                            "</a>") +
-            "</p><hr/><p>" +
-            String.format(getString(R.string.app_copyright_fmt), year) +
-            "</p><hr/><p>" +
-            getString(R.string.app_license) +
-            "</p><hr/><p>" +
-            String.format(getString(R.string.app_libraries), appName, libs.toString()) +
-            "</p><hr/><p>" +
-            String.format(getString(R.string.app_resources), appName, resources.toString());
+                "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />" +
+                        "<img src=\"file:///android_res/mipmap/ic_launcher.png\" alt=\"" + appName + "\"/>" +
+                        "<h1>" +
+                        String.format(getString(R.string.about_title_fmt),
+                                "<a href=\"" + getString(R.string.app_webpage_url)) + "\">" +
+                        appName +
+                        "</a>" +
+                        "</h1><p>" +
+                        appName +
+                        " " +
+                        String.format(getString(R.string.debug_version_fmt), version) +
+                        "</p><p>" +
+                        String.format(getString(R.string.app_revision_fmt),
+                                "<a href=\"" + getString(R.string.app_revision_url) + "\">" +
+                                        getString(R.string.app_revision_url) +
+                                        "</a>") +
+                        "</p><hr/><p>" +
+                        String.format(getString(R.string.app_copyright_fmt), year) +
+                        "</p><hr/><p>" +
+                        getString(R.string.app_license) +
+                        "</p><hr/><p>" +
+                        String.format(getString(R.string.app_libraries), appName, libs.toString()) +
+                        "</p><hr/><p>" +
+                        String.format(getString(R.string.app_resources), appName, resources.toString());
 
 
         wv.loadDataWithBaseURL("file:///android_res/drawable/", html, "text/html", "utf-8", null);
         new AlertDialog.Builder(this)
-            .setView(wv)
-            .setCancelable(true)
-            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
-            {
-                public void onClick(DialogInterface dialog, int which)
+                .setView(wv)
+                .setCancelable(true)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
                 {
-                    dialog.dismiss();
-                }
-            })
-            .show();
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 
     private void startIntro()
     {
         Intent intent = new Intent(this, IntroActivity.class);
         startActivity(intent);
+    }
+
+    private void startCreatePassword()
+    {
+        Intent intent = new Intent(this, PasswordCreationActivity.class);
+        startActivity(intent);
+    }
+
+    private void startAuthorization()
+    {
+        Intent intent = new Intent(getApplicationContext(), PasswordAuthenticationActivity.class);
+        startActivityForResult(intent, AUTHORIZATION_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == AUTHORIZATION_REQUEST)
+        {
+            if (resultCode == RESULT_OK)
+                authorized = true;
+            else
+                finish();
+        }
     }
 }

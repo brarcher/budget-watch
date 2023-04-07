@@ -94,6 +94,14 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths"/>
         </provider>
+
+        <activity
+            android:name=".PasswordAuthenticationActivity"
+            android:label="@string/enterPasswordTitle" />
+        <activity
+            android:name=".PasswordCreationActivity"
+            android:label="@string/createPasswordTitle"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

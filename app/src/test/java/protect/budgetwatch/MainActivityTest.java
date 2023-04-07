@@ -58,12 +58,12 @@ public class MainActivityTest
     private void testItemClickLaunchesActivity(int index, String expectedActivity)
     {
         ActivityController activityController = Robolectric.buildActivity(MainActivity.class).create();
-        Activity activity = (Activity)activityController.get();
+        Activity activity = (Activity) activityController.get();
 
         activityController.start();
         activityController.resume();
 
-        ListView list = (ListView)activity.findViewById(R.id.list);
+        ListView list = (ListView) activity.findViewById(R.id.list);
 
         ShadowListView shadowList = shadowOf(list);
         shadowList.populateItems();
@@ -72,6 +72,19 @@ public class MainActivityTest
         shadowList.performItemClick(index);
 
         testNextStartedActivity(activity, expectedActivity);
+    }
+
+    private void testClickMenuItem(int actionId, String expectedActivityName)
+    {
+        ActivityController activityController = Robolectric.buildActivity(MainActivity.class).create();
+        Activity activity = (Activity) activityController.get();
+
+        activityController.start();
+        activityController.resume();
+        activityController.visible();
+
+        shadowOf(activity).clickMenuItem(actionId);
+        testNextStartedActivity(activity, expectedActivityName);
     }
 
     @Test
@@ -89,29 +102,19 @@ public class MainActivityTest
     @Test
     public void testClickSettings()
     {
-        ActivityController activityController = Robolectric.buildActivity(MainActivity.class).create();
-        Activity activity = (Activity)activityController.get();
-
-        activityController.start();
-        activityController.resume();
-        activityController.visible();
-
-        shadowOf(activity).clickMenuItem(R.id.action_settings);
-        testNextStartedActivity(activity, "protect.budgetwatch/.SettingsActivity");
+        testClickMenuItem(R.id.action_settings, "protect.budgetwatch/.SettingsActivity");
     }
 
     @Test
     public void testClickImportExport()
     {
-        ActivityController activityController = Robolectric.buildActivity(MainActivity.class).create();
-        Activity activity = (Activity)activityController.get();
+        testClickMenuItem(R.id.action_import_export, "protect.budgetwatch/.ImportExportActivity");
+    }
 
-        activityController.start();
-        activityController.resume();
-        activityController.visible();
-
-        shadowOf(activity).clickMenuItem(R.id.action_import_export);
-        testNextStartedActivity(activity, "protect.budgetwatch/.ImportExportActivity");
+    @Test
+    public void testClickIPasswordProtection()
+    {
+        testClickMenuItem(R.id.action_create_password, "protect.budgetwatch/.PasswordCreationActivity");
     }
 
     @Test
@@ -120,7 +123,7 @@ public class MainActivityTest
         prefs.edit().remove("firstrun").commit();
 
         ActivityController controller = Robolectric.buildActivity(MainActivity.class).create();
-        Activity activity = (Activity)controller.get();
+        Activity activity = (Activity) controller.get();
 
         assertTrue(activity.isFinishing() == false);
 
@@ -135,5 +138,24 @@ public class MainActivityTest
 
         assertEquals(false, prefs.getBoolean("firstrun", true));
     }
+
+    @Test
+    public void testPasswordEnabled()
+    {
+        prefs.edit().putString("password", "TestPassword1").commit();
+        ActivityController controller = Robolectric.buildActivity(MainActivity.class).create();
+        Activity activity = (Activity) controller.get();
+
+        assertTrue(activity.isFinishing() == false);
+
+        Intent next = shadowOf(activity).getNextStartedActivity();
+
+        ComponentName componentName = next.getComponent();
+        String name = componentName.flattenToShortString();
+        assertEquals("protect.budgetwatch/.PasswordAuthenticationActivity", name);
+
+        prefs.edit().remove("password").commit();
+    }
+
 }
 
