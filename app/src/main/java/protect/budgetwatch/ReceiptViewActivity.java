@@ -15,7 +15,11 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import java.io.File;
 
@@ -24,6 +28,28 @@ public class ReceiptViewActivity  extends AppCompatActivity
     private static final String TAG = "BudgetWatch";
 
     private String receiptFilename = null;
+    private WebView _receiptView = null;
+    private boolean _webViewDestroyed = false;
+
+    private void cleanupWebView()
+    {
+        if (_receiptView == null || _webViewDestroyed)
+        {
+            return;
+        }
+        _webViewDestroyed = true;
+
+        ViewParent parent = _receiptView.getParent();
+        if (parent instanceof ViewGroup)
+        {
+            ((ViewGroup) parent).removeView(_receiptView);
+        }
+        _receiptView.stopLoading();
+        _receiptView.setWebViewClient(new WebViewClient());
+        _receiptView.removeAllViews();
+        _receiptView.destroy();
+        _receiptView = null;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,9 +68,23 @@ public class ReceiptViewActivity  extends AppCompatActivity
         final Bundle b = getIntent().getExtras();
         receiptFilename = b.getString("receipt");
 
-        final WebView receiptView = (WebView) findViewById(R.id.imageView);
-        receiptView.getSettings().setBuiltInZoomControls(true);
-        receiptView.getSettings().setAllowFileAccess(true);
+        _receiptView = (WebView) findViewById(R.id.imageView);
+        _receiptView.getSettings().setBuiltInZoomControls(true);
+        _receiptView.getSettings().setAllowFileAccess(true);
+        _receiptView.setWebViewClient(new WebViewClient()
+        {
+            @Override
+            public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail)
+            {
+                Log.w(TAG, "Receipt WebView render process gone; cleaning up WebView");
+                cleanupWebView();
+                if (!isFinishing())
+                {
+                    finish();
+                }
+                return true;
+            }
+        });
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -55,7 +95,14 @@ public class ReceiptViewActivity  extends AppCompatActivity
                 "src=\"file://" + receiptFilename + "\"/>" +
                 "</body></html>";
 
-        receiptView.loadDataWithBaseURL("", data, "text/html", "utf-8", null);
+        _receiptView.loadDataWithBaseURL("", data, "text/html", "utf-8", null);
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        cleanupWebView();
+        super.onDestroy();
     }
 
     @Override

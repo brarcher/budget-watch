@@ -16,7 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -35,6 +38,18 @@ import protect.budgetwatch.intro.IntroActivity;
 public class MainActivity extends AppCompatActivity
 {
     private final static String TAG = "BudgetWatch";
+    private AlertDialog _aboutDialog;
+
+    @Override
+    protected void onDestroy()
+    {
+        if (_aboutDialog != null && _aboutDialog.isShowing())
+        {
+            _aboutDialog.dismiss();
+        }
+        _aboutDialog = null;
+        super.onDestroy();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -67,17 +82,17 @@ public class MainActivity extends AppCompatActivity
 
                 Class goalClass = null;
 
-                switch(item.menuTextId)
+                if(item.menuTextId == R.string.budgetsTitle)
                 {
-                    case R.string.budgetsTitle:
-                        goalClass = BudgetActivity.class;
-                        break;
-                    case R.string.transactionsTitle:
-                        goalClass = TransactionActivity.class;
-                        break;
-                    default:
-                        Log.w(TAG, "Unexpected menu text id: " + item.menuTextId);
-                        break;
+                    goalClass = BudgetActivity.class;
+                }
+                else if(item.menuTextId == R.string.transactionsTitle)
+                {
+                    goalClass = TransactionActivity.class;
+                }
+                else
+                {
+                    Log.w(TAG, "Unexpected menu text id: " + item.menuTextId);
                 }
 
                 if(goalClass != null)
@@ -189,7 +204,7 @@ public class MainActivity extends AppCompatActivity
         (
             "Commons CSV", "https://commons.apache.org/proper/commons-csv/",
             "Guava", "https://github.com/google/guava",
-            "AppIntro", "https://github.com/apl-devs/AppIntro"
+            "AppIntro", "https://github.com/AppIntro/AppIntro"
         );
 
         final Map<String, String> USED_ASSETS = ImmutableMap.of
@@ -237,7 +252,31 @@ public class MainActivity extends AppCompatActivity
             Log.w(TAG, "Package name not found", e);
         }
 
-        WebView wv = new WebView(this);
+        final WebView wv = new WebView(this);
+        final boolean[] webViewDestroyed = { false };
+        final Runnable cleanupWebView = new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                if (webViewDestroyed[0])
+                {
+                    return;
+                }
+                webViewDestroyed[0] = true;
+
+                ViewParent parent = wv.getParent();
+                if (parent instanceof ViewGroup)
+                {
+                    ((ViewGroup) parent).removeView(wv);
+                }
+                wv.stopLoading();
+                wv.setWebViewClient(new WebViewClient());
+                wv.removeAllViews();
+                wv.destroy();
+            }
+        };
+
         String html =
             "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />" +
             "<img src=\"file:///android_res/mipmap/ic_launcher.png\" alt=\"" + appName + "\"/>" +
@@ -264,19 +303,48 @@ public class MainActivity extends AppCompatActivity
             "</p><hr/><p>" +
             String.format(getString(R.string.app_resources), appName, resources.toString());
 
-
-        wv.loadDataWithBaseURL("file:///android_res/drawable/", html, "text/html", "utf-8", null);
-        new AlertDialog.Builder(this)
+        final AlertDialog dialog = new AlertDialog.Builder(this)
             .setView(wv)
             .setCancelable(true)
             .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener()
             {
-                public void onClick(DialogInterface dialog, int which)
+                public void onClick(DialogInterface d, int which)
+                {
+                    d.dismiss();
+                }
+            })
+            .setOnDismissListener(new DialogInterface.OnDismissListener()
+            {
+                @Override
+                public void onDismiss(DialogInterface d)
+                {
+                    cleanupWebView.run();
+                    if (_aboutDialog == d)
+                    {
+                        _aboutDialog = null;
+                    }
+                }
+            })
+            .create();
+
+        wv.setWebViewClient(new WebViewClient()
+        {
+            @Override
+            public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail)
+            {
+                Log.w(TAG, "About dialog WebView render process gone; cleaning up WebView");
+                cleanupWebView.run();
+                if (dialog.isShowing())
                 {
                     dialog.dismiss();
                 }
-            })
-            .show();
+                return true;
+            }
+        });
+
+        wv.loadDataWithBaseURL("file:///android_res/drawable/", html, "text/html", "utf-8", null);
+        _aboutDialog = dialog;
+        dialog.show();
     }
 
     private void startIntro()

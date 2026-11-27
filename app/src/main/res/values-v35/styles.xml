@@ -1,0 +1,7 @@
+<resources>
+
+    <!-- On API 35+, edge-to-edge makes the navigation bar transparent over the light window. -->
+    <style name="AppTheme" parent="Base.AppTheme">
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+</resources>

@@ -3,9 +3,9 @@ package protect.budgetwatch;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Looper;
 
 import org.javatuples.Triplet;
 import org.junit.After;
@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadows.ShadowLog;
 
 import java.util.Calendar;
@@ -28,11 +27,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.robolectric.annotation.LooperMode.Mode.LEGACY;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 24)
-@LooperMode(LEGACY)
 public class DatabaseTest
 {
     private Context context;
@@ -273,16 +271,19 @@ public class DatabaseTest
     public void addRemoveOneTransaction()
     {
         TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
-        context.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        DatabaseTestHelper.registerDbChangedReceiver(context, dbChanged);
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
         db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description", "account", "budget",
                 100.50, "note", nowMs, "receipt");
+        shadowOf(Looper.getMainLooper()).idle();
 
         assertTrue(dbChanged.hasChanged());
         dbChanged.reset();
@@ -304,9 +305,11 @@ public class DatabaseTest
         checkTransaction(expenseTransaction, DBHelper.TransactionDbIds.EXPENSE, "description", "account",
                 "budget", 100.50, "note", nowMs, "receipt");
 
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
         db.deleteTransaction(expenseId);
+        shadowOf(Looper.getMainLooper()).idle();
 
         assertTrue(dbChanged.hasChanged());
         dbChanged.reset();
@@ -314,11 +317,13 @@ public class DatabaseTest
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
         db.insertTransaction(DBHelper.TransactionDbIds.REVENUE, "description2", "account2",
                 "budget2",
                 100.25, "note2", nowMs + 1, "receipt2");
+        shadowOf(Looper.getMainLooper()).idle();
 
         assertTrue(dbChanged.hasChanged());
         dbChanged.reset();
@@ -339,9 +344,11 @@ public class DatabaseTest
         checkTransaction(revenueTransaction, DBHelper.TransactionDbIds.REVENUE, "description2", "account2",
                 "budget2", 100.25, "note2", nowMs+1, "receipt2");
 
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
         db.deleteTransaction(revenueId);
+        shadowOf(Looper.getMainLooper()).idle();
 
         assertTrue(dbChanged.hasChanged());
         dbChanged.reset();
@@ -349,8 +356,26 @@ public class DatabaseTest
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.REVENUE));
 
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
+        context.unregisterReceiver(dbChanged);
+    }
+
+    @Test
+    @Config(sdk = 34)
+    public void scopedDatabaseChangedBroadcastDeliveredOnApi34()
+    {
+        TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
+        DatabaseTestHelper.registerDbChangedReceiver(context, dbChanged);
+        shadowOf(Looper.getMainLooper()).idle();
+        assertFalse(dbChanged.hasChanged());
+
+        assertTrue(db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description", "account", "budget",
+                42.0, "note", nowMs, ""));
+        shadowOf(Looper.getMainLooper()).idle();
+
+        assertTrue(dbChanged.hasChanged());
         context.unregisterReceiver(dbChanged);
     }
 
@@ -390,12 +415,14 @@ public class DatabaseTest
     public void updateTransaction()
     {
         TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
-        context.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        DatabaseTestHelper.registerDbChangedReceiver(context, dbChanged);
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
         boolean result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
                 "account", "budget", 100.50, "note", nowMs, "receipt");
         assertTrue(result);
+        shadowOf(Looper.getMainLooper()).idle();
 
         assertTrue(dbChanged.hasChanged());
         dbChanged.reset();
@@ -404,11 +431,13 @@ public class DatabaseTest
         checkTransaction(transaction, DBHelper.TransactionDbIds.EXPENSE, "description",
                 "account", "budget", 100.50, "note", nowMs, "receipt");
 
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
         result = db.updateTransaction(1, DBHelper.TransactionDbIds.EXPENSE, "description2",
                 "account2", "budget2", 25, "note2", nowMs + 1, "receipt2");
         assertTrue(result);
+        shadowOf(Looper.getMainLooper()).idle();
 
         assertTrue(dbChanged.hasChanged());
         dbChanged.reset();
@@ -417,6 +446,7 @@ public class DatabaseTest
         checkTransaction(transaction, DBHelper.TransactionDbIds.EXPENSE, "description2",
                 "account2", "budget2", 25, "note2", nowMs + 1, "receipt2");
 
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
         context.unregisterReceiver(dbChanged);
@@ -426,12 +456,14 @@ public class DatabaseTest
     public void updateMissingTransaction()
     {
         TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
-        context.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        DatabaseTestHelper.registerDbChangedReceiver(context, dbChanged);
+        shadowOf(Looper.getMainLooper()).idle();
         assertFalse(dbChanged.hasChanged());
 
         boolean result = db.updateTransaction(1, DBHelper.TransactionDbIds.EXPENSE, "", "", "", 0,
                 "", 0, "");
         assertEquals(false, result);
+        shadowOf(Looper.getMainLooper()).idle();
 
         assertFalse(dbChanged.hasChanged());
 

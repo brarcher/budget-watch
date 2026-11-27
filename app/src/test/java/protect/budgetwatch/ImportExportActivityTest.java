@@ -20,13 +20,14 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.util.concurrent.PausedExecutorService;
 import org.robolectric.annotation.Config;
-import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowLog;
 import org.robolectric.shadows.ShadowPackageManager;
+import org.robolectric.shadows.ShadowPausedAsyncTask;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,22 +40,24 @@ import static org.robolectric.Shadows.shadowOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNull;
-import static org.robolectric.annotation.LooperMode.Mode.LEGACY;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 25)
-@LooperMode(LEGACY)
 public class ImportExportActivityTest
 {
     private Activity activity;
     private DBHelper db;
     private File sdcardDir;
+    private PausedExecutorService pausedExecutor;
 
     @Before
     public void setUp()
     {
         // Output logs emitted during tests so they may be accessed
         ShadowLog.stream = System.out;
+
+        pausedExecutor = new PausedExecutorService();
+        ShadowPausedAsyncTask.overrideExecutor(pausedExecutor);
 
         activity = Robolectric.setupActivity(ImportExportActivity.class);
         db = new DBHelper(activity);
@@ -234,6 +237,8 @@ public class ImportExportActivityTest
                 try
                 {
                     exportButton.performClick();
+                    pausedExecutor.runAll();
+                    shadowOf(Looper.getMainLooper()).idle();
                 }
                 catch(RuntimeException e)
                 {
@@ -278,6 +283,8 @@ public class ImportExportActivityTest
                 try
                 {
                     importButton.performClick();
+                    pausedExecutor.runAll();
+                    shadowOf(Looper.getMainLooper()).idle();
                 }
                 catch(RuntimeException e)
                 {
@@ -331,6 +338,8 @@ public class ImportExportActivityTest
                         shadowOf(activity).receiveResult(intent,
                                 //success ? Activity.RESULT_OK : Activity.RESULT_CANCELED,
                                 Activity.RESULT_OK, result);
+                        pausedExecutor.runAll();
+                        shadowOf(Looper.getMainLooper()).idle();
                     }
                     catch(RuntimeException e)
                     {
