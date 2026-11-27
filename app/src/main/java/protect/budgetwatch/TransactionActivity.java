@@ -220,6 +220,7 @@ public class TransactionActivity extends AppCompatActivity
     @Override
     protected void onNewIntent(Intent intent)
     {
+        super.onNewIntent(intent);
         if (Intent.ACTION_SEARCH.equals(intent.getAction()))
         {
             String query = intent.getStringExtra(SearchManager.QUERY);

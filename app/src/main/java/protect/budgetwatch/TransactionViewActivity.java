@@ -170,6 +170,7 @@ public class TransactionViewActivity extends AppCompatActivity
     @Override
     public void onNewIntent(Intent intent)
     {
+        super.onNewIntent(intent);
         Log.i(TAG, "Received new intent");
         extractIntentFields(intent);
     }
@@ -724,6 +725,7 @@ public class TransactionViewActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        super.onActivityResult(requestCode, resultCode, data);
         Log.d(TAG, "Received image from camera");
 
         if(requestCode == REQUEST_IMAGE_CAPTURE)
@@ -811,6 +813,7 @@ public class TransactionViewActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
     {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == PERMISSIONS_REQUEST_CAMERA)
         {
             // If request is cancelled, the result arrays are empty.

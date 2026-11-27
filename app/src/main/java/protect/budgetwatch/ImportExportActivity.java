@@ -330,6 +330,7 @@ public class ImportExportActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
     {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(requestCode == PERMISSIONS_EXTERNAL_STORAGE)
         {
             // If request is cancelled, the result arrays are empty.
