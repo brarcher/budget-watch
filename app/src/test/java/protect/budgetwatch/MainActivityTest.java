@@ -157,5 +157,100 @@ public class MainActivityTest
 
         assertEquals(false, prefs.getBoolean("firstrun", true));
     }
+
+    @Test
+    public void testAboutDialogDestroysWebViewOnDismiss()
+    {
+        ActivityController<MainActivity> controller = Robolectric.buildActivity(MainActivity.class)
+                .create().start().resume().visible();
+        MainActivity activity = controller.get();
+
+        shadowOf(activity).clickMenuItem(R.id.action_about);
+
+        android.app.Dialog dialog = org.robolectric.shadows.ShadowDialog.getLatestDialog();
+        assertNotNull(dialog);
+        assertTrue(dialog.isShowing());
+
+        android.webkit.WebView webView = findWebView(dialog.getWindow().getDecorView());
+        assertNotNull(webView);
+        assertEquals(false, shadowOf(webView).wasDestroyCalled());
+
+        dialog.dismiss();
+        shadowOf(android.os.Looper.getMainLooper()).idle();
+
+        assertTrue(shadowOf(webView).wasDestroyCalled());
+    }
+
+    @Test
+    public void testAboutDialogDestroysWebViewOnActivityDestroy()
+    {
+        ActivityController<MainActivity> controller = Robolectric.buildActivity(MainActivity.class)
+                .create().start().resume().visible();
+        MainActivity activity = controller.get();
+
+        shadowOf(activity).clickMenuItem(R.id.action_about);
+
+        android.app.Dialog dialog = org.robolectric.shadows.ShadowDialog.getLatestDialog();
+        assertNotNull(dialog);
+        assertTrue(dialog.isShowing());
+
+        android.webkit.WebView webView = findWebView(dialog.getWindow().getDecorView());
+        assertNotNull(webView);
+        assertEquals(false, shadowOf(webView).wasDestroyCalled());
+
+        controller.pause().stop().destroy();
+        shadowOf(android.os.Looper.getMainLooper()).idle();
+
+        assertEquals(false, dialog.isShowing());
+        assertTrue(shadowOf(webView).wasDestroyCalled());
+    }
+
+    @Test
+    @Config(sdk = 26)
+    public void testAboutDialogHandlesRenderProcessGone()
+    {
+        ActivityController<MainActivity> controller = Robolectric.buildActivity(MainActivity.class)
+                .create().start().resume().visible();
+        MainActivity activity = controller.get();
+
+        shadowOf(activity).clickMenuItem(R.id.action_about);
+
+        android.app.Dialog dialog = org.robolectric.shadows.ShadowDialog.getLatestDialog();
+        assertNotNull(dialog);
+        assertTrue(dialog.isShowing());
+
+        android.webkit.WebView webView = findWebView(dialog.getWindow().getDecorView());
+        assertNotNull(webView);
+        android.webkit.WebViewClient client = shadowOf(webView).getWebViewClient();
+        assertNotNull(client);
+
+        boolean handled = client.onRenderProcessGone(webView, null);
+        shadowOf(android.os.Looper.getMainLooper()).idle();
+
+        assertTrue(handled);
+        assertEquals(false, dialog.isShowing());
+        assertTrue(shadowOf(webView).wasDestroyCalled());
+    }
+
+    private android.webkit.WebView findWebView(android.view.View root)
+    {
+        if (root instanceof android.webkit.WebView)
+        {
+            return (android.webkit.WebView) root;
+        }
+        if (root instanceof android.view.ViewGroup)
+        {
+            android.view.ViewGroup vg = (android.view.ViewGroup) root;
+            for (int i = 0; i < vg.getChildCount(); i++)
+            {
+                android.webkit.WebView hit = findWebView(vg.getChildAt(i));
+                if (hit != null)
+                {
+                    return hit;
+                }
+            }
+        }
+        return null;
+    }
 }
 
