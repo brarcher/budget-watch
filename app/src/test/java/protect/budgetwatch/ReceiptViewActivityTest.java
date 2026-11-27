@@ -57,4 +57,36 @@ public class ReceiptViewActivityTest
         assertNull(loadedData.historyUrl);
         assertTrue(loadedData.data.contains("src=\"file://receipt\""));
     }
+
+    @Test
+    public void destroyDestroysWebView()
+    {
+        activityController.start().resume();
+
+        Activity activity = (Activity) activityController.get();
+        WebView receiptView = (WebView) activity.findViewById(R.id.imageView);
+        assertEquals(false, shadowOf(receiptView).wasDestroyCalled());
+
+        activityController.pause().stop().destroy();
+
+        assertTrue(shadowOf(receiptView).wasDestroyCalled());
+    }
+
+    @Test
+    @Config(sdk = 26)
+    public void renderProcessGoneCleansUpAndFinishes()
+    {
+        activityController.start().resume();
+
+        Activity activity = (Activity) activityController.get();
+        WebView receiptView = (WebView) activity.findViewById(R.id.imageView);
+        android.webkit.WebViewClient client = shadowOf(receiptView).getWebViewClient();
+        assertEquals(true, client != null);
+
+        boolean handled = client.onRenderProcessGone(receiptView, null);
+
+        assertTrue(handled);
+        assertTrue(shadowOf(receiptView).wasDestroyCalled());
+        assertTrue(activity.isFinishing());
+    }
 }
