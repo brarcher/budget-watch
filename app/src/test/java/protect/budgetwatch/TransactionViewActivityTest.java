@@ -10,6 +10,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -20,6 +21,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.core.content.FileProvider;
+
 import com.google.common.collect.ImmutableList;
 
 import org.junit.Before;
@@ -29,14 +32,16 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
+import org.robolectric.android.util.concurrent.PausedExecutorService;
 import org.robolectric.annotation.Config;
-import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowLog;
 import org.robolectric.shadows.ShadowPackageManager;
+import org.robolectric.shadows.ShadowPausedAsyncTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -45,17 +50,16 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
-import static org.robolectric.annotation.LooperMode.Mode.LEGACY;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 23)
-@LooperMode(LEGACY)
+@Config(sdk = 24)
 public class TransactionViewActivityTest
 {
     private static final int ORIGINAL_JPEG_QUALITY = 100;
@@ -65,10 +69,16 @@ public class TransactionViewActivityTest
     private String nowString;
 
     @Before
-    public void setUp() throws ParseException
+    public void setUp() throws Exception
     {
         // Output logs emitted during tests so they may be accessed
         ShadowLog.stream = System.out;
+
+        // FileProvider caches resolved roots statically, while Robolectric assigns
+        // a fresh temp external-files directory per test method.
+        Field cacheField = FileProvider.class.getDeclaredField("sCache");
+        cacheField.setAccessible(true);
+        ((Map<?, ?>) cacheField.get(null)).clear();
 
         final DateFormat dateFormatter = SimpleDateFormat.getDateInstance();
         nowString = dateFormatter.format(System.currentTimeMillis());
@@ -165,6 +175,22 @@ public class TransactionViewActivityTest
     }
 
     /**
+     * Resolve a receipt URI (either FileProvider content:// or file://) back to its File.
+     */
+    private File resolveReceiptFile(final Activity activity, final Uri uri)
+    {
+        if ("content".equals(uri.getScheme()))
+        {
+            String path = uri.getPath();
+            assertNotNull(path);
+            String prefix = "/externalFiles/";
+            assertTrue("Unexpected FileProvider path: " + path, path.startsWith(prefix));
+            return new File(activity.getExternalFilesDir(null), path.substring(prefix.length()));
+        }
+        return new File(uri.getPath());
+    }
+
+    /**
      * Initiate and complete an image capture, returning the
      * location of the resulting file if the capture was
      * a success.
@@ -181,6 +207,9 @@ public class TransactionViewActivityTest
     private Uri captureImageWithResult(final Activity activity, final int buttonId,
                                        final boolean success, final int jpegQuality) throws IOException
     {
+        PausedExecutorService pausedExecutor = new PausedExecutorService();
+        ShadowPausedAsyncTask.overrideExecutor(pausedExecutor);
+
         // Ensure that the application has permissions to ask to use the camera
         shadowOf(activity).grantPermissions(Manifest.permission.CAMERA);
 
@@ -197,6 +226,10 @@ public class TransactionViewActivityTest
         String action = intent.getAction();
         assertNotNull(action);
         assertEquals(MediaStore.ACTION_IMAGE_CAPTURE, action);
+
+        int flags = intent.getFlags();
+        assertTrue((flags & Intent.FLAG_GRANT_READ_URI_PERMISSION) != 0);
+        assertTrue((flags & Intent.FLAG_GRANT_WRITE_URI_PERMISSION) != 0);
 
         Bundle bundle = intent.getExtras();
         assertNotNull(bundle);
@@ -219,12 +252,13 @@ public class TransactionViewActivityTest
                 null);
 
         // If any async tasks were created, run them now
-        Robolectric.flushBackgroundThreadScheduler();
+        pausedExecutor.runAll();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        File imageFile = resolveReceiptFile(activity, argument);
 
         if(success)
         {
-            File imageFile = new File(argument.getPath());
-
             // No camera is actually invoked in the unit test to create a
             // file. If the original JPEG quality is used, nothing creates
             // a file. However, if a lower quality is used, an async task
@@ -241,7 +275,7 @@ public class TransactionViewActivityTest
             }
         }
 
-        return argument;
+        return Uri.fromFile(imageFile);
     }
 
     private void checkFieldProperties(final Activity activity, final int id, final int visibility,

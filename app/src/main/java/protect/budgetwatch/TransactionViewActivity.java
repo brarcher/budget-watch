@@ -527,6 +527,7 @@ public class TransactionViewActivity extends AppCompatActivity
         }
 
         takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        takePictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         capturedUncommittedReceipt = (imageLocation != null ? imageLocation.getAbsolutePath() : null);
         startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
     }
