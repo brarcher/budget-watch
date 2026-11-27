@@ -175,4 +175,22 @@ public class TransactionActivityTest
     {
         checkClickAddWhileOnTap(1, DBHelper.TransactionDbIds.REVENUE);
     }
+
+    @Test
+    @Config(sdk = 34)
+    public void testRegistersNonExportedDbChangedReceiverOnApi34()
+    {
+        ActivityController<TransactionActivity> controller = Robolectric.buildActivity(TransactionActivity.class)
+                .create().start().resume().visible();
+        TransactionActivity activity = controller.get();
+
+        DBHelper db = new DBHelper(activity);
+        assertTrue(db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "coffee", "", "",
+                4.50, "", System.currentTimeMillis(), ""));
+        shadowOf(android.os.Looper.getMainLooper()).idle();
+
+        controller.pause().resume();
+        db.close();
+        controller.pause().stop().destroy();
+    }
 }

@@ -115,6 +115,28 @@ public class MainActivityTest
     }
 
     @Test
+    @Config(sdk = 34)
+    public void testPreApi35ThemeKeepsDarkNavigationBarIconsOff()
+    {
+        ActivityController<MainActivity> controller = Robolectric.buildActivity(MainActivity.class)
+                .create().start().resume().visible();
+        MainActivity activity = controller.get();
+
+        android.content.res.TypedArray attrs = activity.getTheme().obtainStyledAttributes(
+                new int[] { android.R.attr.windowLightNavigationBar, android.R.attr.statusBarColor });
+        try
+        {
+            assertEquals(false, attrs.getBoolean(0, false));
+            assertEquals(androidx.core.content.ContextCompat.getColor(activity, R.color.colorPrimaryDark),
+                    attrs.getColor(1, 0));
+        }
+        finally
+        {
+            attrs.recycle();
+        }
+    }
+
+    @Test
     public void testFirstRunStartsIntro()
     {
         prefs.edit().remove("firstrun").commit();

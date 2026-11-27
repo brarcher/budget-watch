@@ -1,23 +1,30 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 33
+    compileSdk 37
 
     defaultConfig {
         applicationId "protect.budgetwatch"
-        minSdkVersion 23
-        targetSdkVersion 33
+        minSdk 23
+        targetSdk 37
         versionCode 30
         versionName "0.22"
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -27,6 +34,9 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+            all {
+                maxHeapSize = "1024m"
+            }
         }
     }
     namespace 'protect.budgetwatch'
@@ -37,12 +47,12 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'com.google.android.material:material:1.14.0'
     implementation 'org.apache.commons:commons-csv:1.5'
-    implementation group: 'com.google.guava', name: 'guava', version: '20.0'
-    implementation 'com.github.apl-devs:appintro:v4.2.0'
-    testImplementation 'junit:junit:4.12'
-    testImplementation "org.robolectric:robolectric:4.9"
+    implementation 'com.google.guava:guava:33.8.0-android'
+    implementation 'com.github.AppIntro:AppIntro:6.3.1'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "org.robolectric:robolectric:4.18.1"
     testImplementation group: 'org.javatuples', name: 'javatuples', version: '1.2'
 }

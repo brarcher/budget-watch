@@ -3,6 +3,7 @@ package protect.budgetwatch;
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Environment;
+import android.os.Looper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -10,9 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.android.util.concurrent.PausedExecutorService;
 import org.robolectric.annotation.Config;
-import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowPausedAsyncTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,11 +22,10 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
-import static org.robolectric.annotation.LooperMode.Mode.LEGACY;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 24)
-@LooperMode(LEGACY)
 public class DatabaseCleanupTaskTest
 {
     private Activity activity;
@@ -32,6 +33,7 @@ public class DatabaseCleanupTaskTest
     private File imageDir;
     private File missingReceipt;
     private File orphanReceipt;
+    private PausedExecutorService pausedExecutor;
 
     private static final int NUM_TRANSACTIONS = 10;
     private static final String WITH_RECEIPT_NAME = "receipt_exists";
@@ -42,6 +44,9 @@ public class DatabaseCleanupTaskTest
     {
         // Output logs emitted during tests so they may be accessed
         ShadowLog.stream = System.out;
+
+        pausedExecutor = new PausedExecutorService();
+        ShadowPausedAsyncTask.overrideExecutor(pausedExecutor);
 
         activity = Robolectric.setupActivity(ImportExportActivity.class);
         db = new DBHelper(activity);
@@ -120,7 +125,8 @@ public class DatabaseCleanupTaskTest
         task.execute();
 
         // Actually run the task to completion
-        Robolectric.flushBackgroundThreadScheduler();
+        pausedExecutor.runAll();
+        shadowOf(Looper.getMainLooper()).idle();
 
         // Check that the orphaned image is now deleted
         assertEquals(false, orphanReceipt.exists());
@@ -158,7 +164,8 @@ public class DatabaseCleanupTaskTest
         task.execute();
 
         // Actually run the task to completion
-        Robolectric.flushBackgroundThreadScheduler();
+        pausedExecutor.runAll();
+        shadowOf(Looper.getMainLooper()).idle();
 
         // Check that the orphaned image is not deleted
         assertEquals(false, orphanReceipt.exists());

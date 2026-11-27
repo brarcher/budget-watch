@@ -1,7 +1,6 @@
 package protect.budgetwatch;
 
 import android.app.Activity;
-import android.content.IntentFilter;
 import android.os.Environment;
 import android.os.Looper;
 
@@ -11,9 +10,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.android.util.concurrent.PausedExecutorService;
 import org.robolectric.annotation.Config;
-import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadows.ShadowLog;
+import org.robolectric.shadows.ShadowPausedAsyncTask;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -26,15 +26,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
-import static org.robolectric.annotation.LooperMode.Mode.LEGACY;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(sdk = 25)
-@LooperMode(LEGACY)
 public class ImportExportTest
 {
     private Activity activity;
     private DBHelper db;
+    private PausedExecutorService pausedExecutor;
 
     class TestTaskCompleteListener implements ImportExportTask.TaskCompleteListener
     {
@@ -83,6 +82,9 @@ public class ImportExportTest
     {
         // Output logs emitted during tests so they may be accessed
         ShadowLog.stream = System.out;
+
+        pausedExecutor = new PausedExecutorService();
+        ShadowPausedAsyncTask.overrideExecutor(pausedExecutor);
 
         activity = Robolectric.setupActivity(BudgetViewActivity.class);
         db = new DBHelper(activity);
@@ -208,6 +210,7 @@ public class ImportExportTest
             assertEquals(NUM_TRANSACTIONS * 2, updater.getNumUpdates());
 
             // The contents of the database should have changed
+            shadowOf(Looper.getMainLooper()).idle();
             assertTrue(dbChanged.hasChanged());
             activity.unregisterReceiver(dbChanged);
 
@@ -244,6 +247,7 @@ public class ImportExportTest
 
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
             DatabaseTestHelper.registerDbChangedReceiver(activity, dbChanged);
+            shadowOf(Looper.getMainLooper()).idle();
             assertFalse(dbChanged.hasChanged());
 
             updater = new TestProgressUpdater();
@@ -256,6 +260,7 @@ public class ImportExportTest
             assertEquals(NUM_TRANSACTIONS * 2, updater.getNumUpdates());
 
             // The contents of the database should not have changed
+            shadowOf(Looper.getMainLooper()).idle();
             assertFalse(dbChanged.hasChanged());
             activity.unregisterReceiver(dbChanged);
 
@@ -418,7 +423,8 @@ public class ImportExportTest
             task.execute();
 
             // Actually run the task to completion
-            Robolectric.flushBackgroundThreadScheduler();
+            pausedExecutor.runAll();
+            shadowOf(Looper.getMainLooper()).idle();
 
             assertNotNull(listener.success);
             assertEquals(true, listener.success);
@@ -432,7 +438,8 @@ public class ImportExportTest
             task.execute();
 
             // Actually run the task to completion
-            Robolectric.flushBackgroundThreadScheduler();
+            pausedExecutor.runAll();
+            shadowOf(Looper.getMainLooper()).idle();
 
             assertNotNull(listener.success);
             assertEquals(true, listener.success);
@@ -466,7 +473,8 @@ public class ImportExportTest
             task.execute();
 
             // Actually run the task to completion
-            Robolectric.flushBackgroundThreadScheduler();
+            pausedExecutor.runAll();
+            shadowOf(Looper.getMainLooper()).idle();
 
             assertNotNull(listener.success);
             assertEquals(true, listener.success);
@@ -480,7 +488,8 @@ public class ImportExportTest
             task.execute();
 
             // Actually run the task to completion
-            Robolectric.flushBackgroundThreadScheduler();
+            pausedExecutor.runAll();
+            shadowOf(Looper.getMainLooper()).idle();
 
             assertNotNull(listener.success);
             assertEquals(true, listener.success);

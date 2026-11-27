@@ -67,17 +67,17 @@ public class MainActivity extends AppCompatActivity
 
                 Class goalClass = null;
 
-                switch(item.menuTextId)
+                if(item.menuTextId == R.string.budgetsTitle)
                 {
-                    case R.string.budgetsTitle:
-                        goalClass = BudgetActivity.class;
-                        break;
-                    case R.string.transactionsTitle:
-                        goalClass = TransactionActivity.class;
-                        break;
-                    default:
-                        Log.w(TAG, "Unexpected menu text id: " + item.menuTextId);
-                        break;
+                    goalClass = BudgetActivity.class;
+                }
+                else if(item.menuTextId == R.string.transactionsTitle)
+                {
+                    goalClass = TransactionActivity.class;
+                }
+                else
+                {
+                    Log.w(TAG, "Unexpected menu text id: " + item.menuTextId);
                 }
 
                 if(goalClass != null)
@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity
         (
             "Commons CSV", "https://commons.apache.org/proper/commons-csv/",
             "Guava", "https://github.com/google/guava",
-            "AppIntro", "https://github.com/apl-devs/AppIntro"
+            "AppIntro", "https://github.com/AppIntro/AppIntro"
         );
 
         final Map<String, String> USED_ASSETS = ImmutableMap.of
