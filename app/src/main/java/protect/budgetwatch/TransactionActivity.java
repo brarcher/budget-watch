@@ -1,11 +1,13 @@
 package protect.budgetwatch;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.PagerAdapter;
@@ -27,6 +29,20 @@ public class TransactionActivity extends AppCompatActivity
 
     private boolean _currentlySearching = false;
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    private void registerDbChangedReceiver()
+    {
+        IntentFilter dbChangedFilter = new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        {
+            this.registerReceiver(_dbChanged, dbChangedFilter, Context.RECEIVER_NOT_EXPORTED);
+        }
+        else
+        {
+            this.registerReceiver(_dbChanged, dbChangedFilter);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -42,7 +58,7 @@ public class TransactionActivity extends AppCompatActivity
         }
 
         _dbChanged = new TransactionDatabaseChangedReceiver();
-        this.registerReceiver(_dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        registerDbChangedReceiver();
 
         String search = getIntent().getStringExtra(SearchManager.QUERY);
         resetView(search);

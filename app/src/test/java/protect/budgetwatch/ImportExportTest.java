@@ -195,7 +195,7 @@ public class ImportExportTest
 
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
-            activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+            DatabaseTestHelper.registerDbChangedReceiver(activity, dbChanged);
             assertFalse(dbChanged.hasChanged());
 
             updater = new TestProgressUpdater();
@@ -243,7 +243,7 @@ public class ImportExportTest
             ByteArrayInputStream inData = new ByteArrayInputStream(outData.toByteArray());
 
             TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
-            activity.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+            DatabaseTestHelper.registerDbChangedReceiver(activity, dbChanged);
             assertFalse(dbChanged.hasChanged());
 
             updater = new TestProgressUpdater();

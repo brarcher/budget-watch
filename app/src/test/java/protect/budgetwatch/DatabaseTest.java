@@ -273,7 +273,7 @@ public class DatabaseTest
     public void addRemoveOneTransaction()
     {
         TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
-        context.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        DatabaseTestHelper.registerDbChangedReceiver(context, dbChanged);
         assertFalse(dbChanged.hasChanged());
 
         assertEquals(0, db.getTransactionCount(DBHelper.TransactionDbIds.EXPENSE));
@@ -390,7 +390,7 @@ public class DatabaseTest
     public void updateTransaction()
     {
         TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
-        context.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        DatabaseTestHelper.registerDbChangedReceiver(context, dbChanged);
         assertFalse(dbChanged.hasChanged());
 
         boolean result = db.insertTransaction(DBHelper.TransactionDbIds.EXPENSE, "description",
@@ -426,7 +426,7 @@ public class DatabaseTest
     public void updateMissingTransaction()
     {
         TransactionDatabaseChangedReceiver dbChanged = new TransactionDatabaseChangedReceiver();
-        context.registerReceiver(dbChanged, new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        DatabaseTestHelper.registerDbChangedReceiver(context, dbChanged);
         assertFalse(dbChanged.hasChanged());
 
         boolean result = db.updateTransaction(1, DBHelper.TransactionDbIds.EXPENSE, "", "", "", 0,

@@ -1,8 +1,11 @@
 package protect.budgetwatch;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Environment;
 
 import com.google.common.io.ByteStreams;
@@ -210,6 +213,20 @@ class DatabaseTestHelper
             cursor.close();
 
             isExpense = false;
+        }
+    }
+
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    public static void registerDbChangedReceiver(Context context, TransactionDatabaseChangedReceiver receiver)
+    {
+        IntentFilter filter = new IntentFilter(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
+        {
+            context.registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED);
+        }
+        else
+        {
+            context.registerReceiver(receiver, filter);
         }
     }
 }

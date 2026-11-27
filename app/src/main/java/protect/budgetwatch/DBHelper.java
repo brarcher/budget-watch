@@ -65,7 +65,9 @@ class DBHelper extends SQLiteOpenHelper
      */
     private void sendChangeNotification()
     {
-        _context.sendBroadcast(new Intent(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+        Intent intent = new Intent(TransactionDatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+        intent.setPackage(_context.getPackageName());
+        _context.sendBroadcast(intent);
     }
 
     @Override
